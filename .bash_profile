@@ -3,13 +3,13 @@ if [ -f ~/.bashrc ] ; then
     . ~/.bashrc
 fi
  
+# Settings
+#umask 0022
+
 # Variables
 PATH=$PATH
 GREP_OPTIONS='--color=auto'
 EDITOR=vim
-
-# Settings
-#umask 0022
  
 # Exports
 export PATH
