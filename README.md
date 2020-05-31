@@ -1,5 +1,6 @@
 # dotfiles
 
+```bash
 mkdir -p ~/archives
 mkdir -p ~/bluetooth
 mkdir -p ~/captures/pictures
@@ -58,3 +59,4 @@ mkdir ~/projects/wsdl
 mkdir ~/projects/xca
 mkdir ~/projects/zabbix
 mkdir ~/projects/others
+```
