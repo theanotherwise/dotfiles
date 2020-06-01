@@ -1,4 +1,6 @@
-# Sources
+# if [ -f ~/.examplerc ] ; then
+#   . ~/.examplerc
+# fi
  
 PS1="[\[\e[31m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]# "
 HISTTIMEFORMAT="%Y-%m-%d %T "
