@@ -1,8 +1,8 @@
 if [ -f ~/.bashrc ] ; then
-    . ~/.bashrc
+  . ~/.bashrc
 fi
  
-#umask 0022
+# umask 0022
 
 PATH=$PATH
 GREP_OPTIONS='--color=auto'
