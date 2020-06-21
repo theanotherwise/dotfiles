@@ -21,8 +21,7 @@ FontWeight=50
 PreviewSize=32
 
 [KFileDialog Settings]
-Recent Files[$e]=dolphin.shortcuts,file:$HOME/git/snippets/dolphin.shortcuts
-Recent URLs[$e]=file:$HOME/git/snippets/
+Recent Files[$e]=dolphin.shortcuts,file:$HOME/.dolphin.shortcuts
 detailViewIconSize=0
 
 [MainWindow]
