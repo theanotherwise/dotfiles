@@ -1,6 +1,13 @@
 # dotfiles
 
 ```bash
+mkdir ~/.config
+
+mkdir --parents ~/.local/share/kxmlgui5/dolphin
+mkdir --parents ~/.local/share/kxmlgui5/konsole
+```
+
+```bash
 mkdir -p ~/archives
 mkdir -p ~/bluetooth
 mkdir -p ~/captures/pictures
