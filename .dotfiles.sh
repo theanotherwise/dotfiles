@@ -9,6 +9,7 @@ mkdir -p ~/configuration/konsole
 mkdir -p ~/configuration/konsole/tabs
 mkdir -p ~/configuration/ssh
 mkdir -p ~/configuration/ssh/sessions
+mkdir -p ~/configuration/ssh/keys
 mkdir -p ~/cheat-sheets
 mkdir -p ~/dashcam
 mkdir -p ~/desktop
