@@ -1,7 +1,7 @@
 <!DOCTYPE gui>
-<gui translationDomain="kxmlgui5" name="dolphin" version="27">
+<gui translationDomain="kxmlgui5" version="27" name="dolphin">
  <MenuBar alreadyVisited="1">
-  <Menu noMerge="1" alreadyVisited="1" name="file">
+  <Menu alreadyVisited="1" noMerge="1" name="file">
    <text translationDomain="kxmlgui5">&amp;File</text>
    <Action name="file_new"/>
    <Separator weakSeparator="1"/>
@@ -25,7 +25,7 @@
    <Separator weakSeparator="1"/>
    <Action name="file_quit"/>
   </Menu>
-  <Menu noMerge="1" alreadyVisited="1" name="edit">
+  <Menu alreadyVisited="1" noMerge="1" name="edit">
    <text translationDomain="kxmlgui5">&amp;Edit</text>
    <Action name="edit_undo"/>
    <Separator weakSeparator="1"/>
@@ -40,7 +40,7 @@
    <Action name="edit_select_all"/>
    <Action name="invert_selection"/>
   </Menu>
-  <Menu noMerge="1" alreadyVisited="1" name="view">
+  <Menu alreadyVisited="1" noMerge="1" name="view">
    <text translationDomain="kxmlgui5">&amp;View</text>
    <Action name="view_zoom_in"/>
    <Action name="view_zoom_out"/>
@@ -72,7 +72,7 @@
    <Separator/>
    <Action name="view_properties"/>
   </Menu>
-  <Menu noMerge="1" alreadyVisited="1" name="go">
+  <Menu alreadyVisited="1" noMerge="1" name="go">
    <text translationDomain="kxmlgui5">&amp;Go</text>
    <Action name="go_up"/>
    <Action name="go_back"/>
@@ -103,14 +103,16 @@
   <Separator weakSeparator="1"/>
   <Separator weakSeparator="1"/>
   <Separator weakSeparator="1"/>
-  <Menu noMerge="1" alreadyVisited="1" name="tools">
+  <Separator weakSeparator="1"/>
+  <Separator weakSeparator="1"/>
+  <Menu alreadyVisited="1" noMerge="1" name="tools">
    <text translationDomain="kxmlgui5">&amp;Tools</text>
    <Action name="show_filter_bar"/>
    <Action name="open_terminal"/>
    <Action name="compare_files"/>
    <Action name="change_remote_encoding"/>
   </Menu>
-  <Menu noMerge="1" alreadyVisited="1" name="settings">
+  <Menu alreadyVisited="1" noMerge="1" name="settings">
    <text translationDomain="kxmlgui5">&amp;Settings</text>
    <Action name="options_show_menubar"/>
    <Merge name="StandardToolBarMenuHandler"/>
@@ -121,7 +123,7 @@
    <Action name="options_configure"/>
   </Menu>
   <Separator weakSeparator="1"/>
-  <Menu noMerge="1" alreadyVisited="1" name="help">
+  <Menu alreadyVisited="1" noMerge="1" name="help">
    <text translationDomain="kxmlgui5">&amp;Help</text>
    <Action name="help_contents"/>
    <Action name="help_whats_this"/>
@@ -136,7 +138,7 @@
    <Action name="help_about_kde"/>
   </Menu>
  </MenuBar>
- <ToolBar noMerge="1" alreadyVisited="1" name="mainToolBar">
+ <ToolBar alreadyVisited="1" noMerge="1" name="mainToolBar">
   <Action name="go_home"/>
   <Separator name="separator_0"/>
   <Action name="view_redisplay"/>
@@ -174,9 +176,9 @@
   <Action name="edit_find"/>
   <Separator name="separator_12"/>
   <Action name="show_hidden_files"/>
+  <Separator name="separator_13"/>
   <Action name="show_information_panel"/>
   <Action name="show_preview"/>
-  <Separator name="separator_13"/>
   <Action name="properties"/>
   <Separator name="separator_14"/>
   <text translationDomain="dolphin" context="@title:menu">Main Toolbar</text>
@@ -218,102 +220,105 @@
   </disable>
  </State>
  <ActionProperties scheme="Default">
-  <Action priority="0" shortcut="Backspace; ; Backspace" name="go_back"/>
-  <Action priority="0" shortcut="; " name="go_forward"/>
-  <Action priority="0" shortcut="Ctrl+Shift+Z" name="go_up"/>
-  <Action priority="0" shortcut="Ctrl+H; " name="go_home"/>
-  <Action priority="0" shortcut="" name="stop"/>
-  <Action priority="0" shortcut="" name="icons"/>
-  <Action priority="0" shortcut="" name="compact"/>
-  <Action priority="0" shortcut="" name="details"/>
-  <Action priority="0" shortcut="; " name="view_zoom_in"/>
-  <Action priority="0" shortcut="" name="view_zoom_reset"/>
-  <Action priority="0" shortcut="" name="view_zoom_out"/>
-  <Action priority="0" shortcut="Ctrl+Shift+X; " name="edit_cut"/>
-  <Action priority="0" shortcut="Ctrl+Shift+C; " name="edit_copy"/>
-  <Action priority="0" shortcut="Ctrl+Shift+V; " name="edit_paste"/>
-  <Action priority="0" shortcut="" name="toggle_search"/>
-  <Action shortcut="" name="activate_last_tab"/>
-  <Action shortcut="Shift+Right; ; Ctrl+Tab" name="activate_next_tab"/>
-  <Action shortcut="Shift+Left; ; Ctrl+Shift+Tab" name="activate_prev_tab"/>
-  <Action shortcut="" name="activate_tab_0"/>
-  <Action shortcut="" name="activate_tab_1"/>
-  <Action shortcut="" name="activate_tab_2"/>
-  <Action shortcut="" name="activate_tab_3"/>
-  <Action shortcut="" name="activate_tab_4"/>
-  <Action shortcut="" name="activate_tab_5"/>
-  <Action shortcut="" name="activate_tab_6"/>
-  <Action shortcut="" name="activate_tab_7"/>
-  <Action shortcut="" name="activate_tab_8"/>
-  <Action shortcut="" name="add_bookmark"/>
-  <Action shortcut="" name="add_bookmarks_list"/>
-  <Action shortcut="" name="add_to_places"/>
-  <Action shortcut="" name="ascending"/>
-  <Action shortcut="" name="compare_files" iconText="Compare"/>
-  <Action shortcut="Ctrl+Shift+N" name="create_dir"/>
-  <Action shortcut="" name="delete_shortcut"/>
-  <Action shortcut="Ctrl+Shift+Del" name="deletefile"/>
-  <Action shortcut="" name="descending"/>
-  <Action shortcut="" name="edit_bookmarks"/>
-  <Action shortcut="Ctrl+Shift+F" name="edit_find"/>
-  <Action shortcut="" name="editable_location"/>
-  <Action shortcut="Ctrl+Shift+A; " name="file_close"/>
-  <Action shortcut="Ctrl+Shift+W" name="file_new"/>
-  <Action shortcut="Ctrl+Shift+S" name="file_quit"/>
-  <Action shortcut="" name="folders_first"/>
-  <Action shortcut="" name="help_about_app"/>
-  <Action shortcut="" name="help_about_kde"/>
-  <Action shortcut="" name="help_contents"/>
-  <Action shortcut="" name="help_donate"/>
-  <Action shortcut="" name="help_report_bug"/>
-  <Action shortcut="" name="help_whats_this"/>
-  <Action shortcut="" name="invert_selection"/>
-  <Action shortcut="" name="lock_panels"/>
-  <Action shortcut="Ctrl+Shift+Q; " name="new_tab"/>
-  <Action shortcut="" name="open_in_new_tab"/>
-  <Action shortcut="" name="open_in_new_tabs"/>
-  <Action shortcut="" name="open_in_new_window"/>
-  <Action shortcut="Ctrl+Shift+E" name="open_terminal" iconText="Terminal"/>
-  <Action shortcut="" name="options_configure"/>
-  <Action shortcut="" name="options_configure_keybinding"/>
-  <Action shortcut="" name="options_configure_toolbars"/>
-  <Action shortcut="Ctrl+Shift+M" name="options_show_menubar"/>
-  <Action shortcut="Ctrl+Shift+P; " name="properties"/>
-  <Action shortcut="Ctrl+Shift+R" name="renamefile"/>
-  <Action shortcut="" name="replace_location"/>
-  <Action shortcut="" name="show_accesstime"/>
-  <Action shortcut="" name="show_comment"/>
-  <Action shortcut="" name="show_creationtime"/>
-  <Action shortcut="; " name="show_filter_bar"/>
-  <Action shortcut="" name="show_folders_panel"/>
-  <Action shortcut="Ctrl+Shift+H; ; F8" name="show_hidden_files" iconText="Hidden"/>
-  <Action shortcut="" name="show_in_groups"/>
-  <Action shortcut="Ctrl+Shift+I" name="show_information_panel"/>
-  <Action shortcut="" name="show_modificationtime"/>
-  <Action shortcut="" name="show_places_panel"/>
-  <Action shortcut="Ctrl+P" name="show_preview" iconText="Previews"/>
-  <Action shortcut="" name="show_rating"/>
-  <Action shortcut="" name="show_size"/>
-  <Action shortcut="" name="show_tags"/>
-  <Action shortcut="" name="show_target"/>
-  <Action shortcut="" name="show_terminal_panel"/>
-  <Action shortcut="" name="show_type"/>
-  <Action shortcut="" name="sort_by_accesstime"/>
-  <Action shortcut="" name="sort_by_comment"/>
-  <Action shortcut="" name="sort_by_creationtime"/>
-  <Action shortcut="" name="sort_by_modificationtime"/>
-  <Action shortcut="" name="sort_by_rating"/>
-  <Action shortcut="" name="sort_by_size"/>
-  <Action shortcut="" name="sort_by_tags"/>
-  <Action shortcut="" name="sort_by_text"/>
-  <Action shortcut="" name="sort_by_type"/>
-  <Action shortcut="" name="split_stash"/>
-  <Action shortcut="Ctrl+Shift+D" name="split_view"/>
-  <Action shortcut="" name="switch_application_language"/>
-  <Action shortcut="" name="undo_close_tab"/>
-  <Action shortcut="" name="view_mode"/>
-  <Action shortcut="" name="view_properties"/>
-  <Action shortcut="Ctrl+R; " name="view_redisplay"/>
+  <Action priority="0" name="go_back" shortcut="Backspace; ; Backspace"/>
+  <Action priority="0" name="go_forward" shortcut="; "/>
+  <Action priority="0" name="go_up" shortcut="Ctrl+Shift+Z"/>
+  <Action priority="0" name="go_home" shortcut="Ctrl+H; "/>
+  <Action priority="0" name="stop" shortcut=""/>
+  <Action priority="0" name="icons" shortcut=""/>
+  <Action priority="0" name="compact" shortcut=""/>
+  <Action priority="0" name="details" shortcut=""/>
+  <Action priority="0" name="view_zoom_in" shortcut="; "/>
+  <Action priority="0" name="view_zoom_reset" shortcut=""/>
+  <Action priority="0" name="view_zoom_out" shortcut=""/>
+  <Action priority="0" name="edit_cut" shortcut="Ctrl+Shift+X; "/>
+  <Action priority="0" name="edit_copy" shortcut="Ctrl+Shift+C; "/>
+  <Action priority="0" name="edit_paste" shortcut="Ctrl+Shift+V; "/>
+  <Action priority="0" name="toggle_search" shortcut=""/>
+  <Action name="activate_last_tab" shortcut=""/>
+  <Action name="activate_next_tab" shortcut="Shift+Right; ; Ctrl+Tab"/>
+  <Action name="activate_prev_tab" shortcut="Shift+Left; ; Ctrl+Shift+Tab"/>
+  <Action name="activate_tab_0" shortcut=""/>
+  <Action name="activate_tab_1" shortcut=""/>
+  <Action name="activate_tab_2" shortcut=""/>
+  <Action name="activate_tab_3" shortcut=""/>
+  <Action name="activate_tab_4" shortcut=""/>
+  <Action name="activate_tab_5" shortcut=""/>
+  <Action name="activate_tab_6" shortcut=""/>
+  <Action name="activate_tab_7" shortcut=""/>
+  <Action name="activate_tab_8" shortcut=""/>
+  <Action name="add_bookmark" shortcut=""/>
+  <Action name="add_bookmarks_list" shortcut=""/>
+  <Action name="add_to_places" shortcut=""/>
+  <Action name="ascending" shortcut=""/>
+  <Action name="compare_files" iconText="Compare" shortcut=""/>
+  <Action name="create_dir" shortcut="Ctrl+Shift+N"/>
+  <Action name="delete_shortcut" shortcut=""/>
+  <Action name="deletefile" shortcut="Ctrl+Shift+Del"/>
+  <Action name="descending" shortcut=""/>
+  <Action name="edit_bookmarks" shortcut=""/>
+  <Action name="edit_find" shortcut="Ctrl+Shift+F"/>
+  <Action name="editable_location" shortcut=""/>
+  <Action name="file_close" shortcut="Ctrl+Shift+A; "/>
+  <Action name="file_new" shortcut="Ctrl+Shift+W"/>
+  <Action name="file_quit" shortcut="Ctrl+Shift+S"/>
+  <Action name="folders_first" shortcut=""/>
+  <Action name="help_about_app" shortcut=""/>
+  <Action name="help_about_kde" shortcut=""/>
+  <Action name="help_contents" shortcut=""/>
+  <Action name="help_donate" shortcut=""/>
+  <Action name="help_report_bug" shortcut=""/>
+  <Action name="help_whats_this" shortcut=""/>
+  <Action name="invert_selection" shortcut=""/>
+  <Action name="lock_panels" shortcut=""/>
+  <Action name="new_tab" shortcut="Ctrl+Shift+Q; "/>
+  <Action name="open_in_new_tab" shortcut=""/>
+  <Action name="open_in_new_tabs" shortcut=""/>
+  <Action name="open_in_new_window" shortcut=""/>
+  <Action name="open_terminal" iconText="Terminal" shortcut="Ctrl+Shift+E"/>
+  <Action name="options_configure" shortcut=""/>
+  <Action name="options_configure_keybinding" shortcut=""/>
+  <Action name="options_configure_toolbars" shortcut=""/>
+  <Action name="options_show_menubar" shortcut="Ctrl+Shift+M"/>
+  <Action name="properties" shortcut="Ctrl+Shift+P; "/>
+  <Action name="renamefile" shortcut="Ctrl+Shift+R"/>
+  <Action name="replace_location" shortcut=""/>
+  <Action name="show_accesstime" shortcut=""/>
+  <Action name="show_comment" shortcut=""/>
+  <Action name="show_creationtime" shortcut=""/>
+  <Action name="show_filter_bar" shortcut="; "/>
+  <Action name="show_folders_panel" shortcut=""/>
+  <Action name="show_hidden_files" iconText="Hidden" shortcut="Ctrl+Shift+H; ; F8"/>
+  <Action name="show_in_groups" shortcut=""/>
+  <Action name="show_information_panel" shortcut="Ctrl+Shift+I"/>
+  <Action name="show_modificationtime" shortcut=""/>
+  <Action name="show_places_panel" shortcut=""/>
+  <Action name="show_preview" iconText="Previews" shortcut="Ctrl+P"/>
+  <Action name="show_rating" shortcut=""/>
+  <Action name="show_size" shortcut=""/>
+  <Action name="show_tags" shortcut=""/>
+  <Action name="show_target" shortcut=""/>
+  <Action name="show_terminal_panel" shortcut=""/>
+  <Action name="show_type" shortcut=""/>
+  <Action name="sort_by_accesstime" shortcut=""/>
+  <Action name="sort_by_comment" shortcut=""/>
+  <Action name="sort_by_creationtime" shortcut=""/>
+  <Action name="sort_by_modificationtime" shortcut=""/>
+  <Action name="sort_by_rating" shortcut=""/>
+  <Action name="sort_by_size" shortcut=""/>
+  <Action name="sort_by_tags" shortcut=""/>
+  <Action name="sort_by_text" shortcut=""/>
+  <Action name="sort_by_type" shortcut=""/>
+  <Action name="split_stash" shortcut=""/>
+  <Action name="split_view" shortcut="Ctrl+Shift+D"/>
+  <Action name="switch_application_language" shortcut=""/>
+  <Action name="undo_close_tab" shortcut=""/>
+  <Action name="view_mode" shortcut=""/>
+  <Action name="view_properties" shortcut=""/>
+  <Action name="view_redisplay" shortcut="Ctrl+R; "/>
   <Action name="movetotrash" iconText="Trash"/>
+ </ActionProperties>
+ <ActionProperties scheme="theanotherwise">
+  <Action name="show_preview" iconText="Previews"/>
  </ActionProperties>
 </gui>
