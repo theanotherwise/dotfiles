@@ -4,6 +4,8 @@ mkdir -p ~/archives
 mkdir -p ~/bluetooth
 mkdir -p ~/captures/pictures
 mkdir -p ~/captures/videos
+mkdir -p ~/configuration
+mkdir -p ~/configuration/sessions
 mkdir -p ~/cheat-sheets
 mkdir -p ~/dashcam
 mkdir -p ~/desktop
@@ -14,19 +16,20 @@ mkdir -p ~/git
 mkdir -p ~/iso-images
 mkdir -p ~/music
 mkdir -p ~/scripts
+mkdir -p ~/pictures
+mkdir -p ~/pictures/wallpaper
 mkdir -p ~/portable
 mkdir -p ~/projects
 mkdir -p ~/captures
 mkdir -p ~/temporary
 mkdir -p ~/videos
+mkdir -p ~/virtual-machines
+mkdir -p ~/virtual-machines/vmware
+mkdir -p ~/virtual-machines/vmware/archives
+mkdir -p ~/virtual-machines/vmware/templates
+mkdir -p ~/virtual-machines/vmware/workspace
 mkdir -p ~/word-lists
 mkdir -p ~/work
-
-mkdir -p --parents ~/pictures/wallpaper
-mkdir -p --parents ~/configuration/sessions
-mkdir -p --parents ~/virtual-machines/vmware/archives
-mkdir -p --parents ~/virtual-machines/vmware/templates
-mkdir -p --parents ~/virtual-machines/vmware/workspace
 
 mkdir -p ~/projects/android
 mkdir -p ~/projects/ansible
