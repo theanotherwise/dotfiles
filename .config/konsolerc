@@ -1,0 +1,24 @@
+[Desktop Entry]
+DefaultProfile=default.profile
+
+[Favorite Profiles]
+Favorites=default.profile
+
+[KFileDialog Settings]
+detailViewIconSize=0
+
+[KonsoleWindow]
+ShowMenuBarByDefault=false
+
+[MainWindow]
+ToolBarsMovable=Disabled
+
+[Notification Messages]
+CloseAllEmptyTabs=true
+
+[Shortcut Schemes]
+Current Scheme=Default
+
+[TabBar]
+CloseTabButton=None
+TabBarPosition=Top
