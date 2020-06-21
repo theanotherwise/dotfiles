@@ -3,11 +3,10 @@
 ## Initialize
 ```bash
 git init .
-git remote add origin git@github.com:theanotherwise/dotfiles.git
-# git remote add origin https://github.com/theanotherwise/dotfiles.git
+# git remote add origin git@github.com:theanotherwise/dotfiles.git
+git remote add origin https://github.com/theanotherwise/dotfiles.git
 git pull origin master
 
-# force
 git fetch --all
 git reset --hard origin/master
 
