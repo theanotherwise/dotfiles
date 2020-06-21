@@ -1,6 +1,13 @@
 # dotfiles
 
 ```bash
+git init .
+git remote add origin <repository-url>
+git pull origin master
+```
+
+# Others
+```bash
 mkdir ~/.config
 
 mkdir --parents ~/.local/share/kxmlgui5/dolphin
