@@ -5,14 +5,14 @@
 git init .
 # git remote add origin git@github.com:theanotherwise/dotfiles.git
 git remote add origin https://github.com/theanotherwise/dotfiles.git
+
+git fetch --all
+git reset --hard origin/master
 ```
 
 ## Pull changes
 ```bash
 git pull origin master
-
-git fetch --all
-git reset --hard origin/master
 ```
 
 ## Make changes
