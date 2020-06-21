@@ -79,4 +79,65 @@
   <Action shortcut="Ctrl+Shift+B" name="split-view-left-right"/>
   <Action shortcut="Ctrl+Shift+N" name="split-view-top-bottom"/>
  </ActionProperties>
+ <ActionProperties scheme="theanotherwise">
+  <Action name="activate-menu" shortcut=""/>
+  <Action name="add_bookmark" shortcut=""/>
+  <Action name="add_bookmarks_list" shortcut=""/>
+  <Action name="clone-tab" shortcut="Ctrl+Shift+Z"/>
+  <Action name="close-window" shortcut="Ctrl+Shift+S"/>
+  <Action name="detach-tab" shortcut="Ctrl+Shift+D"/>
+  <Action name="detach-view" shortcut=""/>
+  <Action name="edit_bookmarks" shortcut=""/>
+  <Action name="expand-active-view" shortcut=""/>
+  <Action name="focus-view-above" shortcut="Ctrl+Up"/>
+  <Action name="focus-view-below" shortcut="Ctrl+Down"/>
+  <Action name="focus-view-left" shortcut="Ctrl+Left"/>
+  <Action name="focus-view-right" shortcut="Ctrl+Right"/>
+  <Action name="fullscreen" shortcut=""/>
+  <Action name="help_about_app" shortcut=""/>
+  <Action name="help_about_kde" shortcut=""/>
+  <Action name="help_contents" shortcut=""/>
+  <Action name="help_donate" shortcut=""/>
+  <Action name="help_report_bug" shortcut=""/>
+  <Action name="help_whats_this" shortcut=""/>
+  <Action name="last-tab" shortcut=""/>
+  <Action name="last-used-tab" shortcut=""/>
+  <Action name="last-used-tab-reverse" shortcut=""/>
+  <Action name="manage-profiles" shortcut=""/>
+  <Action name="maximize-current-terminal" shortcut=""/>
+  <Action name="move-tab-to-left" shortcut="Ctrl+Shift+Left"/>
+  <Action name="move-tab-to-right" shortcut="Ctrl+Shift+Right"/>
+  <Action name="new-tab" shortcut="Ctrl+Shift+Q"/>
+  <Action name="new-window" shortcut="Ctrl+Shift+W"/>
+  <Action name="next-tab" shortcut="Shift+Right"/>
+  <Action name="options_configure" shortcut=""/>
+  <Action name="options_configure_keybinding" shortcut=""/>
+  <Action name="options_configure_notifications" shortcut=""/>
+  <Action name="options_show_menubar" shortcut="Ctrl+Shift+M"/>
+  <Action name="previous-tab" shortcut="Shift+Left"/>
+  <Action name="shrink-active-view" shortcut=""/>
+  <Action name="split-view-left-right" shortcut="Ctrl+Shift+B"/>
+  <Action name="split-view-top-bottom" shortcut="Ctrl+Shift+N"/>
+  <Action name="switch-to-tab-0" shortcut=""/>
+  <Action name="switch-to-tab-1" shortcut=""/>
+  <Action name="switch-to-tab-10" shortcut=""/>
+  <Action name="switch-to-tab-11" shortcut=""/>
+  <Action name="switch-to-tab-12" shortcut=""/>
+  <Action name="switch-to-tab-13" shortcut=""/>
+  <Action name="switch-to-tab-14" shortcut=""/>
+  <Action name="switch-to-tab-15" shortcut=""/>
+  <Action name="switch-to-tab-16" shortcut=""/>
+  <Action name="switch-to-tab-17" shortcut=""/>
+  <Action name="switch-to-tab-18" shortcut=""/>
+  <Action name="switch-to-tab-2" shortcut=""/>
+  <Action name="switch-to-tab-3" shortcut=""/>
+  <Action name="switch-to-tab-4" shortcut=""/>
+  <Action name="switch-to-tab-5" shortcut=""/>
+  <Action name="switch-to-tab-6" shortcut=""/>
+  <Action name="switch-to-tab-7" shortcut=""/>
+  <Action name="switch-to-tab-8" shortcut=""/>
+  <Action name="switch-to-tab-9" shortcut=""/>
+  <Action name="switch_application_language" shortcut=""/>
+  <Action name="toggle-two-tabs" shortcut=""/>
+ </ActionProperties>
 </kpartgui>

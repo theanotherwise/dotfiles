@@ -5,19 +5,22 @@ DefaultProfile=default.profile
 Favorites=default.profile
 
 [KFileDialog Settings]
+Recent Files[$e]=.konsole.shortcuts,file:$HOME/.konsole.shortcuts
 detailViewIconSize=0
 
 [KonsoleWindow]
 ShowMenuBarByDefault=false
 
 [MainWindow]
+Height 1440=731
 ToolBarsMovable=Disabled
+Width 2560=1389
 
 [Notification Messages]
 CloseAllEmptyTabs=true
 
 [Shortcut Schemes]
-Current Scheme=Default
+Current Scheme=theanotherwise
 
 [TabBar]
 CloseTabButton=None
