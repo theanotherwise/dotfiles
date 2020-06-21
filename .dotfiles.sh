@@ -5,7 +5,10 @@ mkdir -p ~/bluetooth
 mkdir -p ~/captures/pictures
 mkdir -p ~/captures/videos
 mkdir -p ~/configuration
-mkdir -p ~/configuration/sessions
+mkdir -p ~/configuration/konsole
+mkdir -p ~/configuration/konsole/tabs
+mkdir -p ~/configuration/ssh
+mkdir -p ~/configuration/ssh/sessions
 mkdir -p ~/cheat-sheets
 mkdir -p ~/dashcam
 mkdir -p ~/desktop
@@ -17,7 +20,8 @@ mkdir -p ~/iso-images
 mkdir -p ~/music
 mkdir -p ~/scripts
 mkdir -p ~/pictures
-mkdir -p ~/pictures/wallpaper
+mkdir -p ~/pictures/avatars
+mkdir -p ~/pictures/wallpapers
 mkdir -p ~/portable
 mkdir -p ~/projects
 mkdir -p ~/captures
