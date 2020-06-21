@@ -5,7 +5,6 @@ mkdir -p ~/bluetooth
 mkdir -p ~/captures/pictures
 mkdir -p ~/captures/videos
 mkdir -p ~/cheat-sheets
-mkdir -p --parents ~/configurationsessions
 mkdir -p ~/dashcam
 mkdir -p ~/desktop
 mkdir -p ~/documents
@@ -14,17 +13,17 @@ mkdir -p ~/ebooks
 mkdir -p ~/git
 mkdir -p ~/iso-images
 mkdir -p ~/music
-mkdir -p --parents ~/pictures/wallpaper
 mkdir -p ~/scripts
 mkdir -p ~/portable
 mkdir -p ~/projects
 mkdir -p ~/captures
 mkdir -p ~/temporary
 mkdir -p ~/videos
-mkdir -p ~/virtual-machines
 mkdir -p ~/word-lists
 mkdir -p ~/work
 
+mkdir -p --parents ~/pictures/wallpaper
+mkdir -p --parents ~/configurationsessions
 mkdir -p --parents ~/virtual-machines/vmware/archives
 mkdir -p --parents ~/virtual-machines/vmware/templates
 mkdir -p --parents ~/virtual-machines/vmware/workspace
