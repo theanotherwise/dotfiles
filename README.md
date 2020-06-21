@@ -2,7 +2,7 @@
 
 ```bash
 git init .
-git remote add origin <repository-url>
+git remote add origin git@github.com:theanotherwise/dotfiles.git
 git pull origin master
 ```
 
