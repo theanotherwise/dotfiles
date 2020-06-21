@@ -9,8 +9,10 @@ git pull origin master
 
 git fetch --all
 git reset --hard origin/master
+```
 
-# commit & push
+## Make changes
+```bash
 git add -u
 git commit -m "#"
 git push --set-upstream origin master
