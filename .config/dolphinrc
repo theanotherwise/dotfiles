@@ -1,0 +1,47 @@
+MenuBar=Disabled
+State=AAAA/wAAAAD9AAAAAwAAAAAAAAE7AAAEP/wCAAAAAvsAAAAWAGYAbwBsAGQAZQByAHMARABvAGMAawAAAAAA/////wAAAAoBAAAD+wAAABQAcABsAGEAYwBlAHMARABvAGMAawEAAAA8AAAEPwAAAF0BAAADAAAAAQAAALgAAAP8/AIAAAAB+wAAABAAaQBuAGYAbwBEAG8AYwBrAAAAADwAAAP8AAAACgEAAAMAAAADAAAAAAAAAAD8AQAAAAH7AAAAGAB0AGUAcgBtAGkAbgBhAGwARABvAGMAawAAAAAA/////wAAAAoBAAADAAAHngAABD8AAAAEAAAABAAAAAgAAAAI/AAAAAEAAAACAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAA=
+
+[CompactMode]
+FontWeight=50
+IconSize=32
+PreviewSize=32
+
+[DetailsMode]
+FontWeight=50
+PreviewSize=16
+
+[General]
+EditableUrl=true
+ShowFullPath=true
+Version=200
+ViewPropsTimestamp=2020,5,27,1,53,4
+
+[IconsMode]
+FontWeight=50
+PreviewSize=32
+
+[KFileDialog Settings]
+Recent Files[$e]=dolphin.shortcuts,file:$HOME/git/snippets/dolphin.shortcuts
+Recent URLs[$e]=file:$HOME/git/snippets/
+detailViewIconSize=0
+
+[MainWindow]
+Height 1440=1144
+MenuBar=Disabled
+State=AAAA/wAAAAD9AAAAAwAAAAAAAAE7AAAEPPwCAAAAAvsAAAAWAGYAbwBsAGQAZQByAHMARABvAGMAawAAAAAA/////wAAAAoBAAAD+wAAABQAcABsAGEAYwBlAHMARABvAGMAawEAAAA8AAAEPAAAAF0BAAADAAAAAQAAALgAAAP8/AIAAAAB+wAAABAAaQBuAGYAbwBEAG8AYwBrAAAAADwAAAP8AAAACgEAAAMAAAADAAAAAAAAAAD8AQAAAAH7AAAAGAB0AGUAcgBtAGkAbgBhAGwARABvAGMAawAAAAAA/////wAAAAoBAAADAAAICgAABDwAAAAEAAAABAAAAAgAAAAI/AAAAAEAAAACAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAA=
+ToolBarsMovable=Disabled
+Width 2560=2374
+
+[Notification Messages]
+BackBackBackspace=false
+ConfirmDelete=true
+
+[Open-with settings]
+CompletionMode=1
+History=mplayer
+
+[PreviewSettings]
+Plugins=audiothumbnail,blenderthumbnail,comicbookthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,textthumbnail,ffmpegthumbs
+
+[Shortcuts]
+mainToolBar=none
