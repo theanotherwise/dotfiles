@@ -77,5 +77,6 @@ mkdir -p ~/projects/wsdl
 mkdir -p ~/projects/wsdl
 mkdir -p ~/projects/xca
 mkdir -p ~/projects/zabbix
+mkdir -p ~/projects/terraform
 mkdir -p ~/projects/others
 ```
