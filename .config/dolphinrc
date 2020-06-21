@@ -29,6 +29,7 @@ FontWeight=50
 PreviewSize=32
 
 [KFileDialog Settings]
+Recent Files[$e]=.dolphin.shortcuts,file:$HOME/.dolphin.shortcuts
 detailViewIconSize=0
 
 [MainWindow]
@@ -48,6 +49,9 @@ History=mplayer
 
 [PreviewSettings]
 Plugins=audiothumbnail,blenderthumbnail,comicbookthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,textthumbnail,ffmpegthumbs
+
+[Shortcut Schemes]
+Current Scheme=theanotherwise
 
 [Shortcuts]
 mainToolBar=none
