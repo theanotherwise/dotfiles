@@ -23,7 +23,7 @@ mkdir -p ~/word-lists
 mkdir -p ~/work
 
 mkdir -p --parents ~/pictures/wallpaper
-mkdir -p --parents ~/configurationsessions
+mkdir -p --parents ~/configuration/sessions
 mkdir -p --parents ~/virtual-machines/vmware/archives
 mkdir -p --parents ~/virtual-machines/vmware/templates
 mkdir -p --parents ~/virtual-machines/vmware/workspace
