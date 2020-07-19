@@ -2,7 +2,7 @@
 #   . ~/.examplerc
 # fi
  
-PS1="[\[\e[32m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]# "
+PS1="[\[\e[32m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\H\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]# "
 HISTTIMEFORMAT="%Y-%m-%d %T "
 
 alias ls='ls --color=auto --hide=".*"'
