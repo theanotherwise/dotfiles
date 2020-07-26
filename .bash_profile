@@ -4,10 +4,10 @@ fi
 
 umask 0022
  
-PATH=~/portable/terraform/latest:$PATH
-PATH=~/portable/ruby/latest:$PATH
-PATH=~/portable/node.js/latest:$PATH
-PATH=~/portable/yarn/latest:$PATH
-PATH=~/portable/redis/latest:$PATH
+PATH=~/portable/terraform/latest/bin:$PATH
+PATH=~/portable/ruby/latest/bin:$PATH
+PATH=~/portable/node.js/latest/bin:$PATH
+PATH=~/portable/yarn/latest/bin:$PATH
+PATH=~/portable/redis/latest/bin:$PATH
 
 export PATH
