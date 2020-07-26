@@ -11,6 +11,3 @@ PATH=~/portable/yarn/latest:$PATH
 PATH=~/portable/redis/latest:$PATH
 
 export PATH
-
-EDITOR=vim
-export EDITOR
