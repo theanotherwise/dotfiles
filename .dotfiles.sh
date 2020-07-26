@@ -62,10 +62,7 @@ mkdir -p ~/projects/node.js
 mkdir -p ~/projects/php
 mkdir -p ~/projects/puppet
 mkdir -p ~/projects/python
-mkdir -p ~/projects/python/2
-mkdir -p ~/projects/python/3
 mkdir -p ~/projects/ruby
-mkdir -p ~/projects/ruby-on-rails
 mkdir -p ~/projects/soupui
 mkdir -p ~/projects/wsdl
 mkdir -p ~/projects/wsdl
