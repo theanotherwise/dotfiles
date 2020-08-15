@@ -12,9 +12,11 @@ detailViewIconSize=0
 ShowMenuBarByDefault=false
 
 [MainWindow]
-Height 1440=731
+Height 1080=907
+Height 1440=1141
 ToolBarsMovable=Disabled
-Width 2560=1389
+Width 1920=1774
+Width 2560=2275
 
 [Notification Messages]
 CloseAllEmptyTabs=true
