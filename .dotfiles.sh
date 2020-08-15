@@ -25,6 +25,7 @@ mkdir -p ~/bluetooth
 mkdir -p ~/cheat-sheets
 mkdir -p ~/dashcam
 mkdir -p ~/desktop
+mkdir -p ~/diagrams
 mkdir -p ~/documents
 mkdir -p ~/downloads
 mkdir -p ~/ebooks
