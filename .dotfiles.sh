@@ -1,28 +1,17 @@
 #!/bin/bash
 
+mkdir -p ~/archives
+mkdir -p ~/bluetooth
+mkdir -p ~/captures
+mkdir -p ~/captures/pictures
+mkdir -p ~/captures/videos
+mkdir -p ~/cheat-sheets
 mkdir -p ~/configuration
 mkdir -p ~/configuration/konsole
 mkdir -p ~/configuration/konsole/tabs
 mkdir -p ~/configuration/ssh
-mkdir -p ~/configuration/ssh/sessions
 mkdir -p ~/configuration/ssh/keys
-
-mkdir -p ~/pictures
-mkdir -p ~/pictures/wallpapers
-
-mkdir -p ~/captures
-mkdir -p ~/captures/pictures
-mkdir -p ~/captures/videos
-
-mkdir -p ~/virtual-machines
-mkdir -p ~/virtual-machines/vmware
-mkdir -p ~/virtual-machines/vmware/archives
-mkdir -p ~/virtual-machines/vmware/templates
-mkdir -p ~/virtual-machines/vmware/workspace
-
-mkdir -p ~/archives
-mkdir -p ~/bluetooth
-mkdir -p ~/cheat-sheets
+mkdir -p ~/configuration/ssh/sessions
 mkdir -p ~/dashcam
 mkdir -p ~/desktop
 mkdir -p ~/diagrams
@@ -32,9 +21,16 @@ mkdir -p ~/ebooks
 mkdir -p ~/git
 mkdir -p ~/iso-images
 mkdir -p ~/music
-mkdir -p ~/scripts
+mkdir -p ~/pictures
+mkdir -p ~/pictures/wallpapers
 mkdir -p ~/portable
+mkdir -p ~/scripts
 mkdir -p ~/temporary
 mkdir -p ~/videos
+mkdir -p ~/virtual-machines
+mkdir -p ~/virtual-machines/vmware
+mkdir -p ~/virtual-machines/vmware/archives
+mkdir -p ~/virtual-machines/vmware/templates
+mkdir -p ~/virtual-machines/vmware/workspace
 mkdir -p ~/word-lists
 mkdir -p ~/work
