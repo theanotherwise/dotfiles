@@ -24,6 +24,7 @@ mkdir -p ~/music
 mkdir -p ~/pictures
 mkdir -p ~/pictures/wallpapers
 mkdir -p ~/portable
+mkdir -p ~/projects
 mkdir -p ~/scripts
 mkdir -p ~/temporary
 mkdir -p ~/videos
