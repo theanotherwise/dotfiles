@@ -16,6 +16,7 @@ PATH=~/portable/node.js/latest/bin:$PATH
 PATH=/opt/yarn/latest/bin:$PATH
 PATH=~/portable/yarn/latest/bin:$PATH
 
+PATH=/opt/helm/latest/bin:$PATH
 PATH=~/portable/helm/latest/bin:$PATH
 
 export PATH
