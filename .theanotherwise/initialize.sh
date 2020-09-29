@@ -7,10 +7,10 @@ mkdir -p ~/portable/ruby
 mkdir -p ~/portable/terraform
 mkdir -p ~/portable/node.js
 mkdir -p ~/portable/yarn
-mkdir -p ~/configuration
-mkdir -p ~/configuration/ssh
-mkdir -p ~/configuration/ssh/keys
-mkdir -p ~/configuration/ssh/sessions
+mkdir -p ~/configurations
+mkdir -p ~/configurations/ssh
+mkdir -p ~/configurations/ssh/keys
+mkdir -p ~/configurations/ssh/sessions
 mkdir -p ~/downloads
 mkdir -p ~/scripts
 mkdir -p ~/git
