@@ -13,6 +13,7 @@ mkdir -p ~/configurations/ssh/keys
 mkdir -p ~/configurations/ssh/sessions
 mkdir -p ~/downloads
 mkdir -p ~/scripts
+mkdir -p ~/projects
 mkdir -p ~/git
 mkdir -p ~/temporary
 
@@ -33,7 +34,6 @@ if [ "${1}" = "ws" ] ; then
   mkdir -p ~/music
   mkdir -p ~/pictures
   mkdir -p ~/pictures/wallpapers
-  mkdir -p ~/projects
   mkdir -p ~/videos
   mkdir -p ~/virtual-machines
   mkdir -p ~/virtual-machines/vmware
