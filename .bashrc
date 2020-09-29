@@ -1,7 +1,7 @@
 # if [ -f ~/.examplerc ] ; then
 #   . ~/.examplerc
 # fi
- 
+
 alias ls='ls --color=auto --hide=".*"'
 alias rm='rm -iv'
 alias cp='cp -iv'
