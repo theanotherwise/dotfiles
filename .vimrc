@@ -31,7 +31,7 @@ set smartindent
 set smarttab
 set expandtab
 
-set number
+"set number
 set ruler
 
 set incsearch
