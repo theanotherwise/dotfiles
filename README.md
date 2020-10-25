@@ -17,5 +17,5 @@ git checkout server
 
 ### KDE Workstation
 ```bash
-git checkout workstation-kde
+git checkout workstation
 ```
