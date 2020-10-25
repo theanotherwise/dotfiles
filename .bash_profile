@@ -19,4 +19,7 @@ PATH=/opt/yarn/latest/bin:$PATH
 PATH=~/portable/helm/latest/bin:$PATH
 PATH=/opt/helm/latest/bin:$PATH
 
+PATH=~/portable/kompose/latest/bin:$PATH
+PATH=/opt/kompose/latest/bin:$PATH
+
 export PATH
