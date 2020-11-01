@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="11" name="konsole">
+<kpartgui name="konsole" version="11">
  <MenuBar>
   <Menu name="file">
    <text>File</text>
@@ -78,6 +78,37 @@
   <Action shortcut="" name="shrink-active-view"/>
   <Action shortcut="Ctrl+Shift+B" name="split-view-left-right"/>
   <Action shortcut="Ctrl+Shift+N" name="split-view-top-bottom"/>
+  <Action shortcut="" name="add_bookmarks_list"/>
+  <Action shortcut="" name="edit_bookmarks"/>
+  <Action shortcut="" name="help_about_app"/>
+  <Action shortcut="" name="help_about_kde"/>
+  <Action shortcut="" name="help_donate"/>
+  <Action shortcut="" name="help_report_bug"/>
+  <Action shortcut="" name="last-tab"/>
+  <Action shortcut="" name="manage-profiles"/>
+  <Action shortcut="" name="options_configure_keybinding"/>
+  <Action shortcut="" name="options_configure_notifications"/>
+  <Action shortcut="" name="switch-to-tab-0"/>
+  <Action shortcut="" name="switch-to-tab-1"/>
+  <Action shortcut="" name="switch-to-tab-10"/>
+  <Action shortcut="" name="switch-to-tab-11"/>
+  <Action shortcut="" name="switch-to-tab-12"/>
+  <Action shortcut="" name="switch-to-tab-13"/>
+  <Action shortcut="" name="switch-to-tab-14"/>
+  <Action shortcut="" name="switch-to-tab-15"/>
+  <Action shortcut="" name="switch-to-tab-16"/>
+  <Action shortcut="" name="switch-to-tab-17"/>
+  <Action shortcut="" name="switch-to-tab-18"/>
+  <Action shortcut="" name="switch-to-tab-2"/>
+  <Action shortcut="" name="switch-to-tab-3"/>
+  <Action shortcut="" name="switch-to-tab-4"/>
+  <Action shortcut="" name="switch-to-tab-5"/>
+  <Action shortcut="" name="switch-to-tab-6"/>
+  <Action shortcut="" name="switch-to-tab-7"/>
+  <Action shortcut="" name="switch-to-tab-8"/>
+  <Action shortcut="" name="switch-to-tab-9"/>
+  <Action shortcut="" name="switch_application_language"/>
+  <Action shortcut="" name="toggle-two-tabs"/>
  </ActionProperties>
  <ActionProperties scheme="theanotherwise">
   <Action shortcut="" name="activate-menu"/>
@@ -141,19 +172,28 @@
   <Action shortcut="" name="toggle-two-tabs"/>
  </ActionProperties>
  <ActionProperties scheme="">
-  <Action shortcut="" name="activate-menu"/>
-  <Action shortcut="" name="add_bookmark"/>
-  <Action shortcut="" name="add_bookmarks_list"/>
   <Action shortcut="Ctrl+Shift+Z" name="clone-tab"/>
   <Action shortcut="Ctrl+Shift+S" name="close-window"/>
   <Action shortcut="Ctrl+Shift+D" name="detach-tab"/>
-  <Action shortcut="" name="detach-view"/>
-  <Action shortcut="" name="edit_bookmarks"/>
-  <Action shortcut="" name="expand-active-view"/>
   <Action shortcut="Ctrl+Up" name="focus-view-above"/>
   <Action shortcut="Ctrl+Down" name="focus-view-below"/>
   <Action shortcut="Ctrl+Left" name="focus-view-left"/>
   <Action shortcut="Ctrl+Right" name="focus-view-right"/>
+  <Action shortcut="Ctrl+Shift+Left" name="move-tab-to-left"/>
+  <Action shortcut="Ctrl+Shift+Right" name="move-tab-to-right"/>
+  <Action shortcut="Ctrl+Shift+Q" name="new-tab"/>
+  <Action shortcut="Ctrl+Shift+W" name="new-window"/>
+  <Action shortcut="Shift+Right" name="next-tab"/>
+  <Action shortcut="Ctrl+Shift+M" name="options_show_menubar"/>
+  <Action shortcut="Shift+Left" name="previous-tab"/>
+  <Action shortcut="Ctrl+Shift+B" name="split-view-left-right"/>
+  <Action shortcut="Ctrl+Shift+N" name="split-view-top-bottom"/>
+  <Action shortcut="" name="activate-menu"/>
+  <Action shortcut="" name="add_bookmark"/>
+  <Action shortcut="" name="add_bookmarks_list"/>
+  <Action shortcut="" name="detach-view"/>
+  <Action shortcut="" name="edit_bookmarks"/>
+  <Action shortcut="" name="expand-active-view"/>
   <Action shortcut="" name="fullscreen"/>
   <Action shortcut="" name="help_about_app"/>
   <Action shortcut="" name="help_about_kde"/>
@@ -166,19 +206,10 @@
   <Action shortcut="" name="last-used-tab-reverse"/>
   <Action shortcut="" name="manage-profiles"/>
   <Action shortcut="" name="maximize-current-terminal"/>
-  <Action shortcut="Ctrl+Shift+Left" name="move-tab-to-left"/>
-  <Action shortcut="Ctrl+Shift+Right" name="move-tab-to-right"/>
-  <Action shortcut="Ctrl+Shift+Q" name="new-tab"/>
-  <Action shortcut="Ctrl+Shift+W" name="new-window"/>
-  <Action shortcut="Shift+Right" name="next-tab"/>
   <Action shortcut="" name="options_configure"/>
   <Action shortcut="" name="options_configure_keybinding"/>
   <Action shortcut="" name="options_configure_notifications"/>
-  <Action shortcut="Ctrl+Shift+M" name="options_show_menubar"/>
-  <Action shortcut="Shift+Left" name="previous-tab"/>
   <Action shortcut="" name="shrink-active-view"/>
-  <Action shortcut="Ctrl+Shift+B" name="split-view-left-right"/>
-  <Action shortcut="Ctrl+Shift+N" name="split-view-top-bottom"/>
   <Action shortcut="" name="switch-to-tab-0"/>
   <Action shortcut="" name="switch-to-tab-1"/>
   <Action shortcut="" name="switch-to-tab-10"/>
