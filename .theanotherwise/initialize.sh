@@ -23,8 +23,8 @@ if [ "${1}" = "ws" ] ; then
   mkdir -p ~/captures/pictures
   mkdir -p ~/captures/videos
   mkdir -p ~/cheat-sheets
-  mkdir -p ~/configuration/konsole
-  mkdir -p ~/configuration/konsole/tabs
+  mkdir -p ~/configurations/konsole
+  mkdir -p ~/configurations/konsole/tabs
   mkdir -p ~/dashcam
   mkdir -p ~/desktop
   mkdir -p ~/diagrams
