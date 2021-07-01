@@ -1,15 +1,20 @@
 #!/bin/bash
 
 mkdir -p ~/archives
+
 mkdir -p ~/portable/ruby
 mkdir -p ~/portable/terraform
 mkdir -p ~/portable/helm
 mkdir -p ~/portable/node.js
 mkdir -p ~/portable/yarn
+
 mkdir -p ~/configurations/ssh/keys
 mkdir -p ~/configurations/ssh/sessions
+
 mkdir -p ~/downloads
 mkdir -p ~/scripts
 mkdir -p ~/projects
 mkdir -p ~/git
 mkdir -p ~/temporary
+
+rm -f README.md
