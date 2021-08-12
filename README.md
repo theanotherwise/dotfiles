@@ -5,7 +5,9 @@ git fetch --all
 ```
 
 ```bash
-rm -f .bashrc .bash_profile .vimrc .gitignore .dotfiles README.md
+rm -f .bashrc .bash_profile .vimrc .gitignore .dotfiles
 
 git checkout master
+
+rm -f README.md
 ```
