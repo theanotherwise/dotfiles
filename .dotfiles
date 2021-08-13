@@ -2,6 +2,8 @@
 
 mkdir -p ~/archives
 
+mkdir -p ~/cron.d
+
 mkdir -p ~/bin/ruby
 mkdir -p ~/bin/terraform
 mkdir -p ~/bin/helm
