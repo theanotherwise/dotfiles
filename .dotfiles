@@ -16,5 +16,3 @@ mkdir -p ~/scripts
 mkdir -p ~/projects
 mkdir -p ~/git
 mkdir -p ~/tmp
-
-rm -f README.md
