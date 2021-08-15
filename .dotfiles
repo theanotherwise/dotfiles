@@ -1,20 +1,18 @@
 #!/bin/bash
 
-mkdir -p ~/archives
+mkdir -p "${HOME}/etc/ssh/keys"
+mkdir -p "${HOME}/cron.d"
 
-mkdir -p ~/cron.d
+mkdir -p "${HOME}/bin/ruby"
+mkdir -p "${HOME}/bin/terraform"
+mkdir -p "${HOME}/bin/helm"
+mkdir -p "${HOME}/bin/node.js"
+mkdir -p "${HOME}/bin/yarn"
 
-mkdir -p ~/bin/ruby
-mkdir -p ~/bin/terraform
-mkdir -p ~/bin/helm
-mkdir -p ~/bin/node.js
-mkdir -p ~/bin/yarn
-
-mkdir -p ~/etc/ssh/keys
-mkdir -p ~/etc/ssh/sessions
-
-mkdir -p ~/downloads
-mkdir -p ~/scripts
-mkdir -p ~/projects
-mkdir -p ~/git
-mkdir -p ~/tmp
+mkdir -p "${HOME}/archives"
+mkdir -p "${HOME}/downloads"
+mkdir -p "${HOME}/scripts"
+mkdir -p "${HOME}/scripts/init-vm"
+mkdir -p "${HOME}/projects"
+mkdir -p "${HOME}/git"
+mkdir -p "${HOME}/tmp"
