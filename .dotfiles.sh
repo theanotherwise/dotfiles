@@ -16,3 +16,5 @@ mkdir -p "${HOME}/scripts/init"
 mkdir -p "${HOME}/projects"
 mkdir -p "${HOME}/git"
 mkdir -p "${HOME}/tmp"
+
+rm -f "${HOME}/README.md"
