@@ -4,7 +4,7 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
 
-alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso"
+alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
 
 CURSOR="$([ ${USER} == root ] && echo '#' || echo '$')"
 
