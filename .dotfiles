@@ -14,4 +14,4 @@ mkdir -p ~/scripts/init
 mkdir -p ~/projects
 mkdir -p ~/temp
 
-rm -f ~/README.md ~/.dotfiles
+rm -f ~/README.md ~/.dotfiles ~/.gitignore
