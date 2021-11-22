@@ -9,4 +9,6 @@ git fetch --all
 git checkout master
 
 bash ~/.dotfiles
+
+su - 
 ```
