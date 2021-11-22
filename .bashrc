@@ -4,6 +4,8 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
 
+alias graph="git log --graph --abbrev-commit --decorate --date=relative --all"
+
 CURSOR="$([ ${USER} == root ] && echo '#' || echo '$')"
 
 PS1="[\[\e[31m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]${CURSOR} "
