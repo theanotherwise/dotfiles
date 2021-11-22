@@ -1,5 +1,5 @@
-if [ -f "${HOME}/.bashrc" ] ; then
-  source "${HOME}/.bashrc"
+if [ -f ~/.bashrc ] ; then
+  . ~/.bashrc
 fi
 
 umask 0022
