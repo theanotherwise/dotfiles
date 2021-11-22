@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p /etc/ssh/keys
+mkdir -p ~/etc/ssh/keys
 mkdir -p ~/cron
 mkdir -p ~/bin/ruby
 mkdir -p ~/bin/terraform
