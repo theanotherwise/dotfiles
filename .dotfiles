@@ -11,7 +11,6 @@ mkdir -p ~/downloads
 mkdir -p ~/ssh/keys
 mkdir -p ~/ssh/sessions
 mkdir -p ~/projects
-mkdir -p ~/scripts
 mkdir -p ~/tmp
 
 rm -f ~/README.md ~/.dotfiles ~/.gitignore
