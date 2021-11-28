@@ -8,8 +8,7 @@ mkdir -p ~/binaries/terraform
 mkdir -p ~/binaries/yarn
 mkdir -p ~/downloads
 mkdir -p ~/configs
-mkdir -p ~/ssh/keys
-mkdir -p ~/ssh/sessions
+mkdir -p ~/sessions
 mkdir -p ~/projects
 mkdir -p ~/scripts/cron
 mkdir -p ~/temporary
