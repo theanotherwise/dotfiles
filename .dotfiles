@@ -1,18 +1,18 @@
 #!/bin/bash
 
 mkdir -p ~/archives
-mkdir -p ~/bin/helm
-mkdir -p ~/bin/node.js
-mkdir -p ~/bin/ruby
-mkdir -p ~/bin/terraform
-mkdir -p ~/bin/yarn
+mkdir -p ~/binaries/helm
+mkdir -p ~/binaries/node.js
+mkdir -p ~/binaries/ruby
+mkdir -p ~/binaries/terraform
+mkdir -p ~/binaries/yarn
 mkdir -p ~/cron
 mkdir -p ~/downloads
-mkdir -p ~/etc
+mkdir -p ~/configs
 mkdir -p ~/ssh/keys
 mkdir -p ~/ssh/sessions
 mkdir -p ~/projects
 mkdir -p ~/scripts
-mkdir -p ~/tmp
+mkdir -p ~/temporary
 
 rm -f ~/README.md ~/.dotfiles ~/.gitignore
