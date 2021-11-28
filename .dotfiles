@@ -6,13 +6,12 @@ mkdir -p ~/binaries/node.js
 mkdir -p ~/binaries/ruby
 mkdir -p ~/binaries/terraform
 mkdir -p ~/binaries/yarn
-mkdir -p ~/cron
 mkdir -p ~/downloads
 mkdir -p ~/configs
 mkdir -p ~/ssh/keys
 mkdir -p ~/ssh/sessions
 mkdir -p ~/projects
-mkdir -p ~/scripts
+mkdir -p ~/scripts/cron
 mkdir -p ~/temporary
 
 rm -f ~/README.md ~/.dotfiles ~/.gitignore
