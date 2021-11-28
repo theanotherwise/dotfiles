@@ -1,17 +1,16 @@
 #!/bin/bash
 
-mkdir -p ~/etc/ssh/keys
-mkdir -p ~/cron
-mkdir -p ~/bin/ruby
-mkdir -p ~/bin/terraform
+mkdir -p ~/archives
 mkdir -p ~/bin/helm
 mkdir -p ~/bin/node.js
+mkdir -p ~/bin/ruby
+mkdir -p ~/bin/terraform
 mkdir -p ~/bin/yarn
-mkdir -p ~/archives
+mkdir -p ~/cron
 mkdir -p ~/downloads
-mkdir -p ~/scripts
-mkdir -p ~/scripts/init
+mkdir -p ~/etc/ssh/keys
 mkdir -p ~/projects
-mkdir -p ~/temp
+mkdir -p ~/scripts
+mkdir -p ~/tmp
 
 rm -f ~/README.md ~/.dotfiles ~/.gitignore
