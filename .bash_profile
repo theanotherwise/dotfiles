@@ -2,6 +2,10 @@ if [ -f ~/.bashrc ] ; then
   . ~/.bashrc
 fi
 
+if command -v kubectl 2>&1 > /dev/null ; then
+  . <(kubectl completion bash)
+fi
+
 umask 0022
 
 PATH="/opt/ruby/latest/bin:${PATH}"
