@@ -6,7 +6,7 @@ find ~/ -mindepth 1 -maxdepth 1 -exec rm -rf {} \;
 git init ~/
 git remote add origin https://github.com/seemscloud/dotfiles.git
 git fetch --all
-git checkout master
+git checkout linux
 
 bash ~/.dotfiles
 
