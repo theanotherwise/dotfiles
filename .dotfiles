@@ -10,7 +10,7 @@ mkdir -p ~/downloads
 mkdir -p ~/configs
 mkdir -p ~/sessions
 mkdir -p ~/projects
-mkdir -p ~/scripts/cron
+mkdir -p ~/scripts/cron.d
 mkdir -p ~/temporary
 
 rm -f ~/README.md ~/.dotfiles ~/.gitignore
