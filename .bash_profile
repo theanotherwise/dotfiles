@@ -2,8 +2,12 @@ if [ -f ~/.bashrc ] ; then
   . ~/.bashrc
 fi
 
-if command -v kubectl 2>&1 > /dev/null ; then
+if command -v kubectl > /dev/null 2>&1 ; then
   . <(kubectl completion bash)
+fi
+
+if command -v helm > /dev/null 2>&1 ; then
+  . <(helm completion bash)
 fi
 
 umask 0022
