@@ -10,6 +10,10 @@ if command -v helm > /dev/null 2>&1 ; then
   . <(helm completion bash)
 fi
 
+if [ -f ~/.dotfiles/git-completion.bash ] ; then
+  . ~/.dotfiles/git-completion.bash
+fi
+
 umask 0022
 
 PATH="/opt/ruby/latest/bin:${PATH}"
