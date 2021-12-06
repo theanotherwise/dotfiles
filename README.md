@@ -8,7 +8,7 @@ git remote add origin https://github.com/seemscloud/dotfiles.git
 git fetch --all
 git checkout linux
 
-bash ~/.dotfiles
+bash ~/.dotfiles/initialize.sh
 
 su - 
 ```
