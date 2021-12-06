@@ -12,7 +12,7 @@ git_branch() {
 
 CURSOR="$([ ${USER} == root ] && echo '#' || echo '$')"
 
-PS1="[\[\e[31m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]\[\e[33m\]\$(git_branch)\[\e[m\]${CURSOR} "
+PS1="[\[\e[31m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]${CURSOR} \[\e[33m\]\$(git_branch)\[\e[m\]"
 HISTSIZE="10000"
 HISTFILESIZE="10000"
 HISTTIMEFORMAT="%Y-%m-%d %T "
