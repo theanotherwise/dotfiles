@@ -9,6 +9,4 @@ git fetch --all
 git checkout linux
 
 bash ~/.dotfiles/initialize.sh
-
-su - 
 ```
