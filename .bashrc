@@ -6,7 +6,7 @@ alias rmdir="rmdir -v"
 alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
 
 branch() {
-  git branch > /dev/null 2>&1 | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
 }
 
 retval() {
