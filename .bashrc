@@ -9,7 +9,7 @@ git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
 }
 
-CURSOR="$([ ${USER} == root ] && echo '#' || echo '$')"
+CURSOR="$([ "${UID}" == "0" ] && echo '#' || echo '$')"
 
 export PS1="[\[\e[31m\]\u\[\e[m\]][\l]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]${CURSOR} \[\e[33m\]\$(git_branch)\[\e[m\]"
 export HISTSIZE="10000"
