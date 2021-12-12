@@ -14,6 +14,8 @@ PATH="/opt/node/latest/bin:${PATH}"
 PATH="~/binaries/node/latest/bin:${PATH}"
 PATH="/opt/yarn/latest/bin:${PATH}"
 PATH="~/binaries/yarn/latest/bin:${PATH}"
+PATH="/opt/kubectl/latest/bin:${PATH}"
+PATH="~/binaries/kubectl/latest/bin:${PATH}"
 
 export PATH
 
