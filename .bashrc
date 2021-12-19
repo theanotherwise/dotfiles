@@ -20,9 +20,11 @@ retval() {
   [[ "${RETVAL}" != "0" ]] && echo "[${RETVAL}]"
 }
 
-CURSOR="$([[ "${UID}" == "0" ]] && echo '#' || echo '$')"
+cursor(){
+  [[ "${UID}" == "0" ]] && echo '#' || echo '$'
+}
 
-export PS1="\[\e[1;34m\]\$(kube)\[\e[m\][\[\e[31m\]\u\[\e[m\]]\$(retval)@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]${CURSOR} \[\e[33m\]\$(branch)\[\e[m\]"
+export PS1="\[\e[1;34m\]\$(kube)\[\e[m\][\[\e[31m\]\u\[\e[m\]]\$(retval)@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]\$(cursor) \[\e[33m\]\$(branch)\[\e[m\]"
 export HISTSIZE="10000"
 export HISTFILESIZE="10000"
 export HISTTIMEFORMAT="%Y-%m-%d %T "
