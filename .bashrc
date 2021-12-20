@@ -6,7 +6,9 @@ alias rmdir="rmdir -v"
 alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
 
 bashrc_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
+  if git branch >/dev/null 2>&1 ; then
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
+  fi
 }
 
 bashrc_kube() {
