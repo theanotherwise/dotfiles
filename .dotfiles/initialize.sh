@@ -14,4 +14,6 @@ mkdir -p ~/projects
 mkdir -p ~/scripts/cron.d
 mkdir -p ~/temporary
 
-rm -f ~/README.md ~/.gitignore ~/.dotfiles/initialize.sh ~/.git
+rm -f ~/README.md ~/.gitignore ~/.dotfiles/initialize.sh
+
+rm -rf ~/.git
