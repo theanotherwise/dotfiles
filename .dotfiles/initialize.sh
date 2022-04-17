@@ -1,19 +1,21 @@
 #!/bin/bash
 
-mkdir -p ~/archives
-mkdir -p ~/binaries/helm
-mkdir -p ~/binaries/node
-mkdir -p ~/binaries/ruby
-mkdir -p ~/binaries/kubectl
-mkdir -p ~/binaries/terraform
-mkdir -p ~/binaries/yarn
-mkdir -p ~/downloads
-mkdir -p ~/configs
-mkdir -p ~/sessions
-mkdir -p ~/projects
-mkdir -p ~/scripts/cron.d
-mkdir -p ~/temporary
+[ -z "$TMP_HOME" ] && TMP_HOME="${HOME}"
 
-rm -f ~/README.md ~/.gitignore ~/.dotfiles/initialize.sh
+mkdir -p "${TMP_HOME}"/archives
+mkdir -p "${TMP_HOME}"/binaries/helm
+mkdir -p "${TMP_HOME}"/binaries/node
+mkdir -p "${TMP_HOME}"/binaries/ruby
+mkdir -p "${TMP_HOME}"/binaries/kubectl
+mkdir -p "${TMP_HOME}"/binaries/terraform
+mkdir -p "${TMP_HOME}"/binaries/yarn
+mkdir -p "${TMP_HOME}"/downloads
+mkdir -p "${TMP_HOME}"/configs
+mkdir -p "${TMP_HOME}"/sessions
+mkdir -p "${TMP_HOME}"/projects
+mkdir -p "${TMP_HOME}"/scripts/cron.d
+mkdir -p "${TMP_HOME}"/temporary
 
-rm -rf ~/.git
+rm -f "${TMP_HOME}"/README.md "${TMP_HOME}"/.gitignore "${TMP_HOME}"/.dotfiles/initialize.sh
+
+rm -rf "${TMP_HOME}"/.git
