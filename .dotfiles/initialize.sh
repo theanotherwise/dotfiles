@@ -17,6 +17,7 @@ mkdir -p "${TMP_HOME}"/binaries/kubectl/bin
 mkdir -p "${TMP_HOME}"/binaries/terraform/bin
 mkdir -p "${TMP_HOME}"/binaries/yarn/bin
 
-rm -f "${TMP_HOME}"/README.md "${TMP_HOME}"/.gitignore "${TMP_HOME}"/.dotfiles/initialize.sh
-
+rm -f "${TMP_HOME}"/README.md
+rm -f "${TMP_HOME}"/.gitignore
+rm -f "${TMP_HOME}"/.dotfiles/initialize.sh
 rm -rf "${TMP_HOME}"/.git
