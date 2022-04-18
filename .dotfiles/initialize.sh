@@ -27,7 +27,7 @@ function portable() {
     ARCHIVE_PATH="${TMP_DIR}/yarn.tgz"
     APP_DIR="${TMP_HOME}/binaries/yarn"
 
-    mkdir -p "${APP_DIR}/${2}"
+    mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
@@ -37,7 +37,7 @@ function portable() {
     ARCHIVE_PATH="${TMP_DIR}/node.xz"
     APP_DIR="${TMP_HOME}/binaries/node"
 
-    mkdir -p "${APP_DIR}/${2}"
+    mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
