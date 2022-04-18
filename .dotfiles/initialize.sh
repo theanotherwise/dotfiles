@@ -73,7 +73,6 @@ mkdir -p "${TMP_HOME}"/binaries/kubectl/bin
 mkdir -p "${TMP_HOME}"/binaries/terraform/bin
 mkdir -p "${TMP_HOME}"/binaries/yarn/bin
 
-
 portable "helm" "3.8.2"
 portable "kubectl" "1.23.0"
 portable "yarn" "1.22.18"
