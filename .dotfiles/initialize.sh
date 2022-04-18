@@ -66,12 +66,12 @@ mkdir -p "${TMP_HOME}"/projects
 mkdir -p "${TMP_HOME}"/scripts/cron.d
 mkdir -p "${TMP_HOME}"/temporary
 
-mkdir -p "${TMP_HOME}"/binaries/helm/bin
-mkdir -p "${TMP_HOME}"/binaries/node/bin
-mkdir -p "${TMP_HOME}"/binaries/ruby/bin
-mkdir -p "${TMP_HOME}"/binaries/kubectl/bin
-mkdir -p "${TMP_HOME}"/binaries/terraform/bin
-mkdir -p "${TMP_HOME}"/binaries/yarn/bin
+mkdir -p "${TMP_HOME}"/binaries/helm
+mkdir -p "${TMP_HOME}"/binaries/node
+mkdir -p "${TMP_HOME}"/binaries/ruby
+mkdir -p "${TMP_HOME}"/binaries/kubectl
+mkdir -p "${TMP_HOME}"/binaries/terraform
+mkdir -p "${TMP_HOME}"/binaries/yarn
 
 portable "helm" "3.8.2"
 portable "kubectl" "1.23.0"
