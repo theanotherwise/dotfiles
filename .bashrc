@@ -17,11 +17,6 @@ bashrc_kube() {
   fi
 }
 
-# retval() {
-#   RETVAL="${?}"
-#   [[ "${RETVAL}" != "0" ]] && echo "[${RETVAL}]"
-# }
-
 bashrc_cursor(){
   [[ "${UID}" == "0" ]] && echo '#' || echo '$'
 }
