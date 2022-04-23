@@ -64,8 +64,6 @@ if [ -z "${DOT_HOME}" ] ; then
   DOT_HOME="${HOME}"
 fi
 
-TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
-
 mkdir -p "${DOT_HOME}"/archives
 mkdir -p "${DOT_HOME}"/downloads
 mkdir -p "${DOT_HOME}"/configs
@@ -81,15 +79,18 @@ mkdir -p "${DOT_HOME}"/binaries/terraform
 mkdir -p "${DOT_HOME}"/binaries/yarn
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
+  TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
+  
   portable "helm" "3.8.2"
   portable "kubectl" "1.23.0"
   portable "yarn" "1.22.18"
   portable "node" "16.14.2"
   portable "terraform" "1.1.8"
+  
+  rm -rf "${TMP_DIR}"
 fi
 
 rm -f "${DOT_HOME}"/README.md
 rm -f "${DOT_HOME}"/.gitignore
 rm -f "${DOT_HOME}"/.dotfiles/initialize.sh
 rm -rf "${DOT_HOME}"/.git
-rm -rf "${TMP_DIR}"
