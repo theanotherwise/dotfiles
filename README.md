@@ -16,5 +16,5 @@ INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
 
 ### Prepare in specified directory
 ```bash
-DOT_HOME="/root" INSTALL_PORTABLE="yes" sudo -E -u root /bin/bash ~/.dotfiles/initialize.sh
+DOT_HOME="/root" INSTALL_PORTABLE="yes" sudo -E -u root /bin/bash /root/.dotfiles/initialize.sh
 ```
