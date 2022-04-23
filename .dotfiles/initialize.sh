@@ -5,7 +5,7 @@ function portable() {
   helm)
     URL="https://get.helm.sh/helm-v${2}-linux-amd64.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/helm.tgz"
-    APP_DIR="${HOME}/binaries/helm"
+    APP_DIR="${DOT_HOME}/binaries/helm"
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
@@ -16,7 +16,7 @@ function portable() {
   kubectl)
     URL="https://dl.k8s.io/release/v${2}/bin/linux/amd64/kubectl"
     ARCHIVE_PATH="${TMP_DIR}/kubectl"
-    APP_DIR="${HOME}/binaries/kubectl"
+    APP_DIR="${DOT_HOME}/binaries/kubectl"
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
@@ -27,7 +27,7 @@ function portable() {
   yarn)
     URL="https://github.com/yarnpkg/yarn/releases/download/v${2}/yarn-v${2}.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/yarn.tgz"
-    APP_DIR="${HOME}/binaries/yarn"
+    APP_DIR="${DOT_HOME}/binaries/yarn"
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
@@ -38,7 +38,7 @@ function portable() {
   node)
     URL="https://nodejs.org/dist/v${2}/node-v${2}-linux-x64.tar.xz"
     ARCHIVE_PATH="${TMP_DIR}/node.xz"
-    APP_DIR="${HOME}/binaries/node"
+    APP_DIR="${DOT_HOME}/binaries/node"
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
@@ -49,7 +49,7 @@ function portable() {
   terraform)
     URL="https://releases.hashicorp.com/terraform/${2}/terraform_${2}_linux_amd64.zip"
     ARCHIVE_PATH="${TMP_DIR}/terraform.zip"
-    APP_DIR="${HOME}/binaries/terraform"
+    APP_DIR="${DOT_HOME}/binaries/terraform"
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
@@ -60,21 +60,25 @@ function portable() {
   esac
 }
 
+if [ -z "${DOT_HOME}" ] ; then
+  DOT_HOME="${HOME}"
+fi
+
 TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-mkdir -p "${HOME}"/archives
-mkdir -p "${HOME}"/downloads
-mkdir -p "${HOME}"/configs
-mkdir -p "${HOME}"/sessions
-mkdir -p "${HOME}"/projects
-mkdir -p "${HOME}"/scripts/cron.d
-mkdir -p "${HOME}"/temporary
-mkdir -p "${HOME}"/binaries/helm
-mkdir -p "${HOME}"/binaries/node
-mkdir -p "${HOME}"/binaries/ruby
-mkdir -p "${HOME}"/binaries/kubectl
-mkdir -p "${HOME}"/binaries/terraform
-mkdir -p "${HOME}"/binaries/yarn
+mkdir -p "${DOT_HOME}"/archives
+mkdir -p "${DOT_HOME}"/downloads
+mkdir -p "${DOT_HOME}"/configs
+mkdir -p "${DOT_HOME}"/sessions
+mkdir -p "${DOT_HOME}"/projects
+mkdir -p "${DOT_HOME}"/scripts/cron.d
+mkdir -p "${DOT_HOME}"/temporary
+mkdir -p "${DOT_HOME}"/binaries/helm
+mkdir -p "${DOT_HOME}"/binaries/node
+mkdir -p "${DOT_HOME}"/binaries/ruby
+mkdir -p "${DOT_HOME}"/binaries/kubectl
+mkdir -p "${DOT_HOME}"/binaries/terraform
+mkdir -p "${DOT_HOME}"/binaries/yarn
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   portable "helm" "3.8.2"
@@ -84,8 +88,8 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   portable "terraform" "1.1.8"
 fi
 
-rm -f "${HOME}"/README.md
-rm -f "${HOME}"/.gitignore
-rm -f "${HOME}"/.dotfiles/initialize.sh
-rm -rf "${HOME}"/.git
+rm -f "${DOT_HOME}"/README.md
+rm -f "${DOT_HOME}"/.gitignore
+rm -f "${DOT_HOME}"/.dotfiles/initialize.sh
+rm -rf "${DOT_HOME}"/.git
 rm -rf "${TMP_DIR}"
