@@ -10,6 +10,12 @@ git checkout linux
 # git checkout macos
 ```
 
+### Install in actuall `${HOME}` directory
 ```bash
 INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
+```
+
+### Install in specified `${HOME}` directory
+```bash
+DOT_HOME="/root" INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
 ```
