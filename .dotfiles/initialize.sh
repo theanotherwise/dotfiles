@@ -60,15 +60,18 @@ function portable() {
   esac
 }
 
+function directories() {
+  arr=("${@}")
+  for DIR in "${arr[@]}" ; do
+    mkdir -p "${DOT_HOME}/${DIR}"
+  done
+}
+
 if [ -z "${DOT_HOME}" ] ; then
   DOT_HOME="${HOME}"
 fi
 
-DIRECTORIES=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
-
-for DIR in "${DIRECTORIES[@]}" ; do
-  mkdir -p "${DOT_HOME}/${DIR}"
-done
+directories "archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries"
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
