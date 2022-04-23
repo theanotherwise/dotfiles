@@ -11,12 +11,12 @@ git checkout linux
 # git checkout macos
 ```
 
-### Prepare `${HOME}` directory
+### Prepare in `${HOME}` directory
 ```bash
 INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
 ```
 
-### Prepare specified directory
+### Prepare in specified directory
 ```bash
 DOT_HOME="/root" INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
 ```
