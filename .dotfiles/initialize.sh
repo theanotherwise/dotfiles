@@ -71,12 +71,7 @@ mkdir -p "${DOT_HOME}"/sessions
 mkdir -p "${DOT_HOME}"/projects
 mkdir -p "${DOT_HOME}"/scripts/cron.d
 mkdir -p "${DOT_HOME}"/temporary
-mkdir -p "${DOT_HOME}"/binaries/helm
-mkdir -p "${DOT_HOME}"/binaries/node
-mkdir -p "${DOT_HOME}"/binaries/ruby
-mkdir -p "${DOT_HOME}"/binaries/kubectl
-mkdir -p "${DOT_HOME}"/binaries/terraform
-mkdir -p "${DOT_HOME}"/binaries/yarn
+mkdir -p "${DOT_HOME}"/binaries
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
