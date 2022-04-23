@@ -69,7 +69,6 @@ mkdir -p "${HOME}"/sessions
 mkdir -p "${HOME}"/projects
 mkdir -p "${HOME}"/scripts/cron.d
 mkdir -p "${HOME}"/temporary
-
 mkdir -p "${HOME}"/binaries/helm
 mkdir -p "${HOME}"/binaries/node
 mkdir -p "${HOME}"/binaries/ruby
@@ -77,11 +76,13 @@ mkdir -p "${HOME}"/binaries/kubectl
 mkdir -p "${HOME}"/binaries/terraform
 mkdir -p "${HOME}"/binaries/yarn
 
-portable "helm" "3.8.2"
-portable "kubectl" "1.23.0"
-portable "yarn" "1.22.18"
-portable "node" "16.14.2"
-portable "terraform" "1.1.8"
+if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
+  portable "helm" "3.8.2"
+  portable "kubectl" "1.23.0"
+  portable "yarn" "1.22.18"
+  portable "node" "16.14.2"
+  portable "terraform" "1.1.8"
+fi
 
 rm -f "${HOME}"/README.md
 rm -f "${HOME}"/.gitignore
