@@ -64,14 +64,11 @@ if [ -z "${DOT_HOME}" ] ; then
   DOT_HOME="${HOME}"
 fi
 
-mkdir -p "${DOT_HOME}"/archives
-mkdir -p "${DOT_HOME}"/downloads
-mkdir -p "${DOT_HOME}"/configs
-mkdir -p "${DOT_HOME}"/sessions
-mkdir -p "${DOT_HOME}"/projects
-mkdir -p "${DOT_HOME}"/scripts/cron.d
-mkdir -p "${DOT_HOME}"/temporary
-mkdir -p "${DOT_HOME}"/binaries
+DIRECTORIES=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
+
+for DIR in "${DIRECTORIES[@]}" ; do
+  mkdir -p "${DOT_HOME}/${DIR}"
+done
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
