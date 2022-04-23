@@ -76,11 +76,11 @@ mkdir -p "${DOT_HOME}"/binaries
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
   
-  portable "helm" "3.8.2"
-  portable "kubectl" "1.23.0"
-  portable "yarn" "1.22.18"
-  portable "node" "16.14.2"
-  portable "terraform" "1.1.8"
+  [ -z "${HELM_VERSION}" ]      && portable "helm"      "3.8.2"  || portable "helm"      "${HELM_VERSION}"
+  [ -z "${KUBECTL_VERSION}" ]   && portable "kubectl"   "1.23.0" || portable "kubectl"   "${KUBECTL_VERSION}"
+  [ -z "${YARN_VERSION}" ]      && portable "yarn"      "3.8.2"  || portable "yarn"      "${YARN_VERSION}"
+  [ -z "${NODE_VERSION}" ]      && portable "node"      "3.8.2"  || portable "node"      "${NODE_VERSION}"
+  [ -z "${TERRAFORM_VERSION}" ] && portable "terraform" "3.8.2"  || portable "terraform" "${TERRAFORM_VERSION}"
   
   rm -rf "${TMP_DIR}"
 fi
