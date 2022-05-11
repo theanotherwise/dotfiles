@@ -1,3 +1,9 @@
+if [ -f ${HOME}/.bash_profile ] ; then
+  . ${HOME}/.bash_profile
+fi
+
+umask 0022
+
 alias ls='ls --color=auto --hide=".*"'
 alias rm="rm -iv"
 alias cp="cp -iv"
