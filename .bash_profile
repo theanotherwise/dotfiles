@@ -1,9 +1,3 @@
-if [ -f /${HOME}/.bashrc ] ; then
-  . /${HOME}/.bashrc
-fi
-
-umask 0022
-
 PATH="/opt/ruby/latest/bin:${PATH}"
 PATH="/${HOME}/binaries/ruby/latest/bin:${PATH}"
 PATH="/opt/terraform/latest/bin:${PATH}"
