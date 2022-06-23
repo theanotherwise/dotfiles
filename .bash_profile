@@ -10,6 +10,8 @@ PATH="/opt/yarn/latest/bin:${PATH}"
 PATH="/${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="/opt/kubectl/latest/bin:${PATH}"
 PATH="/${HOME}/binaries/kubectl/latest/bin:${PATH}"
+PATH="/opt/k3d/latest/bin:${PATH}"
+PATH="/${HOME}/binaries/k3d/latest/bin:${PATH}"
 
 export PATH
 
