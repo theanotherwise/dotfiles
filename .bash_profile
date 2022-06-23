@@ -23,6 +23,10 @@ if command -v helm > /dev/null 2>&1 ; then
   . <(helm completion bash)
 fi
 
+if command -v k3d > /dev/null 2>&1 ; then
+  . <(k3d  completion bash)
+fi
+
 if [ -f /${HOME}/.dotfiles/git-completion.bash ] ; then
   . /${HOME}/.dotfiles/git-completion.bash
 fi
