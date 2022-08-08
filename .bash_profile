@@ -1,3 +1,7 @@
+if [ -f ${HOME}/.bashrc ] ; then
+  . ${HOME}/.bashrc
+fi
+
 PATH="/opt/ruby/latest/bin:${PATH}"
 PATH="/${HOME}/binaries/ruby/latest/bin:${PATH}"
 PATH="/opt/terraform/latest/bin:${PATH}"
