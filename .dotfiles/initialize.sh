@@ -78,7 +78,7 @@ function portable_download () {
 }
 
 function portable_permissions () {
-  logger "info" "Fix permissions in '${1}'"
+  logger "warning" "Fix permissions in '${1}'"
   chmod 700 --recursive --silent "${1}"
 }
 
