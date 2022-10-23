@@ -167,8 +167,8 @@ function portable () {
 }
 
 function install_deps () {
-  apt-get update
-  xargs -a "${1}/.dotfiles/packages.list" apt-get -y install 
+  apt-get update -qq
+  xargs -a "${1}/.dotfiles/packages.list" apt-get -y -qq install 
 }
 
 function home_dirs () {
