@@ -105,13 +105,7 @@ function portable() {
 
 function install_dependencies () {
   apt-get update
-  
-  apt-get install wget curl 
-  
-  apt-get install -y build-essential g++ gcc make
-  
-  apt-get install -y libbz2-dev libffi-dev libgdbm-compat-dev libgdbm-dev liblzma-dev libncurses5-dev \
-                     libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libyaml-dev zlib1g zlib1g-dev
+  apt-get -y install < "${1}/.dotfiles/packages.list"
 }
 
 function directories() {
@@ -126,7 +120,7 @@ if [ -z "${DOT_HOME}" ] ; then
 fi
 
 directories "archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries"
-install_dependencies
+install_dependencies "${DOT_HOME}"
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
