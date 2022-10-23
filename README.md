@@ -6,9 +6,5 @@ git fetch --all
 
 git checkout linux
 
-INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
-```
-
-```bash
-DOT_HOME="/root" INSTALL_PORTABLE="yes" sudo -E -u root /bin/bash /root/.dotfiles/initialize.sh
+DOT_HOME="${HOME}" INSTALL_PORTABLE="yes" sudo -E -u root /bin/bash /root/.dotfiles/initialize.sh
 ```
