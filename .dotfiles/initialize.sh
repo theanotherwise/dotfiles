@@ -226,17 +226,24 @@ function cleanup () {
   rm -rf "${TMP_DIR}"
 }
 
+function package_version () {
+  TO_EXEC="${@}"
+  
+  logger "info" "Install package '${1}', version is:"
+  eval "${TO_EXEC}"
+}
+
 function about () {
-  python --version
-  node --version
-  yarn --version
-  npm --version
-  ruby --version
-  gem --version
-  helm version
-  kubectl version --output yaml
-  k3d --version
-  terraform --version
+  package_version python --version
+  package_version node --version
+  package_version yarn --version
+  package_version npm --version
+  package_version ruby --version
+  package_version gem --version
+  package_version helm version
+  package_version kubectl version --output yaml
+  package_version k3d --version
+  package_version terraform --version
 }
 
 ########################################################
