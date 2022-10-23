@@ -72,7 +72,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}/bin" --strip-components=1
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
@@ -83,7 +83,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     mv "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
@@ -94,7 +94,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
@@ -105,7 +105,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
@@ -116,7 +116,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     unzip -j "${ARCHIVE_PATH}" -d "${APP_DIR}/${2}/bin"
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
@@ -128,7 +128,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" --silent
@@ -144,7 +144,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" --silent
@@ -159,7 +159,7 @@ function portable () {
 
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     mv "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
