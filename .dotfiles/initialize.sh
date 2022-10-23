@@ -264,8 +264,8 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   portable "yarn"       "${YARN_VERSION}"
   portable "node"       "${NODE_VERSION}"
   portable "terraform"  "${TERRAFORM_VERSION}"
-  # portable "python"     "${PYTHON_VERSION}"
-  # portable "ruby"       "${RUBY_VERSION}"
+  portable "python"     "${PYTHON_VERSION}"
+  portable "ruby"       "${RUBY_VERSION}"
 fi
 
 logger "warning" "Cleanup temporary files"
