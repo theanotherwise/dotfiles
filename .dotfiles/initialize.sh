@@ -62,6 +62,26 @@ function logger () {
   fi
 }
 
+function portable_dir () {
+  logger "info" "Creating directory '${1}'"
+  mkdir -p "${1}"
+}
+
+function portable_symlink () {
+  logger "info" "Creating symlink '${2}' -> ${1}"
+  ln -s "${1}" "${2}"
+}
+
+function portable_download () {
+  logger "info" "Download file '${1}' -> ${2}"
+  wget "${1}" -O "${2}" --quiet
+}
+
+function portable_permissions () {
+  logger "info" "Fix permissions in '${1}'"
+  chmod 700 -R "${1}"
+}
+
 function portable () {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
@@ -70,55 +90,55 @@ function portable () {
     ARCHIVE_PATH="${TMP_DIR}/helm.tgz"
     APP_DIR="${DOT_HOME}/binaries/helm"
 
-    mkdir -p "${APP_DIR}/${2}/bin"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}/bin" --strip-components=1
-    chmod 700 -R "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   kubectl)
     URL="https://dl.k8s.io/release/v${2}/bin/linux/amd64/kubectl"
     ARCHIVE_PATH="${TMP_DIR}/kubectl"
     APP_DIR="${DOT_HOME}/binaries/kubectl"
 
-    mkdir -p "${APP_DIR}/${2}/bin"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     mv "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
-    chmod 700 -R "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   yarn)
     URL="https://github.com/yarnpkg/yarn/releases/download/v${2}/yarn-v${2}.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/yarn.tgz"
     APP_DIR="${DOT_HOME}/binaries/yarn"
 
-    mkdir -p "${APP_DIR}/${2}/bin"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
-    chmod 700 -R "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   node)
     URL="https://nodejs.org/dist/v${2}/node-v${2}-linux-x64.tar.xz"
     ARCHIVE_PATH="${TMP_DIR}/node.xz"
     APP_DIR="${DOT_HOME}/binaries/node"
 
-    mkdir -p "${APP_DIR}/${2}/bin"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
-    chmod 700 -R "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   terraform)
     URL="https://releases.hashicorp.com/terraform/${2}/terraform_${2}_linux_amd64.zip"
     ARCHIVE_PATH="${TMP_DIR}/terraform.zip"
     APP_DIR="${DOT_HOME}/binaries/terraform"
 
-    mkdir -p "${APP_DIR}/${2}/bin"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     unzip -j -qq -f "${ARCHIVE_PATH}" -d "${APP_DIR}/${2}/bin"
-    chmod 700 -R "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   python)
     URL="https://www.python.org/ftp/python/${2}/Python-${2}.tar.xz"
@@ -127,8 +147,8 @@ function portable () {
     BUILD_DIR="${TMP_DIR}/python"
 
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
@@ -143,8 +163,8 @@ function portable () {
     BUILD_DIR="${TMP_DIR}/ruby"
 
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
@@ -157,11 +177,11 @@ function portable () {
     ARCHIVE_PATH="${TMP_DIR}/k3d"
     APP_DIR="${DOT_HOME}/binaries/k3d"
 
-    mkdir -p "${APP_DIR}/${2}/bin"
-    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
-    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
     mv "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
-    chmod 700 -R "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   esac
 }
