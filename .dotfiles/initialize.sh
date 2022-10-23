@@ -188,10 +188,7 @@ function cleanup () {
 ########################################################
 # Main
 
-echo "xxx"
-
-logger "info" "Setup directories: ${directories[@]}"
-echo "xxxy"
+logger "info" "Setup directories.."
 setup "${directories[@]}"
 logger "info" "Install APT dependencies"
 install "${DOT_HOME}"
