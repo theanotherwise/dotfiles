@@ -74,7 +74,20 @@ function portable() {
     cd
     ;;
   ruby)
-    echo "installing ruby"
+    URL="https://cache.ruby-lang.org/pub/ruby/${2:0:3}/ruby-${2}.tar.gz"
+    ARCHIVE_PATH="${TMP_DIR}/ruby.tar.xz"
+    APP_DIR="${DOT_HOME}/binaries/ruby"
+    BUILD_DIR="${TMP_DIR}/ruby"
+
+    mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
+    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
+    cd "${BUILD_DIR}"
+    ./configure --prefix="${APP_DIR}/${2}"
+    make
+    make install
+    cd
     ;;
   k3d)
     URL="https://github.com/k3d-io/k3d/releases/download/v${2}/k3d-linux-amd64"
