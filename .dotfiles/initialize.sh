@@ -22,7 +22,7 @@ if [ -z "${DOT_HOME}" ] ; then
 fi
 
 ########################################################
-function formatter {
+function formatter () {
   DATE="`date +\"%Y-%m-%d %H:%M:%S,%3N\"`"
 
   if [[ "${CONF_COLORS}" == "true" ]] ; then
@@ -32,7 +32,7 @@ function formatter {
   fi
 }
 
-function messager {
+function messager () {
   if [ "${#}" -eq "2" ] ; then
     if [ "${2}" == "error" ] ; then
       formatter "ERROR" "${1}" "91"
@@ -50,7 +50,7 @@ function messager {
   fi
 }
 
-function logger {
+function logger () {
   [ "${#}" -lt 1 ] || [ "${#}" -gt 2 ] && exit 1
 
   if [ "${#}" -eq "1" ] ; then
@@ -62,7 +62,7 @@ function logger {
   fi
 }
 
-function portable() {
+function portable () {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
   helm)
@@ -166,12 +166,12 @@ function portable() {
   esac
 }
 
-function install () {
+function install_deps () {
   apt-get update
   xargs -a "${1}/.dotfiles/packages.list" apt-get -y install 
 }
 
-function home_dirs() {
+function home_dirs () {
   HOME_DIRS=("${@}")
   for DIR in "${HOME_DIRS[@]}" ; do
     mkdir -p "${DOT_HOME}/${DIR}"
@@ -191,7 +191,7 @@ function cleanup () {
 logger "info" "Setup HOME directories in '${DOT_HOME}'"
 home_dirs "${directories[@]}"
 logger "info" "Install APT dependencies"
-install "${DOT_HOME}"
+install_deps "${DOT_HOME}"
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
