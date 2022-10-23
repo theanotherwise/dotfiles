@@ -79,12 +79,20 @@ function portable_download () {
 
 function portable_permissions () {
   logger "info" "Fix permissions in '${1}'"
-  chmod 700 -R "${1}"
+  chmod 700 --recursive --silent "${1}"
 }
 
 function portable_extract_tar () {
   logger "info" "Extract tar archive '${1}' -> '${2}'"
   tar -xf "${1}" -C "${2}" --strip-components=1
+}
+
+function portable_compile () {
+  cd "${1}"
+  ./configure --prefix="${2}" 2>&1 > /dev/null
+  make 2>&1 > /dev/null
+  make install 2>&1 > /dev/null
+  cd
 }
 
 function portable () {
@@ -155,12 +163,7 @@ function portable () {
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
     portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}"
-    
-    cd "${BUILD_DIR}"
-    ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
-    make 2>&1 > /dev/null
-    make install 2>&1 > /dev/null
-    cd
+    portable_compile "${BUILD_DIR}" "${APP_DIR}/${2}"
     ;;
   ruby)
     URL="https://cache.ruby-lang.org/pub/ruby/${2:0:3}/ruby-${2}.tar.gz"
@@ -172,12 +175,7 @@ function portable () {
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
     portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}"
-    
-    cd "${BUILD_DIR}"
-    ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
-    make 2>&1 > /dev/null
-    make install 2>&1 > /dev/null
-    cd
+    portable_compile "${BUILD_DIR}" "${APP_DIR}/${2}"
     ;;
   k3d)
     URL="https://github.com/k3d-io/k3d/releases/download/v${2}/k3d-linux-amd64"
