@@ -88,10 +88,15 @@ function portable_extract_tar () {
 }
 
 function portable_compile () {
+  logger "info" "Enter to '${1}' directory"
   cd "${1}"
+  logger "info" "Configure compilation '${1}' -> '${2}'"
   ./configure --prefix="${2}" 2>&1 > /dev/null
+  logger "info" "Compile package"
   make 2>&1 > /dev/null
+  logger "info" "Install compiled"
   make install 2>&1 > /dev/null
+  logger "info" "Exit to '${HOME}' from '${1}' directory"
   cd
 }
 
