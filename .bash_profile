@@ -34,6 +34,10 @@ PATH="/${HOME}/binaries/k3d/latest/bin:${PATH}"
 PATH="/opt/python/latest/bin:${PATH}"
 PATH="/${HOME}/binaries/python/latest/bin:${PATH}"
 
+# Ruby
+PATH="/opt/ruby/latest/bin:${PATH}"
+PATH="/${HOME}/binaries/ruby/latest/bin:${PATH}"
+
 export PATH
 
 if command -v kubectl > /dev/null 2>&1 ; then
