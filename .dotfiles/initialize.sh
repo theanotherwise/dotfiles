@@ -262,4 +262,5 @@ cleanup "${DOT_HOME}"
 
 logger "info" "Packages versions"
 
+source "/${DOT_HOME}/.bash_profile"
 about
