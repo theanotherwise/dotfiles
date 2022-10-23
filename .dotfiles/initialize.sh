@@ -1,5 +1,24 @@
 #!/bin/bash
 
+# Setup Default Versions
+[ -z "${HELM_VERSION}" ]      && HELM_VERSION="3.10.1"
+[ -z "${KUBECTL_VERSION}" ]   && KUBECTL_VERSION="1.25.3"
+[ -z "${K3D_VERSION}" ]       && K3D_VERSION="5.4.3"
+[ -z "${YARN_VERSION}" ]      && YARN_VERSION="1.22.19"
+[ -z "${NODE_VERSION}" ]      && NODE_VERSION="16.18.0"
+[ -z "${TERRAFORM_VERSION}" ] && TERRAFORM_VERSION="1.3.3"
+[ -z "${PYTHON_VERSION}" ]    && PYTHON_VERSION="3.10.8"
+[ -z "${RUBY_VERSION}" ]      && RUBY_VERSION="3.1.2"
+
+# Directoriesto to Setup
+directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
+
+# Setup Install Directory
+if [ -z "${DOT_HOME}" ] ; then
+  DOT_HOME="${HOME}"
+fi
+
+########################################################
 function portable() {
   case "${1}" in
   helm)
@@ -103,41 +122,44 @@ function portable() {
   esac
 }
 
-function install_dependencies () {
+function install () {
   apt-get update
   xargs -a "${1}/.dotfiles/packages.list" apt-get -y install 
 }
 
-function directories() {
+function setup() {
   arr=("${@}")
   for DIR in "${arr[@]}" ; do
     mkdir -p "${DOT_HOME}/${DIR}"
   done
 }
 
-if [ -z "${DOT_HOME}" ] ; then
-  DOT_HOME="${HOME}"
-fi
+function cleanup () {
+  rm -f "${1}"/README.md
+  rm -f "${1}"/.gitignore
+  rm -f "${1}"/.dotfiles/initialize.sh
+  rm -rf "${1}"/.git
+}
 
-directories "archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries"
-install_dependencies "${DOT_HOME}"
+########################################################
+# Main
+
+setup "${directories[@]}"
+install "${DOT_HOME}"
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-  [ -z "${HELM_VERSION}" ]      && portable "helm"      "3.10.1"  || portable "helm"      "${HELM_VERSION}"
-  [ -z "${KUBECTL_VERSION}" ]   && portable "kubectl"   "1.25.3"  || portable "kubectl"   "${KUBECTL_VERSION}"
-  [ -z "${K3D_VERSION}" ]       && portable "k3d"       "5.4.3"   || portable "k3d"       "${K3D_VERSION}"
-  [ -z "${YARN_VERSION}" ]      && portable "yarn"      "1.22.19" || portable "yarn"      "${YARN_VERSION}"
-  [ -z "${NODE_VERSION}" ]      && portable "node"      "16.18.0" || portable "node"      "${NODE_VERSION}"
-  [ -z "${TERRAFORM_VERSION}" ] && portable "terraform" "1.3.3"   || portable "terraform" "${TERRAFORM_VERSION}"
-  [ -z "${PYTHON_VERSION}" ]    && portable "python"    "3.10.8"  || portable "python"    "${PYTHON_VERSION}"
-  [ -z "${RUBY_VERSION}" ]      && portable "ruby"      "3.1.2"   || portable "ruby"      "${RUBY_VERSION}"
+  portable "${HELM_VERSION}"
+  portable "${KUBECTL_VERSION}"
+  portable "${K3D_VERSION}"
+  portable "${YARN_VERSION}"
+  portable "${NODE_VERSION}"
+  portable "${TERRAFORM_VERSION}"
+  portable "${PYTHON_VERSION}"
+  portable "${RUBY_VERSION}"
 
   rm -rf "${TMP_DIR}"
 fi
 
-rm -f "${DOT_HOME}"/README.md
-rm -f "${DOT_HOME}"/.gitignore
-rm -f "${DOT_HOME}"/.dotfiles/initialize.sh
-rm -rf "${DOT_HOME}"/.git
+cleanup "${DOT_HOME}"
