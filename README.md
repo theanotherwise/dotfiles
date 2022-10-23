@@ -26,3 +26,9 @@ apt-get install -y build-essential curl g++ gcc wget make \
                    libbz2-dev libffi-dev libgdbm-compat-dev libgdbm-dev liblzma-dev libncurses5-dev \
                    libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libyaml-dev zlib1g zlib1g-dev
 ```
+
+```bash
+./configure --prefix=/root/binaries/CHANGEME/VERSIONME
+make
+make install
+```
