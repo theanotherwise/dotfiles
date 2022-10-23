@@ -260,12 +260,15 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   # portable "ruby"       "${RUBY_VERSION}"
 fi
 
-exit 1
-
 logger "info" "Cleanup temporary files"
 cleanup
 
-logger "info" "Packages versions"
-
+logger "info" "Reload '.bash_profile' file"
 source "/${DOT_HOME}/.bash_profile"
+
+logger "info" "Packages versions"
 about
+
+exit 0
+RET="${?}"
+logger "info" "Exit code is: '${RET}'"
