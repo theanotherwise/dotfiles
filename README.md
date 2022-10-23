@@ -12,6 +12,7 @@ git init "${HOME}"
 git remote add origin https://github.com/theanotherwise/dotfiles.git
 git fetch --all
 git checkout linux
+clear
 
 DOT_HOME="${HOME}" INSTALL_PORTABLE="yes" sudo -E -u root /bin/bash /root/.dotfiles/initialize.sh
 ```
