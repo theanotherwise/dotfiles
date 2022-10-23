@@ -69,10 +69,15 @@ function portable() {
     ARCHIVE_PATH="${TMP_DIR}/helm.tgz"
     APP_DIR="${DOT_HOME}/binaries/helm"
 
+    logger info "Creating directory '${APP_DIR}/${2}/bin'"
     mkdir -p "${APP_DIR}/${2}/bin"
+    logger "info" "Creating link '${APP_DIR}/${2}' -> '${APP_DIR}/latest'"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    logger "info" "Downloading.. '${URL}'"
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    logger "info" "Extracting.. '${ARCHIVE_PATH}' -> '${APP_DIR}/${2}/bin'"
     tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}/bin" --strip-components=1
+    logger "info" "Fixing permissions.. '${APP_DIR}/${2}/bin'"
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
   kubectl)
