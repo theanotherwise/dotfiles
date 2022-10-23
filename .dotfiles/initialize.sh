@@ -68,12 +68,12 @@ function portable_dir () {
 }
 
 function portable_symlink () {
-  logger "info" "Creating symlink '${2}' -> ${1}"
+  logger "info" "Creating symlink '${2}' -> '${1}'"
   ln -s "${1}" "${2}"
 }
 
 function portable_download () {
-  logger "info" "Download file '${1}' -> ${2}"
+  logger "info" "Download file '${1}' -> '${2}'"
   wget "${1}" -O "${2}" --quiet
 }
 
