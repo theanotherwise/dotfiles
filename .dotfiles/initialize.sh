@@ -171,7 +171,7 @@ function install () {
   xargs -a "${1}/.dotfiles/packages.list" apt-get -y install 
 }
 
-function setup() {
+function home_dirs() {
   arr=("${@}")
   for DIR in "${arr[@]}" ; do
     mkdir -p "${DOT_HOME}/${DIR}"
@@ -189,7 +189,7 @@ function cleanup () {
 # Main
 
 logger "info" "Setup directories.."
-setup "${directories[@]}"
+home_dirs "${directories[@]}"
 logger "info" "Install APT dependencies"
 install "${DOT_HOME}"
 
