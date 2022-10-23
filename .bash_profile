@@ -21,7 +21,11 @@ PATH="${HOME}/binaries/python/latest/bin:${PATH}"
 PATH="/opt/ruby/latest/bin:${PATH}"                     # Ruby
 PATH="${HOME}/binaries/ruby/latest/bin:${PATH}"
 
+MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
+MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
+
 export PATH
+export MAKEFLAGS
 
 if command -v kubectl > /dev/null 2>&1 ; then           # Kubectl Completion
   . <(kubectl completion bash)
