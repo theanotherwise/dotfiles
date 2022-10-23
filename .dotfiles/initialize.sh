@@ -93,7 +93,7 @@ function portable_compile () {
   logger "info" "Configure compilation '${1}' with --prefix '${2}'"
   ./configure --prefix="${2}" 2>&1 > /dev/null
   logger "info" "Compile package '${1}'"
-  make 2>&1 > /dev/null
+  make CDBG=-w 2>&1 > /dev/null
   logger "info" "Install compiled to '${2}'"
   make install 2>&1 > /dev/null
   logger "info" "Exit to '${HOME}' from '${1}' directory"
