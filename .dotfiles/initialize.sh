@@ -154,7 +154,7 @@ function portable () {
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
+    portable_extract_tar "${ARCHIVE_PATH}" -C "${BUILD_DIR}"
     
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
