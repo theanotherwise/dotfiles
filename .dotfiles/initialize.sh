@@ -236,6 +236,7 @@ function about () {
   helm version
   kubectl version --output yaml
   k3d --version
+  terraform --version
 }
 
 ########################################################
