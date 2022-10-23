@@ -58,7 +58,16 @@ function portable() {
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
   python)
-    echo "installing python"
+    URL="https://www.python.org/ftp/python/${2}/Python-${2}.tar.xz"
+    ARCHIVE_PATH="${TMP_DIR}/python.tar.xz"
+    APP_DIR="${DOT_HOME}/binaries/python"
+    BUILD_DIR="${TMP_DIR}/python"
+
+    mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
+    ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
+    tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
+    ls -lh "${BUILD_DIR}"
     ;;
   ruby)
     echo "installing ruby"
