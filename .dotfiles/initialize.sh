@@ -98,7 +98,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}/bin"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   kubectl)
@@ -120,7 +120,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   node)
@@ -131,7 +131,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   terraform)
@@ -154,7 +154,7 @@ function portable () {
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" -C "${BUILD_DIR}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}"
     
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
@@ -171,7 +171,7 @@ function portable () {
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" -C "${BUILD_DIR}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}"
     
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
