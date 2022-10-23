@@ -68,9 +68,9 @@ function portable() {
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
-    ./configure --prefix="${APP_DIR}/${2}"
-    make
-    make install
+    ./configure --prefix="${APP_DIR}/${2}" --silent
+    make --silent
+    make install --silent
     cd
     ;;
   ruby)
@@ -84,9 +84,9 @@ function portable() {
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
-    ./configure --prefix="${APP_DIR}/${2}"
-    make
-    make install
+    ./configure --prefix="${APP_DIR}/${2}" --silent
+    make --silent
+    make install --silent
     cd
     ;;
   k3d)
