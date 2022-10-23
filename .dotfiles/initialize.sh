@@ -197,6 +197,7 @@ setup "${directories[@]}"
 install "${DOT_HOME}"
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
+  echo "xx"
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
   portable "${HELM_VERSION}"
