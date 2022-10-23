@@ -262,6 +262,8 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   rm -rf "${TMP_DIR}"
 fi
 
+exit 1
+
 logger "info" "Cleanup temporary files"
 cleanup "${DOT_HOME}"
 
