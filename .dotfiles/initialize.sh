@@ -131,9 +131,9 @@ function portable () {
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
-    ./configure --prefix="${APP_DIR}/${2}" --silent
-    make --silent
-    make install --silent
+    ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
+    make 2>&1 > /dev/null
+    make install 2>&1 > /dev/null
     cd
     ;;
   ruby)
@@ -147,9 +147,9 @@ function portable () {
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
     cd "${BUILD_DIR}"
-    ./configure --prefix="${APP_DIR}/${2}" --silent
-    make --silent
-    make install --silent
+    ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
+    make 2>&1 > /dev/null
+    make install 2>&1 > /dev/null
     cd
     ;;
   k3d)
@@ -190,6 +190,7 @@ function cleanup () {
 
 logger "info" "Setup HOME directories in '${DOT_HOME}'"
 home_dirs "${directories[@]}"
+
 logger "info" "Install APT dependencies"
 install_deps "${DOT_HOME}"
 
