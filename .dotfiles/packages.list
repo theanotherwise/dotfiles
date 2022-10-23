@@ -17,3 +17,4 @@ make
 wget
 zlib1g
 zlib1g-dev
+pkg-config
