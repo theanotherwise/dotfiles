@@ -63,12 +63,12 @@ function logger () {
 }
 
 function portable_dir () {
-  logger "info" "Creating directory '${1}'"
+  logger "info" "Create directory '${1}'"
   mkdir -p "${1}"
 }
 
 function portable_symlink () {
-  logger "info" "Creating symlink '${2}' -> '${1}'"
+  logger "info" "Create symlink '${2}' -> '${1}'"
   ln -s "${1}" "${2}"
 }
 
@@ -82,6 +82,11 @@ function portable_permissions () {
   chmod 700 -R "${1}"
 }
 
+function portable_extract_tar () {
+  logger "info" "Extract tar archive '${1}' -> '${2}'"
+  tar -xf "${1}" -C "${2}" --strip-components=1
+}
+
 function portable () {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
@@ -93,7 +98,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}/bin" --strip-components=1
+    portable_extract_tar "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}/bin"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   kubectl)
@@ -115,7 +120,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
+    portable_extract_tar "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   node)
@@ -126,7 +131,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    tar -xf "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}" --strip-components=1
+    portable_extract_tar "${ARCHIVE_PATH}" -C "${APP_DIR}/${2}"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   terraform)
@@ -150,6 +155,7 @@ function portable () {
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
+    
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
     make 2>&1 > /dev/null
@@ -165,7 +171,8 @@ function portable () {
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
+    portable_extract_tar "${ARCHIVE_PATH}" -C "${BUILD_DIR}"
+    
     cd "${BUILD_DIR}"
     ./configure --prefix="${APP_DIR}/${2}" 2>&1 > /dev/null
     make 2>&1 > /dev/null
