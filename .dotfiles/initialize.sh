@@ -105,7 +105,7 @@ function portable() {
 
 function install_dependencies () {
   apt-get update
-  apt-get -y install < "${1}/.dotfiles/packages.list"
+  xargs -a "${1}/.dotfiles/packages.list" apt-get -y install 
 }
 
 function directories() {
