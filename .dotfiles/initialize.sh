@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Logger Colors
+CONF_COLORS="true"
+
 # Setup Default Versions
 [ -z "${HELM_VERSION}" ]      && HELM_VERSION="3.10.1"
 [ -z "${KUBECTL_VERSION}" ]   && KUBECTL_VERSION="1.25.3"
@@ -19,8 +22,6 @@ if [ -z "${DOT_HOME}" ] ; then
 fi
 
 ########################################################
-CONF_COLORS="$CONF_COLORS"
-
 function formatter {
   DATE="`date +\"%Y-%m-%d %H:%M:%S,%3N\"`"
 
