@@ -268,7 +268,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   # portable "ruby"       "${RUBY_VERSION}"
 fi
 
-logger "warn" "Cleanup temporary files"
+logger "warning" "Cleanup temporary files"
 cleanup
 
 logger "info" "Reload '.bash_profile' file"
