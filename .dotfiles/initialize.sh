@@ -200,14 +200,14 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   echo "xx"
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-  portable "${HELM_VERSION}"
-  portable "${KUBECTL_VERSION}"
-  portable "${K3D_VERSION}"
-  portable "${YARN_VERSION}"
-  portable "${NODE_VERSION}"
-  portable "${TERRAFORM_VERSION}"
-  portable "${PYTHON_VERSION}"
-  portable "${RUBY_VERSION}"
+  portable "helm"       "${HELM_VERSION}"
+  portable "kubectl"    "${KUBECTL_VERSION}"
+  portable "k3d"        "${K3D_VERSION}"
+  portable "yarn"       "${YARN_VERSION}"
+  portable "node"       "${NODE_VERSION}"
+  portable "terraform"  "${TERRAFORM_VERSION}"
+  portable "python"     "${PYTHON_VERSION}"
+  portable "ruby"       "${RUBY_VERSION}"
 
   rm -rf "${TMP_DIR}"
 fi
