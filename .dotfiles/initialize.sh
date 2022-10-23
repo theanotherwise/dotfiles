@@ -83,8 +83,13 @@ function portable_permissions () {
 }
 
 function portable_extract_tar () {
-  logger "info" "Extract tar archive '${1}' -> '${2}'"
+  logger "info" "Extract TAR archive '${1}' -> '${2}'"
   tar -xf "${1}" -C "${2}" --strip-components=1
+}
+
+function portable_extract_zip () {
+  logger "info" "Extract ZIP archive '${1}' -> '${2}'"
+  unzip -j -qq -f "${1}" -d "${2}"
 }
 
 function portable_compile () {
@@ -160,7 +165,7 @@ function portable () {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    unzip -j -qq -f "${ARCHIVE_PATH}" -d "${APP_DIR}/${2}/bin"
+    portable_extract_zip "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   python)
@@ -244,14 +249,14 @@ install_deps "${DOT_HOME}"
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-  portable "helm"       "${HELM_VERSION}"
-  portable "kubectl"    "${KUBECTL_VERSION}"
-  portable "k3d"        "${K3D_VERSION}"
-  portable "yarn"       "${YARN_VERSION}"
-  portable "node"       "${NODE_VERSION}"
+  # portable "helm"       "${HELM_VERSION}"
+  # portable "kubectl"    "${KUBECTL_VERSION}"
+  # portable "k3d"        "${K3D_VERSION}"
+  # portable "yarn"       "${YARN_VERSION}"
+  # portable "node"       "${NODE_VERSION}"
   portable "terraform"  "${TERRAFORM_VERSION}"
-  portable "python"     "${PYTHON_VERSION}"
-  portable "ruby"       "${RUBY_VERSION}"
+  # portable "python"     "${PYTHON_VERSION}"
+  # portable "ruby"       "${RUBY_VERSION}"
 
   logger "info" "Remove '${TMP_DIR}' temporary directory"
   rm -rf "${TMP_DIR}"
