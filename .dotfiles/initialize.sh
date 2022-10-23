@@ -60,7 +60,7 @@ function portable() {
   python)
     echo "installing python"
   ruby)
-    echo "installing ruby
+    echo "installing ruby"
   k3d)
     URL="https://github.com/k3d-io/k3d/releases/download/v${2}/k3d-linux-amd64"
     ARCHIVE_PATH="${TMP_DIR}/k3d"
