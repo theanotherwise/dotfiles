@@ -67,7 +67,11 @@ function portable() {
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet --show-progress
     tar -xf "${ARCHIVE_PATH}" -C "${BUILD_DIR}" --strip-components=1
-    ls -lh "${BUILD_DIR}"
+    cd "${BUILD_DIR}"
+    ./configure --prefix="${APP_DIR}/${2}"
+    make
+    make install
+    cd
     ;;
   ruby)
     echo "installing ruby"
