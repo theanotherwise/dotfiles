@@ -172,8 +172,8 @@ function install () {
 }
 
 function home_dirs() {
-  arr=("${@}")
-  for DIR in "${arr[@]}" ; do
+  HOME_DIRS=("${@}")
+  for DIR in "${HOME_DIRS[@]}" ; do
     mkdir -p "${DOT_HOME}/${DIR}"
   done
 }
