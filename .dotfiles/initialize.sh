@@ -219,10 +219,11 @@ function home_dirs () {
 }
 
 function cleanup () {
-  rm -f "${1}"/README.md
-  rm -f "${1}"/.gitignore
-  rm -f "${1}"/.dotfiles/initialize.sh
-  rm -rf "${1}"/.git
+  rm -f "${DOT_HOME}"/README.md
+  rm -f "${DOT_HOME}"/.gitignore
+  rm -f "${DOT_HOME}"/.dotfiles/initialize.sh
+  rm -rf "${DOT_HOME}"/.git
+  rm -rf "${TMP_DIR}"
 }
 
 function about () {
@@ -257,15 +258,12 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   portable "terraform"  "${TERRAFORM_VERSION}"
   # portable "python"     "${PYTHON_VERSION}"
   # portable "ruby"       "${RUBY_VERSION}"
-
-  logger "info" "Remove '${TMP_DIR}' temporary directory"
-  rm -rf "${TMP_DIR}"
 fi
 
 exit 1
 
 logger "info" "Cleanup temporary files"
-cleanup "${DOT_HOME}"
+cleanup
 
 logger "info" "Packages versions"
 
