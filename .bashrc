@@ -1,5 +1,6 @@
 umask 0022
 
+# Aliases
 alias ls='ls --color=auto --hide=".*"'
 alias rm="rm -iv"
 alias cp="cp -iv"
@@ -7,18 +8,21 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
 
+# Git Branch Name in Shell
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
   fi
 }
 
+# Kubernetes Context Details on Right
 bashrc_kube() {
   if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1 ; then
     printf "%*s\r%s" $(( COLUMNS-1 )) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
   fi
 }
 
+# Cursor for User / Root
 bashrc_cursor(){
   [[ "${UID}" == "0" ]] && echo '#' || echo '$'
 }
