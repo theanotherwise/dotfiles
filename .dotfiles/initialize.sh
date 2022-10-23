@@ -220,6 +220,18 @@ function cleanup () {
   rm -rf "${1}"/.git
 }
 
+function about () {
+  python --version
+  node --version
+  yarn --version
+  npm --version
+  ruby --version
+  gem --version
+  helm version
+  kubectl version --output yaml
+  k3d --version
+}
+
 ########################################################
 # Main
 
@@ -247,3 +259,7 @@ fi
 
 logger "info" "Cleanup temporary files"
 cleanup "${DOT_HOME}"
+
+logger "info" "Packages versions"
+
+about
