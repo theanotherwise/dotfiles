@@ -57,6 +57,10 @@ function portable() {
     unzip -j "${ARCHIVE_PATH}" -d "${APP_DIR}/${2}/bin"
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
+  python)
+    echo "installing python"
+  ruby)
+    echo "installing ruby
   k3d)
     URL="https://github.com/k3d-io/k3d/releases/download/v${2}/k3d-linux-amd64"
     ARCHIVE_PATH="${TMP_DIR}/k3d"
@@ -71,6 +75,17 @@ function portable() {
   esac
 }
 
+function install_dependencies () {
+  apt-get update
+  
+  apt-get install wget curl 
+  
+  apt-get install -y build-essential g++ gcc make
+  
+  apt-get install -y libbz2-dev libffi-dev libgdbm-compat-dev libgdbm-dev liblzma-dev libncurses5-dev \
+                     libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libyaml-dev zlib1g zlib1g-dev
+}
+
 function directories() {
   arr=("${@}")
   for DIR in "${arr[@]}" ; do
@@ -83,16 +98,19 @@ if [ -z "${DOT_HOME}" ] ; then
 fi
 
 directories "archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries"
+install_dependencies
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-  [ -z "${HELM_VERSION}" ]      && portable "helm"      "3.10.1"   || portable "helm"      "${HELM_VERSION}"
+  [ -z "${HELM_VERSION}" ]      && portable "helm"      "3.10.1"  || portable "helm"      "${HELM_VERSION}"
   [ -z "${KUBECTL_VERSION}" ]   && portable "kubectl"   "1.25.3"  || portable "kubectl"   "${KUBECTL_VERSION}"
-  [ -z "${K3D_VERSION}" ]       && portable "k3d"   "5.4.3"       || portable "k3d"       "${K3D_VERSION}"
+  [ -z "${K3D_VERSION}" ]       && portable "k3d"       "5.4.3"   || portable "k3d"       "${K3D_VERSION}"
   [ -z "${YARN_VERSION}" ]      && portable "yarn"      "1.22.19" || portable "yarn"      "${YARN_VERSION}"
   [ -z "${NODE_VERSION}" ]      && portable "node"      "16.18.0" || portable "node"      "${NODE_VERSION}"
   [ -z "${TERRAFORM_VERSION}" ] && portable "terraform" "1.3.3"   || portable "terraform" "${TERRAFORM_VERSION}"
+  [ -z "${PYTHON_VERSION}" ]    && portable "python"    "3.10.8"  || portable "python"    "${PYTHON_VERSION}"
+  [ -z "${RUBY_VERSION}" ]      && portable "ruby"      "3.1.2"   || portable "ruby"      "${RUBY_VERSION}"
 
   rm -rf "${TMP_DIR}"
 fi
