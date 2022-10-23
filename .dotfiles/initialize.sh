@@ -229,7 +229,7 @@ function cleanup () {
 function package_version () {
   TO_EXEC="${@}"
   
-  logger "info" "Install package '${1}', version is:"
+  logger "success" "Package '${1}', version:"
   eval "${TO_EXEC}"
 }
 
@@ -268,11 +268,10 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   # portable "ruby"       "${RUBY_VERSION}"
 fi
 
-logger "info" "Cleanup temporary files"
+logger "warn" "Cleanup temporary files"
 cleanup
 
 logger "info" "Reload '.bash_profile' file"
 source "/${DOT_HOME}/.bash_profile"
 
-logger "info" "Packages versions"
 about
