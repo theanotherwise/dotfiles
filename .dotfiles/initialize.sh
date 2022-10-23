@@ -88,6 +88,11 @@ function portable_extract_tar () {
 }
 
 function portable_compile () {
+  MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
+  MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
+
+  export MAKEFLAGS
+
   logger "info" "Enter to '${1}' directory"
   cd "${1}"
   logger "info" "Configure compilation '${1}' with --prefix '${2}'"
