@@ -188,7 +188,7 @@ function cleanup () {
 ########################################################
 # Main
 
-logger "info" "Setup directories.."
+logger "info" "Setup HOME directories in '${DOT_HOME}'"
 home_dirs "${directories[@]}"
 logger "info" "Install APT dependencies"
 install "${DOT_HOME}"
