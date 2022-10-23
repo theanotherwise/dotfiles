@@ -90,7 +90,7 @@ function portable_extract_tar () {
 function portable_compile () {
   logger "info" "Enter to '${1}' directory"
   cd "${1}"
-  logger "info" "Configure compilation '${1}' '--prefix=${2}'"
+  logger "info" "Configure compilation '${1}' with --prefix '${2}'"
   ./configure --prefix="${2}" 2>&1 > /dev/null
   logger "info" "Compile package"
   make 2>&1 > /dev/null
