@@ -63,6 +63,7 @@ function logger {
 }
 
 function portable() {
+  logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
   helm)
     URL="https://get.helm.sh/helm-v${2}-linux-amd64.tar.gz"
@@ -187,12 +188,12 @@ function cleanup () {
 ########################################################
 # Main
 
-logger info "Setup directories"
+logger "info" "Setup directories: ${directories[@]}"
 setup "${directories[@]}"
+logger "info" "Install APT dependencies"
 install "${DOT_HOME}"
 
 if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
-  echo "xx"
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
   portable "helm"       "${HELM_VERSION}"
@@ -204,7 +205,9 @@ if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
   portable "python"     "${PYTHON_VERSION}"
   portable "ruby"       "${RUBY_VERSION}"
 
+  logger "info" "Remove '${TMP_DIR}' temporary directory"
   rm -rf "${TMP_DIR}"
 fi
 
+logger "info" "Cleanup temporary files"
 cleanup "${DOT_HOME}"
