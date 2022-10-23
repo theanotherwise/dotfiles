@@ -89,7 +89,7 @@ function portable_extract_tar () {
 
 function portable_extract_zip () {
   logger "info" "Extract ZIP archive '${1}' -> '${2}'"
-  unzip -j -f "${1}" -d "${2}"
+  unzip -qqo "${1}" -d "${2}"
 }
 
 function portable_compile () {
