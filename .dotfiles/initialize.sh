@@ -117,7 +117,7 @@ function portable () {
     mkdir -p "${APP_DIR}/${2}/bin"
     ln -s "${APP_DIR}/${2}" "${APP_DIR}/latest"
     wget "${URL}" -O "${ARCHIVE_PATH}" --quiet
-    unzip -j "${ARCHIVE_PATH}" -d "${APP_DIR}/${2}/bin"
+    unzip -j -qq -f "${ARCHIVE_PATH}" -d "${APP_DIR}/${2}/bin"
     chmod 700 -R "${APP_DIR}/${2}/bin"
     ;;
   python)
