@@ -18,3 +18,11 @@ INSTALL_PORTABLE="yes" /bin/bash ~/.dotfiles/initialize.sh
 ```bash
 DOT_HOME="/root" INSTALL_PORTABLE="yes" sudo -E -u root /bin/bash /root/.dotfiles/initialize.sh
 ```
+
+# Python3 / Ruby Dependencies
+```bash
+apt-get update
+apt-get install -y build-essential curl g++ gcc wget make
+apt-get install -y libbz2-dev libffi-dev libgdbm-compat-dev libgdbm-dev liblzma-dev libncurses5-dev
+apt-get install -y libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libyaml-dev zlib1g zlib1g-dev
+```
