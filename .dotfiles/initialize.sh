@@ -269,7 +269,3 @@ source "/${DOT_HOME}/.bash_profile"
 
 logger "info" "Packages versions"
 about
-
-exit 0
-RET="${?}"
-logger "info" "Exit code is: '${RET}'"
