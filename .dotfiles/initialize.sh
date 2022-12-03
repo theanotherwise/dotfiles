@@ -257,7 +257,7 @@ function versions() {
   package_version terraform --version
   package_version node --version
   package_version npm --version
-  package_version python --version
+  package_version python3 --version
   package_version ruby --version
   package_version gem --version
   #
