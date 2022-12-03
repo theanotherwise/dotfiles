@@ -251,15 +251,15 @@ function package_version() {
 
 function versions() {
   package_version helm version
-  #  package_version kubectl version --output yaml
-  #  package_version yarn --version
-  #  package_version k3d --version
-  #  package_version terraform --version
-  #  package_version node --version
-  #  package_version npm --version
-  #  package_version python --version
-  #  package_version ruby --version
-  #  package_version gem --version
+  package_version kubectl version --output yaml
+  package_version yarn --version
+  package_version k3d --version
+  package_version terraform --version
+  package_version node --version
+  package_version npm --version
+  package_version python --version
+  package_version ruby --version
+  package_version gem --version
   #
 }
 
@@ -276,13 +276,13 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
   portable "helm" "${HELM_VERSION}"
-#  portable "kubectl" "${KUBECTL_VERSION}"
-#  portable "yarn" "${YARN_VERSION}"
-#  portable "k3d" "${K3D_VERSION}"
-#  portable "terraform" "${TERRAFORM_VERSION}"
-#  portable "node" "${NODE_VERSION}"
-#  portable "python" "${PYTHON_VERSION}"
-#  portable "ruby" "${RUBY_VERSION}"
+  portable "kubectl" "${KUBECTL_VERSION}"
+  portable "yarn" "${YARN_VERSION}"
+  portable "k3d" "${K3D_VERSION}"
+  portable "terraform" "${TERRAFORM_VERSION}"
+  portable "node" "${NODE_VERSION}"
+  portable "python" "${PYTHON_VERSION}"
+  portable "ruby" "${RUBY_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"
