@@ -5,6 +5,8 @@ git fetch --all
 git checkout linux
 
 clear
+```
 
+```bash
 INSTALL_PORTABLE="yes" /bin/bash .dotfiles/initialize.sh
 ```
