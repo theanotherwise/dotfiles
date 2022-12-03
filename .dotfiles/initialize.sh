@@ -4,113 +4,128 @@
 CONF_COLORS="true"
 
 # Setup Default Versions
-[ -z "${HELM_VERSION}" ]      && HELM_VERSION="3.10.1"
-[ -z "${KUBECTL_VERSION}" ]   && KUBECTL_VERSION="1.25.3"
-[ -z "${K3D_VERSION}" ]       && K3D_VERSION="5.4.3"
-[ -z "${YARN_VERSION}" ]      && YARN_VERSION="1.22.19"
-[ -z "${NODE_VERSION}" ]      && NODE_VERSION="16.18.0"
+[ -z "${HELM_VERSION}" ] && HELM_VERSION="3.10.1"
+[ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.25.3"
+[ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.3"
+[ -z "${YARN_VERSION}" ] && YARN_VERSION="1.22.19"
+[ -z "${NODE_VERSION}" ] && NODE_VERSION="16.18.0"
 [ -z "${TERRAFORM_VERSION}" ] && TERRAFORM_VERSION="1.3.3"
-[ -z "${PYTHON_VERSION}" ]    && PYTHON_VERSION="3.10.8"
-[ -z "${RUBY_VERSION}" ]      && RUBY_VERSION="3.1.2"
+[ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.10.8"
+[ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.1.2"
 
-# Directoriesto to Setup
+# Directories to to Setup
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
 # Setup Install Directory
-if [ -z "${DOT_HOME}" ] ; then
+if [ -z "${DOT_HOME}" ]; then
   DOT_HOME="${HOME}"
 fi
 
 ########################################################
-function formatter () {
-  DATE="`date +\"%Y-%m-%d %H:%M:%S,%3N\"`"
+function logger_format() {
+  DATE=$(date +"%Y-%m-%d %H:%M:%S,%3N")
 
-  if [[ "${CONF_COLORS}" == "true" ]] ; then
+  if [[ "${CONF_COLORS}" == "true" ]]; then
     echo -e "${DATE} \e[${3}m${1}\e[m\t ${2}"
   else
     echo -e "${DATE} ${1}\t ${2}"
   fi
 }
 
-function messager () {
-  if [ "${#}" -eq "2" ] ; then
-    if [ "${2}" == "error" ] ; then
-      formatter "ERROR" "${1}" "91"
-    elif [ "${2}" == "success" ] ; then
-      formatter "SUCCESS" "${1}" "92"
-    elif [ "${2}" == "warning" ] ; then
-      formatter "WARNING" "${1}" "93"
-    elif [ "${2}" == "info" ] ; then
-      formatter "INFO" "${1}" "96"
-    else
-      formatter "LOGGER" "Incorrect logger type: '${2}'.." "31" && exit 4
-    fi
-  elif [ "${#}" -eq "1" ] ; then
-    formatter "INFO" "${1}" "0"
+function logger_msg() {
+  if [ "${2}" == "error" ]; then
+    logger_format "ERROR" "${1}" "91"
+  elif [ "${2}" == "success" ]; then
+    logger_format "SUCCESS" "${1}" "92"
+  elif [ "${2}" == "warning" ]; then
+    logger_format "WARNING" "${1}" "93"
+  elif [ "${2}" == "info" ]; then
+    logger_format "INFO" "${1}" "96"
+  else
+    logger_format "LOGGER" "Incorrect logger type: '${2}'.." "31" && exit 4
   fi
 }
 
-function logger () {
-  [ "${#}" -lt 1 ] || [ "${#}" -gt 2 ] && exit 1
+function logger() {
+  [ "${#}" -lt 2 ] || [ "${#}" -gt 2 ] && exit 1
 
-  if [ "${#}" -eq "1" ] ; then
-    [ -z "${1}" ] && exit 2 || messager "${1}"
-  fi
-
-  if [ "${#}" -eq "2" ] ; then
-    [ -z "${1}" ] || [ -z "${2}" ] && exit 3 || messager "${2}" "${1}"
-  fi
+  logger_msg "${2}" "${1}"
 }
 
-function portable_dir () {
+function portable_dir() {
   logger "info" "Create directory '${1}'"
   mkdir -p "${1}"
 }
 
-function portable_symlink () {
+function portable_symlink() {
   logger "info" "Create symlink '${2}' -> '${1}'"
-  ln -s "${1}" "${2}"
+
+  CREATE_SYMLINK="yes"
+
+  if [ -L "${2}" ]; then
+    CREATE_SYMLINK="no"
+    logger "warning" "Symlink already exists, override [Yes/no]?"
+    while true; do
+      read -p "Answer: " OVERRIDE
+      echo "${OVERRIDE}"
+      if [ "${OVERRIDE}" == "no" ] || [ "${OVERRIDE}" == "Yes" ]; then
+        if [ "${OVERRIDE}" == "Yes" ]; then
+          CREATE_SYMLINK="yes"
+        fi
+
+        break
+      fi
+    done
+
+    logger "info" "Removing symlink ${2}"
+    rm -f "${2}"
+  fi
+
+  if [ "${CREATE_SYMLINK}" == "yes" ]; then
+    logger "info" "Creating symlink '${2}' -> '${1}'"
+    ln -s "${1}" "${2}"
+  fi
 }
 
-function portable_download () {
+function portable_download() {
   logger "info" "Download file '${1}' -> '${2}'"
   wget "${1}" -O "${2}" --quiet
 }
 
-function portable_permissions () {
-  logger "warning" "Fix permissions in '${1}'"
+function portable_permissions() {
+  logger "info" "Fix permissions in '${1}'"
   chmod 700 --recursive --silent "${1}"
 }
 
-function portable_extract_tar () {
+function portable_extract_tar() {
   logger "info" "Extract TAR archive '${1}' -> '${2}'"
   tar -xf "${1}" -C "${2}" --strip-components=1
 }
 
-function portable_extract_zip () {
+function portable_extract_zip() {
   logger "info" "Extract ZIP archive '${1}' -> '${2}'"
   unzip -qqo "${1}" -d "${2}"
 }
 
-function portable_compile () {
+function portable_compile() {
   MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
-  MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
+  MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
   export MAKEFLAGS
 
   logger "info" "Enter to '${1}' directory"
   cd "${1}"
   logger "info" "Configure compilation '${1}' with --prefix '${2}'"
-  ./configure --prefix="${2}" > /dev/null 2>&1
+  ./configure --prefix="${2}" >/dev/null 2>&1
   logger "info" "Compile package '${1}'"
-  make > /dev/null 2>&1
+  make >/dev/null 2>&1
   logger "info" "Install compiled to '${2}'"
-  make install > /dev/null 2>&1
+  make install >/dev/null 2>&1
   logger "info" "Exit to '${HOME}' from '${1}' directory"
   cd
 }
 
-function portable () {
+function portable() {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
   helm)
@@ -206,19 +221,19 @@ function portable () {
   esac
 }
 
-function install_deps () {
-  apt-get update -qq
-  xargs -a "${1}/.dotfiles/packages.list" apt-get -y -qq install 
+function install_deps() {
+  sudo -i apt-get update -qq
+  xargs -a "${1}/.dotfiles/packages.list" sudo -i apt-get -y -qq install
 }
 
-function home_dirs () {
+function home_dirs() {
   HOME_DIRS=("${@}")
-  for DIR in "${HOME_DIRS[@]}" ; do
+  for DIR in "${HOME_DIRS[@]}"; do
     mkdir -p "${DOT_HOME}/${DIR}"
   done
 }
 
-function cleanup () {
+function cleanup() {
   rm -f "${DOT_HOME}"/README.md
   rm -f "${DOT_HOME}"/.gitignore
   rm -f "${DOT_HOME}"/.dotfiles/initialize.sh
@@ -226,24 +241,26 @@ function cleanup () {
   rm -rf "${TMP_DIR}"
 }
 
-function package_version () {
+function package_version() {
   TO_EXEC="${@}"
-  
+
+  echo
   logger "success" "Package '${1}', version:"
   eval "${TO_EXEC}"
 }
 
-function about () {
-  package_version python --version
-  package_version node --version
-  package_version yarn --version
-  package_version npm --version
-  package_version ruby --version
-  package_version gem --version
+function versions() {
   package_version helm version
-  package_version kubectl version --output yaml
-  package_version k3d --version
-  package_version terraform --version
+  #  package_version kubectl version --output yaml
+  #  package_version yarn --version
+  #  package_version k3d --version
+  #  package_version terraform --version
+  #  package_version node --version
+  #  package_version npm --version
+  #  package_version python --version
+  #  package_version ruby --version
+  #  package_version gem --version
+  #
 }
 
 ########################################################
@@ -255,23 +272,23 @@ home_dirs "${directories[@]}"
 logger "info" "Install APT dependencies"
 install_deps "${DOT_HOME}"
 
-if [ "${INSTALL_PORTABLE}" == "yes" ] ; then
+if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-  portable "helm"       "${HELM_VERSION}"
-  portable "kubectl"    "${KUBECTL_VERSION}"
-  portable "k3d"        "${K3D_VERSION}"
-  portable "yarn"       "${YARN_VERSION}"
-  portable "node"       "${NODE_VERSION}"
-  portable "terraform"  "${TERRAFORM_VERSION}"
-  portable "python"     "${PYTHON_VERSION}"
-  portable "ruby"       "${RUBY_VERSION}"
+  portable "helm" "${HELM_VERSION}"
+#  portable "kubectl" "${KUBECTL_VERSION}"
+#  portable "yarn" "${YARN_VERSION}"
+#  portable "k3d" "${K3D_VERSION}"
+#  portable "terraform" "${TERRAFORM_VERSION}"
+#  portable "node" "${NODE_VERSION}"
+#  portable "python" "${PYTHON_VERSION}"
+#  portable "ruby" "${RUBY_VERSION}"
 fi
 
-logger "warning" "Cleanup temporary files"
+logger "info" "Cleanup temporary files"
 cleanup
 
 logger "info" "Reload '.bash_profile' file"
 source "/${DOT_HOME}/.bash_profile"
 
-about
+versions
