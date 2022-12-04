@@ -23,6 +23,10 @@ if command -v kubectl > /dev/null 2>&1 ; then           # Kubectl Completion
   . <(kubectl completion bash)
 fi
 
+if command -v kustomize > /dev/null 2>&1 ; then           # Kubectl Completion
+  . <(kustomize completion bash)
+fi
+
 if command -v helm > /dev/null 2>&1 ; then              # Helm Completion
   . <(helm completion bash)
 fi
