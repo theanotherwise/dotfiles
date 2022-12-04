@@ -6,6 +6,7 @@ CONF_COLORS="true"
 # Setup Default Versions
 [ -z "${HELM_VERSION}" ] && HELM_VERSION="3.10.1"
 [ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.25.3"
+[ -z "${KUSTOMIZE_VERSION}" ] && KUSTOMIZE_VERSION="4.5.7"
 [ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.3"
 [ -z "${YARN_VERSION}" ] && YARN_VERSION="1.22.19"
 [ -z "${NODE_VERSION}" ] && NODE_VERSION="16.18.0"
@@ -99,7 +100,12 @@ function portable_permissions() {
 
 function portable_extract_tar() {
   logger "info" "Extract TAR archive '${1}' -> '${2}'"
-  tar -xf "${1}" -C "${2}" --strip-components=1
+
+  if [ "${3}" == "strip" ]; then
+    tar -xf "${1}" -C "${2}" --strip-components=1
+  else
+    tar -xf "${1}" -C "${2}"
+  fi
 }
 
 function portable_extract_zip() {
@@ -136,7 +142,7 @@ function portable() {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin" "strip"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   kubectl)
@@ -150,6 +156,17 @@ function portable() {
     mv "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
+  kustomize)
+    URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${2}/kustomize_v${2}_linux_amd64.tar.gz"
+    ARCHIVE_PATH="${TMP_DIR}/kustomize.tar.gz"
+    APP_DIR="${DOT_HOME}/binaries/kustomize"
+
+    portable_dir "${APP_DIR}/${2}/bin"
+    portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}/bin"
+    portable_permissions "${APP_DIR}/${2}/bin"
+    ;;
   yarn)
     URL="https://github.com/yarnpkg/yarn/releases/download/v${2}/yarn-v${2}.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/yarn.tgz"
@@ -158,7 +175,7 @@ function portable() {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}" "strip"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   node)
@@ -169,7 +186,7 @@ function portable() {
     portable_dir "${APP_DIR}/${2}/bin"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${APP_DIR}/${2}" "strip"
     portable_permissions "${APP_DIR}/${2}/bin"
     ;;
   terraform)
@@ -192,7 +209,7 @@ function portable() {
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}" "strip"
     portable_compile "${BUILD_DIR}" "${APP_DIR}/${2}"
     ;;
   ruby)
@@ -204,7 +221,7 @@ function portable() {
     mkdir -p "${APP_DIR}/${2}" "${BUILD_DIR}"
     portable_symlink "${APP_DIR}/${2}" "${APP_DIR}/latest"
     portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}" "strip"
     portable_compile "${BUILD_DIR}" "${APP_DIR}/${2}"
     ;;
   k3d)
@@ -251,6 +268,7 @@ function package_version() {
 function versions() {
   package_version helm version
   package_version kubectl version --output yaml
+  package_version kustomize version
   package_version yarn --version
   package_version k3d --version
   package_version terraform --version
@@ -276,6 +294,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
 
   portable "helm" "${HELM_VERSION}"
   portable "kubectl" "${KUBECTL_VERSION}"
+  portable "kustomize" "${KUSTOMIZE_VERSION}"
   portable "yarn" "${YARN_VERSION}"
   portable "k3d" "${K3D_VERSION}"
   portable "terraform" "${TERRAFORM_VERSION}"
