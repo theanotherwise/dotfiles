@@ -14,6 +14,7 @@ CONF_COLORS="true"
 [ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.10.8"
 [ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.1.2"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.1"
+[ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11.0-0cbc58b+4.10.0-0.okd-2022-03-07-131213"
 
 # Directories to to Setup
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
@@ -284,6 +285,21 @@ function portable() {
     portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
     portable_permissions "${BIN_PATH}"
     ;;
+  node)
+    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/v${2}.gz"
+    ARCHIVE_PATH="${TMP_DIR}/okd.tar.xz"
+
+    APP_PATH="${DOT_HOME}/binaries/okd"
+    LATEST_LINK="${APP_PATH}/latest"
+    VER_PATH="${APP_PATH}/${2}"
+    BIN_PATH="${VER_PATH}/bin"
+
+    portable_dir "${BIN_PATH}"
+    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    portable_download "${URL}" "${ARCHIVE_PATH}"
+    portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+    portable_permissions "${BIN_PATH}"
+    ;;
   esac
 }
 
@@ -351,6 +367,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   portable "python" "${PYTHON_VERSION}"
   portable "ruby" "${RUBY_VERSION}"
   portable "upx" "${UPX_VERSION}"
+  portable "okd" "${UPX_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"

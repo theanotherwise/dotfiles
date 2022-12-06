@@ -12,6 +12,7 @@ PATH="${HOME}/binaries/terraform/latest/bin:${PATH}"
 PATH="${HOME}/binaries/python/latest/bin:${PATH}"
 PATH="${HOME}/binaries/ruby/latest/bin:${PATH}"
 PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
+PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
 
 MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
 MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
