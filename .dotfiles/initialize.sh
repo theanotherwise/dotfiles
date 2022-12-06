@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Logger Colors
 CONF_COLORS="true"
 
-# Setup Default Versions
 [ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.3"
 [ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.25.3"
 [ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11.0-0cbc58b+4.10.0-0.okd-2022-03-07-131213"
@@ -16,10 +14,8 @@ CONF_COLORS="true"
 [ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.1.2"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.1"
 
-# Directories to to Setup
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
-# Setup Install Directory
 if [ -z "${DOT_HOME}" ]; then
   DOT_HOME="${HOME}"
 fi
@@ -285,9 +281,9 @@ function portable() {
     portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
     portable_permissions "${BIN_PATH}"
     ;;
-  node)
-    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/v${2}.gz"
-    ARCHIVE_PATH="${TMP_DIR}/okd.tar.xz"
+  okd)
+    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/v${2}.tar.gz"
+    ARCHIVE_PATH="${TMP_DIR}/okd.tar.gz"
 
     APP_PATH="${DOT_HOME}/binaries/okd"
     LATEST_LINK="${APP_PATH}/latest"
@@ -333,6 +329,10 @@ function package_version() {
 function versions() {
   package_version k3d --version
   package_version kubectl version --output yaml
+  package_version kubectl3.11 version
+  package_version oc3.11 version
+  package_version kubectl4.10 version
+  package_version oc4.10 version
   package_version helm version
   package_version kustomize version
   package_version node --version
@@ -374,6 +374,6 @@ logger "info" "Cleanup temporary files"
 cleanup
 
 logger "info" "Reload '.bash_profile' file"
-source "/${DOT_HOME}/.bash_profile"
+source "${DOT_HOME}/.bash_profile"
 
 versions
