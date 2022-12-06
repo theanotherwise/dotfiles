@@ -6,6 +6,7 @@ CONF_COLORS="true"
 # Setup Default Versions
 [ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.3"
 [ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.25.3"
+[ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11.0-0cbc58b+4.10.0-0.okd-2022-03-07-131213"
 [ -z "${HELM_VERSION}" ] && HELM_VERSION="3.10.1"
 [ -z "${KUSTOMIZE_VERSION}" ] && KUSTOMIZE_VERSION="4.5.7"
 [ -z "${NODE_VERSION}" ] && NODE_VERSION="16.18.0"
@@ -14,7 +15,6 @@ CONF_COLORS="true"
 [ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.10.8"
 [ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.1.2"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.1"
-[ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11.0-0cbc58b+4.10.0-0.okd-2022-03-07-131213"
 
 # Directories to to Setup
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
@@ -359,6 +359,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
 
   portable "k3d" "${K3D_VERSION}"
   portable "kubectl" "${KUBECTL_VERSION}"
+  portable "okd" "${OKD_VERSION}"
   portable "helm" "${HELM_VERSION}"
   portable "kustomize" "${KUSTOMIZE_VERSION}"
   portable "node" "${NODE_VERSION}"
@@ -367,7 +368,6 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   portable "python" "${PYTHON_VERSION}"
   portable "ruby" "${RUBY_VERSION}"
   portable "upx" "${UPX_VERSION}"
-  portable "okd" "${OKD_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"
