@@ -367,7 +367,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   portable "python" "${PYTHON_VERSION}"
   portable "ruby" "${RUBY_VERSION}"
   portable "upx" "${UPX_VERSION}"
-  portable "okd" "${UPX_VERSION}"
+  portable "okd" "${OKD_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"
