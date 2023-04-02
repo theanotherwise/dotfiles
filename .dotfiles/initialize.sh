@@ -4,7 +4,7 @@ CONF_COLORS="true"
 
 [ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.9"
 [ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.26.3"
-[ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11.0-0cbc58b+4.10.0-0.okd-2022-03-07-131213"
+[ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11+4.10+4.11"
 [ -z "${HELM_VERSION}" ] && HELM_VERSION="3.11.2"
 [ -z "${KUSTOMIZE_VERSION}" ] && KUSTOMIZE_VERSION="4.5.7"
 [ -z "${NODE_VERSION}" ] && NODE_VERSION="18.15.0"
@@ -343,7 +343,7 @@ function portable() {
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   okd)
-    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/v${2}.tar.gz"
+    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/${2}.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/okd.tar.gz"
 
     APP_PATH="${DOT_HOME}/binaries/okd"
