@@ -129,6 +129,12 @@ function portable_compile() {
   cd
 }
 
+function already_installed() {
+  if [[ -f "${1}/.dotfiles_installed" ]]; then
+    logger "info" "Package already installed in ${1}"
+  fi
+}
+
 function portable() {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
@@ -260,6 +266,8 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
+    already_installed "${VER_PATH}"
+
     portable_dir "${BIN_PATH}"
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     portable_download "${URL}" "${ARCHIVE_PATH}"
@@ -328,21 +336,21 @@ function package_version() {
 
 function versions() {
   package_version k3d --version
-  package_version kubectl version --output yaml
-  package_version kubectl3.11 version
-  package_version oc3.11 version
-  package_version kubectl4.10 version
-  package_version oc4.10 version
-  package_version helm version
-  package_version kustomize version
-  package_version node --version
-  package_version npm --version
-  package_version yarn --version
-  package_version terraform --version
-  package_version upx --version
-  package_version python3 --version
-  package_version ruby --version
-  package_version gem --version
+#  package_version kubectl version --output yaml
+#  package_version kubectl3.11 version
+#  package_version oc3.11 version
+#  package_version kubectl4.10 version
+#  package_version oc4.10 version
+#  package_version helm version
+#  package_version kustomize version
+#  package_version node --version
+#  package_version npm --version
+#  package_version yarn --version
+#  package_version terraform --version
+#  package_version upx --version
+#  package_version python3 --version
+#  package_version ruby --version
+#  package_version gem --version
 }
 
 ########################################################
@@ -358,16 +366,16 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
   portable "k3d" "${K3D_VERSION}"
-  portable "kubectl" "${KUBECTL_VERSION}"
-  portable "okd" "${OKD_VERSION}"
-  portable "helm" "${HELM_VERSION}"
-  portable "kustomize" "${KUSTOMIZE_VERSION}"
-  portable "node" "${NODE_VERSION}"
-  portable "yarn" "${YARN_VERSION}"
-  portable "terraform" "${TERRAFORM_VERSION}"
-  portable "python" "${PYTHON_VERSION}"
-  portable "ruby" "${RUBY_VERSION}"
-  portable "upx" "${UPX_VERSION}"
+#  portable "kubectl" "${KUBECTL_VERSION}"
+#  portable "okd" "${OKD_VERSION}"
+#  portable "helm" "${HELM_VERSION}"
+#  portable "kustomize" "${KUSTOMIZE_VERSION}"
+#  portable "node" "${NODE_VERSION}"
+#  portable "yarn" "${YARN_VERSION}"
+#  portable "terraform" "${TERRAFORM_VERSION}"
+#  portable "python" "${PYTHON_VERSION}"
+#  portable "ruby" "${RUBY_VERSION}"
+#  portable "upx" "${UPX_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"
