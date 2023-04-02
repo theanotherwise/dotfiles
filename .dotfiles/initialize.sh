@@ -57,7 +57,7 @@ function portable_dir() {
 }
 
 function portable_symlink() {
-  logger "info" "Removing symlink ${2}"
+  logger "warning" "Removing symlink ${2}"
   rm -f "${2}"
 
   logger "info" "Creating symlink '${2}' -> '${1}'"
