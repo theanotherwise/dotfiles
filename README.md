@@ -14,7 +14,9 @@ INSTALL_PORTABLE="yes" /bin/bash .dotfiles/initialize.sh
 ## Fresh Install
 
 ```bash
-rm -rf .git .dotfiles binaries
+rm -rf binaries
+
+rm -rf .git .dotfiles
 
 rm -f .bash_profile .bashrc .gitconfig .gitignore .vimrc README.md
 
@@ -24,4 +26,5 @@ git fetch --all
 git checkout main
 
 INSTALL_PORTABLE="yes" /bin/bash .dotfiles/initialize.sh
+
 ```
