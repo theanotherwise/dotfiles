@@ -13,7 +13,7 @@ CONF_COLORS="true"
 [ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.11.2"
 [ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.2.2"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.2"
-[ -z "${TERRAGRUNT_VERSION}" ] && TERRAGRUNT_VERSION="0.45.0"
+[ -z "${TERRAGRUNT_VERSION}" ] && TERRAGRUNT_VERSION="0.44.5"
 
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
