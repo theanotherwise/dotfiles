@@ -2,17 +2,17 @@
 
 CONF_COLORS="true"
 
-[ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.3"
-[ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.25.3"
+[ -z "${K3D_VERSION}" ] && K3D_VERSION="5.4.9"
+[ -z "${KUBECTL_VERSION}" ] && KUBECTL_VERSION="1.26.3"
 [ -z "${OKD_VERSION}" ] && OKD_VERSION="3.11.0-0cbc58b+4.10.0-0.okd-2022-03-07-131213"
-[ -z "${HELM_VERSION}" ] && HELM_VERSION="3.10.1"
+[ -z "${HELM_VERSION}" ] && HELM_VERSION="3.11.2"
 [ -z "${KUSTOMIZE_VERSION}" ] && KUSTOMIZE_VERSION="4.5.7"
-[ -z "${NODE_VERSION}" ] && NODE_VERSION="16.18.0"
+[ -z "${NODE_VERSION}" ] && NODE_VERSION="18.15.0"
 [ -z "${YARN_VERSION}" ] && YARN_VERSION="1.22.19"
-[ -z "${TERRAFORM_VERSION}" ] && TERRAFORM_VERSION="1.3.3"
-[ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.10.8"
-[ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.1.2"
-[ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.1"
+[ -z "${TERRAFORM_VERSION}" ] && TERRAFORM_VERSION="1.4.4"
+[ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.11.2"
+[ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.2.2"
+[ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.2"
 
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
