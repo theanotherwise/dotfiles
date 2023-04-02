@@ -132,6 +132,9 @@ function portable_compile() {
 function already_installed() {
   if [[ -f "${1}/.dotfiles_installed" ]]; then
     logger "info" "Package already installed in ${1}"
+    RET_VAL="true"
+  else
+    RET_VAL="false"
   fi
 }
 
@@ -272,12 +275,14 @@ function portable() {
     BIN_PATH="${VER_PATH}/bin"
 
     already_installed "${VER_PATH}"
+    echo "${RET_VAL}"
 
     portable_dir "${BIN_PATH}"
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     portable_download "${URL}" "${ARCHIVE_PATH}"
     mv "${ARCHIVE_PATH}" "${BIN_PATH}"
     portable_permissions "${BIN_PATH}"
+
+    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
 
     mark_ask_installed "${VER_PATH}"
     ;;
