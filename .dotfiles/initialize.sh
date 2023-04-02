@@ -137,7 +137,7 @@ function already_installed() {
 
 function mark_ask_installed() {
   echo >"${1}/.dotfiles_installed"
-  logger "info" "Package in '${}' marked as installed"
+  logger "info" "Package in '${1}' marked as installed"
 }
 
 function portable() {
