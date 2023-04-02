@@ -109,7 +109,7 @@ function portable_compile() {
 
 function already_installed() {
   if [[ -f "${1}/.dotfiles_installed" ]]; then
-    logger "warn" "Package already installed in ${1}"
+    logger "warning" "Package already installed in ${1}"
     RET_VAL="true"
   else
     RET_VAL="false"
