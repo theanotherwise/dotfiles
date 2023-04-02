@@ -135,6 +135,10 @@ function already_installed() {
   fi
 }
 
+function mark_ask_installed() {
+  echo >"${1}/.dotfiles_installed"
+}
+
 function portable() {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
@@ -273,6 +277,8 @@ function portable() {
     portable_download "${URL}" "${ARCHIVE_PATH}"
     mv "${ARCHIVE_PATH}" "${BIN_PATH}"
     portable_permissions "${BIN_PATH}"
+
+    mark_ask_installed "${VER_PATH}"
     ;;
   upx)
     URL="https://github.com/upx/upx/releases/download/v${2}/upx-${2}-amd64_linux.tar.xz"
@@ -336,21 +342,21 @@ function package_version() {
 
 function versions() {
   package_version k3d --version
-#  package_version kubectl version --output yaml
-#  package_version kubectl3.11 version
-#  package_version oc3.11 version
-#  package_version kubectl4.10 version
-#  package_version oc4.10 version
-#  package_version helm version
-#  package_version kustomize version
-#  package_version node --version
-#  package_version npm --version
-#  package_version yarn --version
-#  package_version terraform --version
-#  package_version upx --version
-#  package_version python3 --version
-#  package_version ruby --version
-#  package_version gem --version
+  #  package_version kubectl version --output yaml
+  #  package_version kubectl3.11 version
+  #  package_version oc3.11 version
+  #  package_version kubectl4.10 version
+  #  package_version oc4.10 version
+  #  package_version helm version
+  #  package_version kustomize version
+  #  package_version node --version
+  #  package_version npm --version
+  #  package_version yarn --version
+  #  package_version terraform --version
+  #  package_version upx --version
+  #  package_version python3 --version
+  #  package_version ruby --version
+  #  package_version gem --version
 }
 
 ########################################################
