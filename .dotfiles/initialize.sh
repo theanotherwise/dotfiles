@@ -418,10 +418,9 @@ function package_version() {
 function versions() {
   package_version k3d --version
   package_version kubectl version --output yaml
-  package_version kubectl3.11 version
   package_version oc3.11 version
-  package_version kubectl4.10 version
   package_version oc4.10 version
+  package_version oc4.11 version
   package_version helm version
   package_version kustomize version
   package_version node --version
