@@ -13,6 +13,7 @@ CONF_COLORS="true"
 [ -z "${PYTHON_VERSION}" ] && PYTHON_VERSION="3.11.2"
 [ -z "${RUBY_VERSION}" ] && RUBY_VERSION="3.2.2"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.2"
+[ -z "${TERRAGRUNT_VERSION}" ] && TERRAGRUNT_VERSION="0.45.0"
 
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
@@ -363,6 +364,27 @@ function portable() {
 
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
+  terragrunt)
+    URL="https://github.com/gruntwork-io/terragrunt/releases/download/v${2}/terragrunt_linux_amd64"
+    ARCHIVE_PATH="${TMP_DIR}/terragrunt"
+
+    APP_PATH="${DOT_HOME}/binaries/terragrunt"
+    LATEST_LINK="${APP_PATH}/latest"
+    VER_PATH="${APP_PATH}/${2}"
+    BIN_PATH="${VER_PATH}/bin"
+
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      mv "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_permissions "${BIN_PATH}"
+      mark_ask_installed "${VER_PATH}"
+    fi
+
+    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    ;;
   esac
 }
 
@@ -410,6 +432,7 @@ function versions() {
   package_version python3 --version
   package_version ruby --version
   package_version gem --version
+  package_version terragrunt --version
 }
 
 # Main
@@ -434,6 +457,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   portable "python" "${PYTHON_VERSION}"
   portable "ruby" "${RUBY_VERSION}"
   portable "upx" "${UPX_VERSION}"
+  portable "terragrunt" "${UPX_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"
