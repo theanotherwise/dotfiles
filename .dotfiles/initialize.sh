@@ -155,11 +155,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
-    portable_permissions "${BIN_PATH}"
     ;;
   kubectl)
     URL="https://dl.k8s.io/release/v${2}/bin/linux/amd64/kubectl"
@@ -170,11 +177,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      mv "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    mv "${ARCHIVE_PATH}" "${BIN_PATH}"
-    portable_permissions "${BIN_PATH}"
     ;;
   kustomize)
     URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${2}/kustomize_v${2}_linux_amd64.tar.gz"
@@ -185,11 +199,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}"
-    portable_permissions "${BIN_PATH}"
     ;;
   yarn)
     URL="https://github.com/yarnpkg/yarn/releases/download/v${2}/yarn-v${2}.tar.gz"
@@ -200,11 +221,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
-    portable_permissions "${BIN_PATH}"
     ;;
   node)
     URL="https://nodejs.org/dist/v${2}/node-v${2}-linux-x64.tar.xz"
@@ -213,12 +241,18 @@ function portable() {
     APP_PATH="${DOT_HOME}/binaries/node"
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
+    already_installed "${VER_PATH}"
 
-    portable_dir "${VER_PATH}"
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${VER_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
-    portable_permissions "${BIN_PATH}"
     ;;
   terraform)
     URL="https://releases.hashicorp.com/terraform/${2}/terraform_${2}_linux_amd64.zip"
@@ -229,11 +263,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_zip "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_zip "${ARCHIVE_PATH}" "${BIN_PATH}"
-    portable_permissions "${BIN_PATH}"
     ;;
   python)
     URL="https://www.python.org/ftp/python/${2}/Python-${2}.tar.xz"
@@ -244,11 +285,18 @@ function portable() {
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
 
-    mkdir -p "${VER_PATH}" "${BUILD_DIR}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      mkdir -p "${VER_PATH}" "${BUILD_DIR}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}" "strip"
+      portable_compile "${BUILD_DIR}" "${VER_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}" "strip"
-    portable_compile "${BUILD_DIR}" "${VER_PATH}"
     ;;
   ruby)
     URL="https://cache.ruby-lang.org/pub/ruby/${2:0:3}/ruby-${2}.tar.gz"
@@ -259,11 +307,18 @@ function portable() {
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
 
-    mkdir -p "${VER_PATH}" "${BUILD_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      mkdir -p "${VER_PATH}" "${BUILD_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_PATH}" "strip"
+      portable_compile "${BUILD_PATH}" "${VER_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_PATH}" "strip"
-    portable_compile "${BUILD_PATH}" "${VER_PATH}"
     ;;
   k3d)
     URL="https://github.com/k3d-io/k3d/releases/download/v${2}/k3d-linux-amd64"
@@ -295,11 +350,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
-    portable_permissions "${BIN_PATH}"
     ;;
   okd)
     URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/v${2}.tar.gz"
@@ -310,11 +372,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    portable_dir "${BIN_PATH}"
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
-    portable_permissions "${BIN_PATH}"
     ;;
   esac
 }
@@ -348,21 +417,21 @@ function package_version() {
 
 function versions() {
   package_version k3d --version
-  #  package_version kubectl version --output yaml
-  #  package_version kubectl3.11 version
-  #  package_version oc3.11 version
-  #  package_version kubectl4.10 version
-  #  package_version oc4.10 version
-  #  package_version helm version
-  #  package_version kustomize version
-  #  package_version node --version
-  #  package_version npm --version
-  #  package_version yarn --version
-  #  package_version terraform --version
-  #  package_version upx --version
-  #  package_version python3 --version
-  #  package_version ruby --version
-  #  package_version gem --version
+  package_version kubectl version --output yaml
+  package_version kubectl3.11 version
+  package_version oc3.11 version
+  package_version kubectl4.10 version
+  package_version oc4.10 version
+  package_version helm version
+  package_version kustomize version
+  package_version node --version
+  package_version npm --version
+  package_version yarn --version
+  package_version terraform --version
+  package_version upx --version
+  package_version python3 --version
+  package_version ruby --version
+  package_version gem --version
 }
 
 ########################################################
@@ -378,16 +447,16 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
   portable "k3d" "${K3D_VERSION}"
-#  portable "kubectl" "${KUBECTL_VERSION}"
-#  portable "okd" "${OKD_VERSION}"
-#  portable "helm" "${HELM_VERSION}"
-#  portable "kustomize" "${KUSTOMIZE_VERSION}"
-#  portable "node" "${NODE_VERSION}"
-#  portable "yarn" "${YARN_VERSION}"
-#  portable "terraform" "${TERRAFORM_VERSION}"
-#  portable "python" "${PYTHON_VERSION}"
-#  portable "ruby" "${RUBY_VERSION}"
-#  portable "upx" "${UPX_VERSION}"
+  portable "kubectl" "${KUBECTL_VERSION}"
+  portable "okd" "${OKD_VERSION}"
+  portable "helm" "${HELM_VERSION}"
+  portable "kustomize" "${KUSTOMIZE_VERSION}"
+  portable "node" "${NODE_VERSION}"
+  portable "yarn" "${YARN_VERSION}"
+  portable "terraform" "${TERRAFORM_VERSION}"
+  portable "python" "${PYTHON_VERSION}"
+  portable "ruby" "${RUBY_VERSION}"
+  portable "upx" "${UPX_VERSION}"
 fi
 
 logger "info" "Cleanup temporary files"
