@@ -34,14 +34,9 @@ if command -v oc4.10 >/dev/null 2>&1; then
   complete -F __start_oc_4_10 oc4.10
 fi
 
-if command -v kubectl3.11 >/dev/null 2>&1; then
-  . <(kubectl3.11 completion bash | sed "s/_oc_/_kubectl_3_11_/g" | sed "s/__start_oc/__start_kubectl_3_11/g")
-  complete -F __start_kubectl_3_11 kubectl3.11
-fi
-
-if command -v kubectl4.10 >/dev/null 2>&1; then
-  . <(kubectl4.10 completion bash | sed "s/_oc_/_kubectl_4_10_/g" | sed "s/__start_oc/__start_kubectl_4_10/g")
-  complete -F __start_kubectl_4_10 kubectl4.10
+if command -v oc4.11 >/dev/null 2>&1; then
+  . <(oc4.11 completion bash | sed "s/_oc_/_oc_4_11_/g" | sed "s/__start_oc/__start_oc_4_11/g")
+  complete -F __start_oc_4_11 oc4.11
 fi
 
 if command -v kustomize > /dev/null 2>&1 ; then
