@@ -57,33 +57,11 @@ function portable_dir() {
 }
 
 function portable_symlink() {
-  logger "info" "Create symlink '${2}' -> '${1}'"
+  logger "info" "Removing symlink ${2}"
+  rm -f "${2}"
 
-  CREATE_SYMLINK="yes"
-
-  if [ -L "${2}" ]; then
-    CREATE_SYMLINK="no"
-    logger "warning" "Symlink already exists, override [Yes/no]?"
-    while true; do
-      read -p "Answer: " OVERRIDE
-      echo "${OVERRIDE}"
-      if [ "${OVERRIDE}" == "no" ] || [ "${OVERRIDE}" == "Yes" ]; then
-        if [ "${OVERRIDE}" == "Yes" ]; then
-          CREATE_SYMLINK="yes"
-        fi
-
-        break
-      fi
-    done
-
-    logger "info" "Removing symlink ${2}"
-    rm -f "${2}"
-  fi
-
-  if [ "${CREATE_SYMLINK}" == "yes" ]; then
-    logger "info" "Creating symlink '${2}' -> '${1}'"
-    ln -s "${1}" "${2}"
-  fi
+  logger "info" "Creating symlink '${2}' -> '${1}'"
+  ln -s "${1}" "${2}"
 }
 
 function portable_download() {
@@ -131,7 +109,7 @@ function portable_compile() {
 
 function already_installed() {
   if [[ -f "${1}/.dotfiles_installed" ]]; then
-    logger "info" "Package already installed in ${1}"
+    logger "warn" "Package already installed in ${1}"
     RET_VAL="true"
   else
     RET_VAL="false"
