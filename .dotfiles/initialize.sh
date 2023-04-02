@@ -343,7 +343,7 @@ function portable() {
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   okd)
-    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/${2}.tar.gz"
+    URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-${2}.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/okd.tar.gz"
 
     APP_PATH="${DOT_HOME}/binaries/okd"
