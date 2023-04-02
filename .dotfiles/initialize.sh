@@ -275,16 +275,16 @@ function portable() {
     BIN_PATH="${VER_PATH}/bin"
 
     already_installed "${VER_PATH}"
-    echo "${RET_VAL}"
 
-    portable_dir "${BIN_PATH}"
-    portable_download "${URL}" "${ARCHIVE_PATH}"
-    mv "${ARCHIVE_PATH}" "${BIN_PATH}"
-    portable_permissions "${BIN_PATH}"
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      mv "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_permissions "${BIN_PATH}"
+      mark_ask_installed "${VER_PATH}"
+    fi
 
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
-
-    mark_ask_installed "${VER_PATH}"
     ;;
   upx)
     URL="https://github.com/upx/upx/releases/download/v${2}/upx-${2}-amd64_linux.tar.xz"
