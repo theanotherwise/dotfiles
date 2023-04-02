@@ -412,7 +412,6 @@ function versions() {
   package_version gem --version
 }
 
-########################################################
 # Main
 
 logger "info" "Setup HOME directories in '${DOT_HOME}'"
