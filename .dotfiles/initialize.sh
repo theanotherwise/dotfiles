@@ -31,7 +31,7 @@ function logger_format() {
   fi
 }
 
-function logger_msg() {
+function logger_message() {
   if [ "${2}" == "error" ]; then
     logger_format "ERROR" "${1}" "91"
   elif [ "${2}" == "success" ]; then
@@ -48,7 +48,7 @@ function logger_msg() {
 function logger() {
   [ "${#}" -lt 2 ] || [ "${#}" -gt 2 ] && exit 1
 
-  logger_msg "${2}" "${1}"
+  logger_message "${2}" "${1}"
 }
 
 function portable_dir() {
@@ -351,10 +351,10 @@ function versions() {
 logger "info" "Setup HOME directories in '${DOT_HOME}'"
 home_dirs "${directories[@]}"
 
-logger "info" "Install APT dependencies"
-install_deps "${DOT_HOME}"
-
 if [ "${INSTALL_PORTABLE}" == "yes" ]; then
+  logger "info" "Install APT dependencies"
+  install_deps "${DOT_HOME}"
+
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
   portable "k3d" "${K3D_VERSION}"
