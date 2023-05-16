@@ -177,15 +177,14 @@ function portable() {
     APP_PATH="${DOT_HOME}/binaries/go"
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
-    BIN_PATH="${VER_PATH}/bin"
 
     already_installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
+      portable_dir "${VER_PATH}"
       portable_download "${URL}" "${ARCHIVE_PATH}"
       portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
-      portable_permissions "${BIN_PATH}"
+      portable_permissions "${VER_PATH}"
 
       mark_ask_installed "${VER_PATH}"
     fi
