@@ -171,6 +171,8 @@ function portable() {
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   go)
+    echo x
+    ;;
   kustomize)
     URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${2}/kustomize_v${2}_linux_amd64.tar.gz"
     ARCHIVE_PATH="${TMP_DIR}/kustomize.tar.gz"
