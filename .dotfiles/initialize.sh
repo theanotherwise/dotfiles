@@ -206,7 +206,7 @@ function portable() {
     if [[ "${RET_VAL}" == "false" ]]; then
       portable_dir "${BIN_PATH}"
       portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
       portable_permissions "${BIN_PATH}"
 
       mark_ask_installed "${VER_PATH}"
