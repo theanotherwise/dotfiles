@@ -452,7 +452,7 @@ function versions() {
   #  package_version ruby --version
   #  package_version gem --version
   #  package_version terragrunt --version
-  package_version go --version
+  package_version go version
 }
 
 # Main
