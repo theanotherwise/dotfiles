@@ -171,7 +171,26 @@ function portable() {
     portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   go)
-    echo x
+    URL="https://go.dev/dl/go${2}.linux-amd64.tar.gz"
+    ARCHIVE_PATH="${TMP_DIR}/go.tar.gz"
+
+    APP_PATH="${DOT_HOME}/binaries/go"
+    LATEST_LINK="${APP_PATH}/latest"
+    VER_PATH="${APP_PATH}/${2}"
+    BIN_PATH="${VER_PATH}/bin"
+
+    already_installed "${VER_PATH}"
+
+    if [[ "${RET_VAL}" == "false" ]]; then
+      portable_dir "${BIN_PATH}"
+      portable_download "${URL}" "${ARCHIVE_PATH}"
+      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}"
+      portable_permissions "${BIN_PATH}"
+
+      mark_ask_installed "${VER_PATH}"
+    fi
+
+    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   kustomize)
     URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${2}/kustomize_v${2}_linux_amd64.tar.gz"
@@ -418,22 +437,22 @@ function package_version() {
 }
 
 function versions() {
-#  package_version k3d --version
-#  package_version kubectl version --output yaml
-#  package_version oc3.11 version
-#  package_version oc4.10 version
-#  package_version oc4.11 version
-#  package_version helm version
-#  package_version kustomize version
-#  package_version node --version
-#  package_version npm --version
-#  package_version yarn --version
-#  package_version terraform --version
-#  package_version upx --version
-#  package_version python3 --version
-#  package_version ruby --version
-#  package_version gem --version
-#  package_version terragrunt --version
+  #  package_version k3d --version
+  #  package_version kubectl version --output yaml
+  #  package_version oc3.11 version
+  #  package_version oc4.10 version
+  #  package_version oc4.11 version
+  #  package_version helm version
+  #  package_version kustomize version
+  #  package_version node --version
+  #  package_version npm --version
+  #  package_version yarn --version
+  #  package_version terraform --version
+  #  package_version upx --version
+  #  package_version python3 --version
+  #  package_version ruby --version
+  #  package_version gem --version
+  #  package_version terragrunt --version
   package_version go --version
 }
 
@@ -448,18 +467,18 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
 
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-#  portable "k3d" "${K3D_VERSION}"
-#  portable "kubectl" "${KUBECTL_VERSION}"
-#  portable "okd" "${OKD_VERSION}"
-#  portable "helm" "${HELM_VERSION}"
-#  portable "kustomize" "${KUSTOMIZE_VERSION}"
-#  portable "node" "${NODE_VERSION}"
-#  portable "yarn" "${YARN_VERSION}"
-#  portable "terraform" "${TERRAFORM_VERSION}"
-#  portable "python" "${PYTHON_VERSION}"
-#  portable "ruby" "${RUBY_VERSION}"
-#  portable "upx" "${UPX_VERSION}"
-#  portable "terragrunt" "${TERRAGRUNT_VERSION}"
+  #  portable "k3d" "${K3D_VERSION}"
+  #  portable "kubectl" "${KUBECTL_VERSION}"
+  #  portable "okd" "${OKD_VERSION}"
+  #  portable "helm" "${HELM_VERSION}"
+  #  portable "kustomize" "${KUSTOMIZE_VERSION}"
+  #  portable "node" "${NODE_VERSION}"
+  #  portable "yarn" "${YARN_VERSION}"
+  #  portable "terraform" "${TERRAFORM_VERSION}"
+  #  portable "python" "${PYTHON_VERSION}"
+  #  portable "ruby" "${RUBY_VERSION}"
+  #  portable "upx" "${UPX_VERSION}"
+  #  portable "terragrunt" "${TERRAGRUNT_VERSION}"
   portable "go" "${GO_VERSION}"
 fi
 
