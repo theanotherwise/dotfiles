@@ -177,7 +177,7 @@ function portable() {
     APP_PATH="${DOT_HOME}/binaries/go"
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
-    BIN_PATH="${VER_PATH}/bin"
+    BIN_PATH="${VER_PATH}"
 
     already_installed "${VER_PATH}"
 
