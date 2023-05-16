@@ -402,8 +402,6 @@ function home_dirs() {
 
 function cleanup() {
   rm -f "${DOT_HOME}"/README.md
-  rm -f "${DOT_HOME}"/.gitignore
-  rm -rf "${DOT_HOME}"/.git
   rm -rf "${TMP_DIR}"
 }
 
