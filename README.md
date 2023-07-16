@@ -26,5 +26,4 @@ git fetch --all
 git checkout main
 
 INSTALL_PORTABLE="yes" /bin/bash .dotfiles/initialize.sh
-
 ```
