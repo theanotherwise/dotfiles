@@ -457,7 +457,7 @@ function cleanup() {
   rm -rf "${TMP_DIR}"
 }
 
-function package_version() {
+function check_version() {
   TO_EXEC="${@}"
 
   echo
@@ -466,24 +466,24 @@ function package_version() {
 }
 
 function versions() {
-  #package_version k3d --version
-  #package_version kubectl version --output yaml
-  #package_version oc3.11 version
-  #package_version oc4.10 version
-  #package_version oc4.11 version
-  #package_version helm version
-  #package_version kustomize version
-  #package_version node --version
-  #package_version npm --version
-  #package_version yarn --version
-  #package_version terraform --version
-  #package_version upx --version
-  #package_version python3 --version
-  #package_version ruby --version
-  #package_version gem --version
-  #package_version terragrunt --version
-  #package_version go version
-  package_version groovy --version
+  #check_version k3d --version
+  #check_version kubectl version --output yaml
+  #check_version oc3.11 version
+  #check_version oc4.10 version
+  #check_version oc4.11 version
+  #check_version helm version
+  #check_version kustomize version
+  #check_version node --version
+  #check_version npm --version
+  #check_version yarn --version
+  #check_version terraform --version
+  #check_version upx --version
+  #check_version python3 --version
+  #check_version ruby --version
+  #check_version gem --version
+  #check_version terragrunt --version
+  #check_version go version
+  check_version groovy --version
 }
 
 # Main
