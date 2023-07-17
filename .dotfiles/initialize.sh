@@ -54,12 +54,12 @@ function logger() {
   logger_message "${2}" "${1}"
 }
 
-function portable_dir() {
+function prepare_dir() {
   logger "info" "Create directory '${1}'"
   mkdir -p "${1}"
 }
 
-function portable_symlink() {
+function symlink() {
   logger "warning" "Removing symlink ${2}"
   rm -f "${2}"
 
@@ -67,17 +67,17 @@ function portable_symlink() {
   ln -s "${1}" "${2}"
 }
 
-function portable_download() {
+function download() {
   logger "info" "Download file '${1}' -> '${2}'"
   wget "${1}" -O "${2}" --quiet
 }
 
-function portable_permissions() {
+function permissions() {
   logger "info" "Fix permissions in '${1}'"
   chmod 700 --recursive --silent "${1}"
 }
 
-function portable_extract_tar() {
+function extract_tar() {
   logger "info" "Extract TAR archive '${1}' -> '${2}'"
 
   if [ "${3}" == "strip" ]; then
@@ -87,12 +87,12 @@ function portable_extract_tar() {
   fi
 }
 
-function portable_extract_zip() {
+function extract_zip() {
   logger "info" "Extract ZIP archive '${1}' -> '${2}'"
   unzip -qqo "${1}" -d "${2}"
 }
 
-function portable_compile() {
+function compile() {
   MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
   MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
@@ -110,7 +110,7 @@ function portable_compile() {
   cd
 }
 
-function already_installed() {
+function installed() {
   if [[ -f "${1}/.dotfiles_installed" ]]; then
     logger "warning" "Package already installed in ${1}"
     RET_VAL="true"
@@ -119,12 +119,12 @@ function already_installed() {
   fi
 }
 
-function mark_ask_installed() {
+function mark_installed() {
   echo >"${1}/.dotfiles_installed"
   logger "info" "Package in '${1}' marked as installed"
 }
 
-function portable_move_up() {
+function move_up() {
   mv "${1}"/* "${1}"/../
   rmdir "${1}"
 }
@@ -141,18 +141,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
-      portable_permissions "${BIN_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   kubectl)
     URL="https://dl.k8s.io/release/v${2}/bin/linux/amd64/kubectl"
@@ -163,18 +163,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
       mv "${ARCHIVE_PATH}" "${BIN_PATH}"
-      portable_permissions "${BIN_PATH}"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   go)
     URL="https://go.dev/dl/go${2}.linux-amd64.tar.gz"
@@ -184,18 +184,18 @@ function portable() {
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${VER_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
-      portable_permissions "${VER_PATH}"
+      prepare_dir "${VER_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
+      permissions "${VER_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   kustomize)
     URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${2}/kustomize_v${2}_linux_amd64.tar.gz"
@@ -206,18 +206,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}"
-      portable_permissions "${BIN_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   yarn)
     URL="https://github.com/yarnpkg/yarn/releases/download/v${2}/yarn-v${2}.tar.gz"
@@ -228,18 +228,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
-      portable_permissions "${BIN_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   node)
     URL="https://nodejs.org/dist/v${2}/node-v${2}-linux-x64.tar.xz"
@@ -249,18 +249,18 @@ function portable() {
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${VER_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
-      portable_permissions "${VER_PATH}"
+      prepare_dir "${VER_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${VER_PATH}" "strip"
+      permissions "${VER_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   groovy)
     URL="https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/apache-groovy-binary-${2}.zip"
@@ -271,19 +271,19 @@ function portable() {
     VER_PATH="${APP_PATH}"/"${2}"
     TMP_PATH="${VER_PATH}/groovy-${2}"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${VER_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_zip "${ARCHIVE_PATH}" "${VER_PATH}"
-      portable_move_up "${TMP_PATH}"
-      portable_permissions "${VER_PATH}"
+      prepare_dir "${VER_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_zip "${ARCHIVE_PATH}" "${VER_PATH}"
+      move_up "${TMP_PATH}"
+      permissions "${VER_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   terraform)
     URL="https://releases.hashicorp.com/terraform/${2}/terraform_${2}_linux_amd64.zip"
@@ -294,18 +294,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_zip "${ARCHIVE_PATH}" "${BIN_PATH}"
-      portable_permissions "${BIN_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_zip "${ARCHIVE_PATH}" "${BIN_PATH}"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   python)
     URL="https://www.python.org/ftp/python/${2}/Python-${2}.tar.xz"
@@ -316,18 +316,18 @@ function portable() {
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
       mkdir -p "${VER_PATH}" "${BUILD_DIR}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}" "strip"
-      portable_compile "${BUILD_DIR}" "${VER_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${BUILD_DIR}" "strip"
+      compile "${BUILD_DIR}" "${VER_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   ruby)
     URL="https://cache.ruby-lang.org/pub/ruby/${2:0:3}/ruby-${2}.tar.gz"
@@ -338,18 +338,18 @@ function portable() {
     LATEST_LINK="${APP_PATH}/latest"
     VER_PATH="${APP_PATH}/${2}"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
       mkdir -p "${VER_PATH}" "${BUILD_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BUILD_PATH}" "strip"
-      portable_compile "${BUILD_PATH}" "${VER_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${BUILD_PATH}" "strip"
+      compile "${BUILD_PATH}" "${VER_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   k3d)
     URL="https://github.com/k3d-io/k3d/releases/download/v${2}/k3d-linux-amd64"
@@ -360,17 +360,17 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
       mv "${ARCHIVE_PATH}" "${BIN_PATH}"
-      portable_permissions "${BIN_PATH}"
-      mark_ask_installed "${VER_PATH}"
+      permissions "${BIN_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   upx)
     URL="https://github.com/upx/upx/releases/download/v${2}/upx-${2}-amd64_linux.tar.xz"
@@ -381,18 +381,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
-      portable_permissions "${BIN_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   okd)
     URL="https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-${2}.tar.gz"
@@ -403,18 +403,18 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
-      portable_extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
-      portable_permissions "${BIN_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
+      extract_tar "${ARCHIVE_PATH}" "${BIN_PATH}" "strip"
+      permissions "${BIN_PATH}"
 
-      mark_ask_installed "${VER_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   terragrunt)
     URL="https://github.com/gruntwork-io/terragrunt/releases/download/v${2}/terragrunt_linux_amd64"
@@ -425,17 +425,17 @@ function portable() {
     VER_PATH="${APP_PATH}/${2}"
     BIN_PATH="${VER_PATH}/bin"
 
-    already_installed "${VER_PATH}"
+    installed "${VER_PATH}"
 
     if [[ "${RET_VAL}" == "false" ]]; then
-      portable_dir "${BIN_PATH}"
-      portable_download "${URL}" "${ARCHIVE_PATH}"
+      prepare_dir "${BIN_PATH}"
+      download "${URL}" "${ARCHIVE_PATH}"
       mv "${ARCHIVE_PATH}" "${BIN_PATH}"
-      portable_permissions "${BIN_PATH}"
-      mark_ask_installed "${VER_PATH}"
+      permissions "${BIN_PATH}"
+      mark_installed "${VER_PATH}"
     fi
 
-    portable_symlink "${VER_PATH}" "${LATEST_LINK}"
+    symlink "${VER_PATH}" "${LATEST_LINK}"
     ;;
   esac
 }
