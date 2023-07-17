@@ -466,8 +466,8 @@ function versions() {
   #package_version oc4.11 version
   #package_version helm version
   #package_version kustomize version
-  package_version node --version
-  package_version npm --version
+  #package_version node --version
+  #package_version npm --version
   #package_version yarn --version
   #package_version terraform --version
   #package_version upx --version
@@ -495,7 +495,7 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
   #portable "okd" "${OKD_VERSION}"
   #portable "helm" "${HELM_VERSION}"
   #portable "kustomize" "${KUSTOMIZE_VERSION}"
-  portable "node" "${NODE_VERSION}"
+  #portable "node" "${NODE_VERSION}"
   #portable "yarn" "${YARN_VERSION}"
   #portable "terraform" "${TERRAFORM_VERSION}"
   #portable "python" "${PYTHON_VERSION}"
