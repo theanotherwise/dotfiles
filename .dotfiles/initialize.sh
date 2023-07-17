@@ -124,6 +124,11 @@ function mark_ask_installed() {
   logger "info" "Package in '${1}' marked as installed"
 }
 
+function portable_move_up() {
+  mv "${1}"/* "${1}"/../
+  rmdir "${1}"
+}
+
 function portable() {
   logger "info" "Install package '${1}', Version: '${2}'"
   case "${1}" in
@@ -272,8 +277,7 @@ function portable() {
       portable_dir "${VER_PATH}"
       portable_download "${URL}" "${ARCHIVE_PATH}"
       portable_extract_zip "${ARCHIVE_PATH}" "${VER_PATH}"
-      mv "${TMP_PATH}"/* "${TMP_PATH}"/../
-      rmdir "${TMP_PATH}"
+      portable_move_up "${TMP_PATH}"
       portable_permissions "${VER_PATH}"
 
       mark_ask_installed "${VER_PATH}"
