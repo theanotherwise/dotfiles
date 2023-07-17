@@ -274,6 +274,7 @@ function portable() {
       echo "${VER_PATH}"
       ls -lh ${VER_PATH}/groovy-${2}
       mv "${VER_PATH}"/groovy-"${2}"/* "${VER_PATH}"/groovy-"${2}"/../
+      rmdir "${VER_PATH}"/groovy-"${2}"
       portable_permissions "${VER_PATH}"
 
       mark_ask_installed "${VER_PATH}"
