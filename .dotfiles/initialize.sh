@@ -271,7 +271,7 @@ function portable() {
       portable_dir "${VER_PATH}"
       portable_download "${URL}" "${ARCHIVE_PATH}"
       portable_extract_zip "${ARCHIVE_PATH}" "${VER_PATH}"
-      echo "${VER_PATH}"
+      echo "x${VER_PATH}x"
       mv "${VER_PATH}/groovy-${2}/*" "${VER_PATH}/../"
       portable_permissions "${VER_PATH}"
 
