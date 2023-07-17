@@ -15,7 +15,7 @@ CONF_COLORS="true"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.1"
 [ -z "${TERRAGRUNT_VERSION}" ] && TERRAGRUNT_VERSION="0.44.5"
 [ -z "${GO_VERSION}" ] && GO_VERSION="1.20.4"
-[ -z "${GROOVY_VERSION}" ] && GROOVY_VERSION="4.0.13"
+[ -z "${GROOVY_VERSION}" ] && GROOVY_VERSION="3.0.18"
 
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
