@@ -15,7 +15,7 @@ CONF_COLORS="true"
 [ -z "${UPX_VERSION}" ] && UPX_VERSION="4.0.1"
 [ -z "${TERRAGRUNT_VERSION}" ] && TERRAGRUNT_VERSION="0.44.5"
 [ -z "${GO_VERSION}" ] && GO_VERSION="1.20.4"
-[ -z "${GROOVY_VERSION}" ] && GROOVY_VERSION="3.0.18"
+[ -z "${GROOVY_VERSION}" ] && GROOVY_VERSION="4.0.13"
 
 directories=("archives" "downloads" "configs" "sessions" "projects" "scripts/cron.d" "temporary" "binaries")
 
@@ -466,23 +466,23 @@ function check_version() {
 }
 
 function versions() {
-  #check_version k3d --version
-  #check_version kubectl version --output yaml
-  #check_version oc3.11 version
-  #check_version oc4.10 version
-  #check_version oc4.11 version
-  #check_version helm version
-  #check_version kustomize version
-  #check_version node --version
-  #check_version npm --version
-  #check_version yarn --version
-  #check_version terraform --version
-  #check_version upx --version
-  #check_version python3 --version
-  #check_version ruby --version
-  #check_version gem --version
-  #check_version terragrunt --version
-  #check_version go version
+  check_version k3d --version
+  check_version kubectl version --output yaml
+  check_version oc3.11 version
+  check_version oc4.10 version
+  check_version oc4.11 version
+  check_version helm version
+  check_version kustomize version
+  check_version node --version
+  check_version npm --version
+  check_version yarn --version
+  check_version terraform --version
+  check_version upx --version
+  check_version python3 --version
+  check_version ruby --version
+  check_version gem --version
+  check_version terragrunt --version
+  check_version go version
   check_version groovy --version
 }
 
@@ -497,19 +497,19 @@ if [ "${INSTALL_PORTABLE}" == "yes" ]; then
 
   TMP_DIR="$(mktemp -p "/tmp" -d XXXXX)"
 
-  #portable "k3d" "${K3D_VERSION}"
-  #portable "kubectl" "${KUBECTL_VERSION}"
-  #portable "okd" "${OKD_VERSION}"
-  #portable "helm" "${HELM_VERSION}"
-  #portable "kustomize" "${KUSTOMIZE_VERSION}"
-  #portable "node" "${NODE_VERSION}"
-  #portable "yarn" "${YARN_VERSION}"
-  #portable "terraform" "${TERRAFORM_VERSION}"
-  #portable "python" "${PYTHON_VERSION}"
-  #portable "ruby" "${RUBY_VERSION}"
-  #portable "upx" "${UPX_VERSION}"
-  #portable "terragrunt" "${TERRAGRUNT_VERSION}"
-  #portable "go" "${GO_VERSION}"
+  portable "k3d" "${K3D_VERSION}"
+  portable "kubectl" "${KUBECTL_VERSION}"
+  portable "okd" "${OKD_VERSION}"
+  portable "helm" "${HELM_VERSION}"
+  portable "kustomize" "${KUSTOMIZE_VERSION}"
+  portable "node" "${NODE_VERSION}"
+  portable "yarn" "${YARN_VERSION}"
+  portable "terraform" "${TERRAFORM_VERSION}"
+  portable "python" "${PYTHON_VERSION}"
+  portable "ruby" "${RUBY_VERSION}"
+  portable "upx" "${UPX_VERSION}"
+  portable "terragrunt" "${TERRAGRUNT_VERSION}"
+  portable "go" "${GO_VERSION}"
   portable "groovy" "${GROOVY_VERSION}"
 fi
 
