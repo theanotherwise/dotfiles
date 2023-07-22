@@ -1,5 +1,8 @@
 ```bash
-rm -f binaries .bash_profile .bashrc .gitconfig .gitignore .vimrc README.md
+rm -f .bash_profile .bashrc .gitconfig .gitignore .vimrc README.md
+rm -rf "${HOME}"/.git 
+rm -rf "${HOME}"/.dotfiles
+rm -rf "${HOME}"/binaries
 
 git init "${HOME}"
 git remote add origin https://github.com/theanotherwise/dotfiles.git
@@ -9,5 +12,5 @@ git checkout main
 ```
 
 ```bash
-git pull && INSTALL_PORTABLE="yes" /bin/bash .dotfiles/initialize.sh
+git pull
 ```
