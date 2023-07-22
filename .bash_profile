@@ -3,6 +3,7 @@ if [ -f ${HOME}/.bashrc ] ; then
 fi
 
 PATH="${HOME}/binaries/k3d/latest/bin:${PATH}"
+PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kubectl/latest/bin:${PATH}"
 PATH="${HOME}/binaries/helm/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kustomize/latest/bin:${PATH}"
