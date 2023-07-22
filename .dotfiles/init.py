@@ -125,10 +125,19 @@ def extract_tar(tar_path, dest_path, strip, _type):
 
 
 def extract_zip_strip(zip_path, dest_path):
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        for member in zip_ref.namelist():
-            rel_path = os.path.relpath(member, zip_ref.namelist()[0].split('/')[0])
-            zip_ref.extract(member, os.path.join(dest_path, rel_path))
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        for member in zip_ref.infolist():
+            # Skip directories as we'll create them automatically
+            if member.is_dir():
+                continue
+
+            extracted_path = os.path.join(*member.filename.split('/')[1:])
+
+            output_path = os.path.join(dest_path, extracted_path)
+
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            with zip_ref.open(member) as source, open(output_path, "wb") as target:
+                shutil.copyfileobj(source, target)
 
 
 def extract_zip_non_strip(zip_path, dest_path):
@@ -150,6 +159,13 @@ def if_in_bin_dir(version_path, in_bin):
         return version_path
 
 
+def setup_permissions(directory_path):
+    for dirpath, dirnames, filenames in os.walk(directory_path):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            os.chmod(file_path, 0o755)
+
+
 def extract(package, v, ver_path):
     if ver_path:
         if v.type == PKG_TYPES['binary']:
@@ -169,6 +185,8 @@ def extract(package, v, ver_path):
             extract_tar(new_bin_path, new_ver_path, v.strip, v.type)
         else:
             sys.exit("Unrecognized format '{}'".format(v.type))
+
+        setup_permissions("{}/bin".format(ver_path))
 
 
 def recursive_remove(_path):

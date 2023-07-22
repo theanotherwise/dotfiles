@@ -14,7 +14,7 @@ binaries:
   - name: k3d
     url: https://github.com/k3d-io/k3d/releases/download/v{version}/k3d-linux-amd64
     type: binary
-    override: False
+    override: True
     strip: None
     inBin: False
     latest: 5.4.8
@@ -24,7 +24,7 @@ binaries:
   - name: kubectl
     url: https://dl.k8s.io/release/v{version}/bin/linux/amd64/kubectl
     type: binary
-    override: False
+    override: True
     strip: None
     inBin: False
     latest: 1.26.3
@@ -34,7 +34,7 @@ binaries:
   - name: terragrunt
     url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_linux_amd64
     type: binary
-    override: False
+    override: True
     strip: None
     inBin: False
     latest: 0.44.5
@@ -44,7 +44,7 @@ binaries:
   - name: okd
     url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: True
     inBin: False
     latest: 3.11+4.10+4.11
@@ -53,7 +53,7 @@ binaries:
   - name: helm
     url: https://get.helm.sh/helm-v{version}-linux-amd64.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: True
     inBin: False
     latest: 3.11.2
@@ -62,7 +62,7 @@ binaries:
   - name: kustomize
     url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{version}/kustomize_v{version}_linux_amd64.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: False
     inBin: False
     latest: 4.5.7
@@ -71,7 +71,7 @@ binaries:
   - name: node
     url: https://nodejs.org/dist/v{version}/node-v{version}-linux-x64.tar.xz
     type: tar.xz
-    override: False
+    override: True
     strip: True
     inBin: True
     latest: 18.15.0
@@ -80,7 +80,7 @@ binaries:
   - name: yarn
     url: https://github.com/yarnpkg/yarn/releases/download/v{version}/yarn-v{version}.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: True
     inBin: True
     latest: 1.22.19
@@ -89,7 +89,7 @@ binaries:
   - name: terraform
     url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_linux_amd64.zip
     type: zip
-    override: False
+    override: True
     strip: False
     inBin: False
     latest: 1.4.3
@@ -98,7 +98,7 @@ binaries:
   - name: upx
     url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-amd64_linux.tar.xz
     type: tar.xz
-    override: False
+    override: True
     strip: True
     inBin: False
     latest: 4.0.1
@@ -107,7 +107,7 @@ binaries:
   - name: go
     url: https://go.dev/dl/go{version}.linux-amd64.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: True
     inBin: True
     latest: 1.20.4
@@ -116,7 +116,7 @@ binaries:
   - name: groovy
     url: https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/apache-groovy-binary-{version}.zip
     type: zip
-    override: False
+    override: True
     strip: True
     inBin: True
     latest: 4.0.13

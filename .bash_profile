@@ -9,6 +9,7 @@ PATH="${HOME}/binaries/kustomize/latest/bin:${PATH}"
 PATH="${HOME}/binaries/node/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="${HOME}/binaries/terraform/latest/bin:${PATH}"
+PATH="${HOME}/binaries/terragrunt/latest/bin:${PATH}"
 PATH="${HOME}/binaries/python/latest/bin:${PATH}"
 PATH="${HOME}/binaries/ruby/latest/bin:${PATH}"
 PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
@@ -24,21 +25,6 @@ export MAKEFLAGS
 
 if command -v kubectl > /dev/null 2>&1 ; then
   . <(kubectl completion bash)
-fi
-
-if command -v oc3.11 >/dev/null 2>&1; then
-  . <(oc3.11 completion bash | sed "s/_oc_/_oc_3_11_/g" | sed "s/__start_oc/__start_oc_3_11/g")
-  complete -F __start_oc_3_11 oc3.11
-fi
-
-if command -v oc4.10 >/dev/null 2>&1; then
-  . <(oc4.10 completion bash | sed "s/_oc_/_oc_4_10_/g" | sed "s/__start_oc/__start_oc_4_10/g")
-  complete -F __start_oc_4_10 oc4.10
-fi
-
-if command -v oc4.11 >/dev/null 2>&1; then
-  . <(oc4.11 completion bash | sed "s/_oc_/_oc_4_11_/g" | sed "s/__start_oc/__start_oc_4_11/g")
-  complete -F __start_oc_4_11 oc4.11
 fi
 
 if command -v kustomize > /dev/null 2>&1 ; then
