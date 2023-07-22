@@ -18,10 +18,11 @@ PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
 PATH="${HOME}/binaries/go/latest/bin:${PATH}"
 PATH="${HOME}/binaries/groovy/latest/bin:${PATH}"
 
+export PATH
+
 MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
 MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
 
-export PATH
 export MAKEFLAGS
 
 if command -v kubectl > /dev/null 2>&1 ; then
