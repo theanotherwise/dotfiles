@@ -20,7 +20,6 @@ binaries:
     latest: 5.4.8
     versions:
       - version: 5.4.8
-      - version: 5.4.7
   - name: kubectl
     url: https://dl.k8s.io/release/v{version}/bin/linux/amd64/kubectl
     type: binary
@@ -30,7 +29,6 @@ binaries:
     latest: 1.26.3
     versions:
       - version: 1.26.3
-      - version: 1.26.2
   - name: terragrunt
     url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_linux_amd64
     type: binary
@@ -40,7 +38,6 @@ binaries:
     latest: 0.44.5
     versions:
       - version: 0.44.5
-      - version: 0.44.4
   - name: okd
     url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
     type: tar.gz
