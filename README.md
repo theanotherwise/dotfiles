@@ -12,5 +12,5 @@ git checkout main
 ```
 
 ```bash
-python3 "{HOME}"/.dotfiles/init.py
+python3 "${HOME}"/.dotfiles/init.py
 ```
