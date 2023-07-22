@@ -127,7 +127,6 @@ def extract_tar(tar_path, dest_path, strip, _type):
 def extract_zip_strip(zip_path, dest_path):
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         for member in zip_ref.infolist():
-            # Skip directories as we'll create them automatically
             if member.is_dir():
                 continue
 
