@@ -116,7 +116,7 @@ binaries:
     override: False
     strip: True
     inBin: True
-    latest: 4.0.13
+    latest: 3.0.18
     versions:
       - version: 4.0.13
       - version: 3.0.18
