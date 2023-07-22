@@ -121,3 +121,12 @@ binaries:
       - version: 4.0.13
       - version: 3.0.18
       - version: 2.5.22
+  - name: yq
+    url: https://github.com/mikefarah/yq/releases/download/v/yq_linux_amd64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 4.34.2
+    versions:
+      - version: 4.34.2
