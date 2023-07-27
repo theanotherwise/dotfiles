@@ -152,7 +152,7 @@ binaries:
   - name: kubens
     url: https://github.com/ahmetb/kubectx/releases/download/v{version}kubens_v{version}_linux_x86_64.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: False
     inBin: False
     latest: 0.9.1
