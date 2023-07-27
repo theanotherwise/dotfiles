@@ -10,6 +10,12 @@ alias graph="git log --graph --abbrev-commit --decorate=full --all --color=alway
 alias k="kubectl"
 complete -o default -F __start_kubectl k
 
+alias k="kubectx"
+complete -o default -F _kube_contexts kctx
+
+alias k="kubenx"
+complete -o default -F _kube_namespaces kns
+
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
