@@ -158,3 +158,12 @@ binaries:
     latest: 0.9.1
     versions:
       - version: 0.9.1
+  - name: kube-capacity
+    url: https://github.com/robscott/kube-capacity/releases/download/v{version}/kube-capacity_v{version}_linux_x86_64.tar.gz
+    type: tar.gz
+    override: True
+    strip: False
+    inBin: False
+    latest: 0.7.4
+    versions:
+      - version: 0.7.4
