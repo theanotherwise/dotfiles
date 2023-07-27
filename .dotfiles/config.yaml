@@ -130,3 +130,12 @@ binaries:
     latest: 4.34.2
     versions:
       - version: 4.34.2
+  - name: jq
+    url: https://github.com/jqlang/jq/releases/download/jq-{version}/jq-linux64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 1.6
+    versions:
+      - version: 1.6
