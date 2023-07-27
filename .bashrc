@@ -6,17 +6,17 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
-
 alias k="kubectl"
-complete -o default -F __start_kubectl k
-
 alias kctx="kubectx"
-complete -o default -F _kube_contexts kctx
-
 alias kns="kubens"
-complete -o default -F _kube_namespaces kns
-
 alias watch-1='watch -n 1 '
+
+complete -o default -F __start_oc311 oc3.11
+complete -o default -F __start_oc410 oc4.10
+complete -o default -F __start_oc411 oc4.11
+complete -o default -F _kube_namespaces kns
+complete -o default -F _kube_contexts kctx
+complete -o default -F __start_kubectl k
 
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then

@@ -56,3 +56,15 @@ fi
 if [ -f ${HOME}/.dotfiles/kubens.bash ] ; then
   . ${HOME}/.dotfiles/kubens.bash
 fi
+
+if command -v oc3.11 > /dev/null 2>&1 ; then
+  . <(oc3.11 completion bash | sed "s/_oc/_oc311/g")
+fi
+
+if command -v oc4.10 > /dev/null 2>&1 ; then
+  . <(oc4.10 completion bash | sed "s/_oc/_oc410/g")
+fi
+
+if command -v oc4.11 > /dev/null 2>&1 ; then
+  . <(oc4.11 completion bash | sed "s/_oc/_oc411/g")
+fi
