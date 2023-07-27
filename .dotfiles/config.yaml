@@ -167,3 +167,12 @@ binaries:
     latest: 0.7.4
     versions:
       - version: 0.7.4
+  - name: kube-capacity
+    url: https://github.com/kubeshark/kubeshark/releases/download/{version}/kubeshark_{version}_linux_amd64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 41.3
+    versions:
+      - version: 41.3
