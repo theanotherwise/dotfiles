@@ -68,3 +68,8 @@ fi
 if command -v oc4.11 > /dev/null 2>&1 ; then
   . <(oc4.11 completion bash | sed "s/_oc/_oc411/g")
 fi
+
+# End Completions
+if [ -f ${HOME}/.dotfiles/complete.bash ] ; then
+  . ${HOME}/.dotfiles/complete.bash
+fi

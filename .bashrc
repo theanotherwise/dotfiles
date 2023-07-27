@@ -11,15 +11,6 @@ alias kctx="kubectx"
 alias kns="kubens"
 alias watch-1='watch -n 1 '
 
-complete -o default -F __start_oc311 oc3.11
-complete -o default -F __start_oc410 oc4.10
-complete -o default -F __start_oc411 oc4.11
-complete -o default -F _kube_contexts kubectx kctx
-complete -o default -F _kube_namespaces kubens kns
-complete -o default -F _kube_namespaces kns
-complete -o default -F _kube_contexts kctx
-complete -o default -F __start_kubectl k
-
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
