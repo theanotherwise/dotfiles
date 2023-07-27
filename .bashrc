@@ -10,10 +10,10 @@ alias graph="git log --graph --abbrev-commit --decorate=full --all --color=alway
 alias k="kubectl"
 complete -o default -F __start_kubectl k
 
-alias k="kubectx"
+alias kctx="kubectx"
 complete -o default -F _kube_contexts kctx
 
-alias k="kubenx"
+alias kns="kubenx"
 complete -o default -F _kube_namespaces kns
 
 bashrc_branch() {
