@@ -13,7 +13,7 @@ complete -o default -F __start_kubectl k
 alias kctx="kubectx"
 complete -o default -F _kube_contexts kctx
 
-alias kns="kubenx"
+alias kns="kubens"
 complete -o default -F _kube_namespaces kns
 
 bashrc_branch() {
