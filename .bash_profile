@@ -57,6 +57,10 @@ if [ -f ${HOME}/.dotfiles/completion/kubens.bash ] ; then
   . ${HOME}/.dotfiles/completion/kubens.bash
 fi
 
+if [ -f ${HOME}/.dotfiles/completion/kubetail.bash ] ; then
+  . ${HOME}/.dotfiles/completion/kubetail.bash
+fi
+
 if command -v oc3.11 > /dev/null 2>&1 ; then
   . <(oc3.11 completion bash | sed "s/_oc/_oc311/g")
 fi
