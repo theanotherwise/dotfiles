@@ -152,7 +152,7 @@ binaries:
   - name: kubens
     url: https://github.com/ahmetb/kubectx/releases/download/v{version}/kubens_v{version}_linux_x86_64.tar.gz
     type: tar.gz
-    override: True
+    override: False
     strip: False
     inBin: False
     latest: 0.9.1
@@ -161,7 +161,7 @@ binaries:
   - name: kube-capacity
     url: https://github.com/robscott/kube-capacity/releases/download/v{version}/kube-capacity_v{version}_linux_x86_64.tar.gz
     type: tar.gz
-    override: True
+    override: False
     strip: False
     inBin: False
     latest: 0.7.4
