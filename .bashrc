@@ -7,6 +7,9 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias graph="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
 
+alias k="kubectl"
+complete -o default -F __start_kubectl k
+
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
