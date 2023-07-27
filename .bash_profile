@@ -46,3 +46,7 @@ fi
 if [ -f ${HOME}/.dotfiles/git-completion.bash ] ; then
   . ${HOME}/.dotfiles/git-completion.bash
 fi
+
+if [ -f ${HOME}/.dotfiles/kubectx.bash ] ; then
+  . ${HOME}/.dotfiles/kubectx.bash
+fi
