@@ -2,7 +2,7 @@ if [ -f ${HOME}/.bashrc ] ; then
   . ${HOME}/.bashrc
 fi
 
-PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
+# PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 PATH="${HOME}/binaries/jq/latest/bin:${PATH}"
 PATH="${HOME}/binaries/k3d/latest/bin:${PATH}"
 PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
