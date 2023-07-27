@@ -51,3 +51,7 @@ fi
 if [ -f ${HOME}/.dotfiles/kubectx.bash ] ; then
   . ${HOME}/.dotfiles/kubectx.bash
 fi
+
+if [ -f ${HOME}/.dotfiles/kubens.bash ] ; then
+  . ${HOME}/.dotfiles/kubens.bash
+fi
