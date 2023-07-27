@@ -16,6 +16,8 @@ complete -o default -F _kube_contexts kctx
 alias kns="kubens"
 complete -o default -F _kube_namespaces kns
 
+alias watch-1='watch -n 1 '
+
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
