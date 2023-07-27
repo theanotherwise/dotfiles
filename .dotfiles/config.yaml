@@ -161,7 +161,7 @@ binaries:
   - name: kube-capacity
     url: https://github.com/robscott/kube-capacity/releases/download/v{version}/kube-capacity_v{version}_linux_x86_64.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: False
     inBin: False
     latest: 0.7.4
@@ -170,7 +170,7 @@ binaries:
   - name: kubeshark
     url: https://github.com/kubeshark/kubeshark/releases/download/{version}/kubeshark_{version}_linux_amd64.tar.gz
     type: tar.gz
-    override: False
+    override: True
     strip: False
     inBin: False
     latest: 41.3
