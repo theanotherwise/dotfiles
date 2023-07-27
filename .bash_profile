@@ -45,16 +45,16 @@ if command -v k3d > /dev/null 2>&1 ; then
   . <(k3d  completion bash)
 fi
 
-if [ -f ${HOME}/.dotfiles/complete/git.bash ] ; then
-  . ${HOME}/.dotfiles/complete/git.bash
+if [ -f ${HOME}/.dotfiles/completion/git.bash ] ; then
+  . ${HOME}/.dotfiles/completion/git.bash
 fi
 
-if [ -f ${HOME}/.dotfiles/complete/kubectx.bash ] ; then
-  . ${HOME}/.dotfiles/complete/kubectx.bash
+if [ -f ${HOME}/.dotfiles/completion/kubectx.bash ] ; then
+  . ${HOME}/.dotfiles/completion/kubectx.bash
 fi
 
-if [ -f ${HOME}/.dotfiles/complete/kubens.bash ] ; then
-  . ${HOME}/.dotfiles/complete/kubens.bash
+if [ -f ${HOME}/.dotfiles/completion/kubens.bash ] ; then
+  . ${HOME}/.dotfiles/completion/kubens.bash
 fi
 
 if command -v oc3.11 > /dev/null 2>&1 ; then
@@ -70,6 +70,6 @@ if command -v oc4.11 > /dev/null 2>&1 ; then
 fi
 
 # Must be in End of Profile
-if [ -f ${HOME}/.dotfiles/complete/generic.bash ] ; then
-  . ${HOME}/.dotfiles/complete/generic.bash
+if [ -f ${HOME}/.dotfiles/completion/generic.bash ] ; then
+  . ${HOME}/.dotfiles/completion/generic.bash
 fi
