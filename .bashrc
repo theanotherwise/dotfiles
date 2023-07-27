@@ -9,6 +9,7 @@ alias graph="git log --graph --abbrev-commit --decorate=full --all --color=alway
 alias k="kubectl"
 alias kctx="kubectx"
 alias kns="kubens"
+alias kt="kubetail"
 alias watch-1='watch -n 1 '
 
 bashrc_branch() {
