@@ -45,8 +45,8 @@ if command -v k3d > /dev/null 2>&1 ; then
   . <(k3d  completion bash)
 fi
 
-if [ -f ${HOME}/.dotfiles/git-completion.bash ] ; then
-  . ${HOME}/.dotfiles/git-completion.bash
+if [ -f ${HOME}/.dotfiles/git.bash ] ; then
+  . ${HOME}/.dotfiles/git.bash
 fi
 
 if [ -f ${HOME}/.dotfiles/kubectx.bash ] ; then
