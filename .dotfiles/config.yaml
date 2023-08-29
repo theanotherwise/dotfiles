@@ -185,3 +185,12 @@ binaries:
     latest: 1.6.18
     versions:
       - version: 1.6.18
+  - name: k9s
+    url: https://github.com/derailed/k9s/releases/download/v{version}/k9s_Linux_amd64.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 0.27.4
+    versions:
+      - version: 0.27.4
