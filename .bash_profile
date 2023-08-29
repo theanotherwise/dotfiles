@@ -22,6 +22,7 @@ PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="${HOME}/binaries/terraform/latest/bin:${PATH}"
 PATH="${HOME}/binaries/terragrunt/latest/bin:${PATH}"
 PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
+PATH="${HOME}/binaries/k9s/latest/bin:${PATH}"
 
 export PATH
 
