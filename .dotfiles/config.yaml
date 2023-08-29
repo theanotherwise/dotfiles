@@ -190,7 +190,7 @@ binaries:
     type: tar.gz
     override: True
     strip: False
-    inBin: True
+    inBin: False
     latest: 0.27.4
     versions:
       - version: 0.27.4
