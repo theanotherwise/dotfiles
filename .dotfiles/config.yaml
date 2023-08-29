@@ -188,7 +188,7 @@ binaries:
   - name: k9s
     url: https://github.com/derailed/k9s/releases/download/v{version}/k9s_Linux_amd64.tar.gz
     type: tar.gz
-    override: True
+    override: False
     strip: False
     inBin: False
     latest: 0.27.4
