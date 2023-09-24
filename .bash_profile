@@ -1,7 +1,3 @@
-if [ -f ~/.bashrc ] ; then
-  . ~/.bashrc
-fi
-
 PATH="~/binaries/yq/latest/bin:${PATH}"
 PATH="~/binaries/jq/latest/bin:${PATH}"
 PATH="~/binaries/k3d/latest/bin:${PATH}"
@@ -30,6 +26,14 @@ MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
 MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
 
 export MAKEFLAGS
+
+if [ -f ~/.bashrc ] ; then
+  . ~/.bashrc
+fi
+
+if [ -f ~/.bash_aliases ] ; then
+  . ~/.bash_aliases
+fi
 
 if [ -f ~/.bash_completion ] ; then
   . ~/.bash_completion

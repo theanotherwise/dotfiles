@@ -1,9 +1,5 @@
 umask 0022
 
-if [ -f ${HOME}/.bash_aliases ] ; then
-  . ${HOME}/.bash_aliases
-fi
-
 bashrc_branch() {
   if git branch >/dev/null 2>&1 ; then
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
