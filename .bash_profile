@@ -21,10 +21,11 @@ PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 
+export PATH
+
 MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
 MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
-export PATH
 export MAKEFLAGS
 
 if [ -f ${HOME}/.bashrc ]; then
