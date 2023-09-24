@@ -20,21 +20,20 @@ PATH="~/binaries/terragrunt/latest/bin:${PATH}"
 PATH="~/binaries/upx/latest/bin:${PATH}"
 PATH="~/binaries/k9s/latest/bin:${PATH}"
 
-export PATH
-
 MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo)"
-MAKEFLAGS="-j$((MAKE_CORES+1)) -l${MAKE_CORES}"
+MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
+export PATH
 export MAKEFLAGS
 
-if [ -f ~/.bashrc ] ; then
+if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
-if [ -f ~/.bash_aliases ] ; then
+if [ -f ~/.bash_aliases ]; then
   . ~/.bash_aliases
 fi
 
-if [ -f ~/.bash_completion ] ; then
+if [ -f ~/.bash_completion ]; then
   . ~/.bash_completion
 fi
