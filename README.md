@@ -34,7 +34,7 @@ git fetch --all
 git checkout main
 ```
 
-### Download Binaries
+## Download Binaries
 
 ```bash
 python3 ${HOME}/.dotfiles/init.py
