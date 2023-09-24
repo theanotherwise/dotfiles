@@ -3,7 +3,7 @@ rm -rf ~/binaries
 ```
 
 ```bash
-rm -f .bash_profile .bashrc .bash_aliases
+rm -f .bash_profile .bashrc .bash_aliases .bash_completion
 rm -f .gitconfig .gitignore .vimrc
 rm -f  README.md
 rm -rf ~/.git ~/.dotfiles 
