@@ -25,7 +25,9 @@ rm -f \
   "${HOME}/.gitconfig" \
   "${HOME}/.gitignore" \
   "${HOME}/.vimrc" \
-  "${HOME}/README.md" \
+  "${HOME}/README.md"
+  
+rm -rf \
   ${HOME}/.git \
   ${HOME}/.dotfiles
 ```
