@@ -56,5 +56,3 @@ _kubetail()
         ;;
     esac
 }
-
-complete -F _kubetail kubetail kt
