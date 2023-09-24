@@ -17,10 +17,10 @@ rm -rf ${HOME}/binaries
 ```
 
 ```bash
-rm -f "${HOME}/README.md" \
+rm -f \
   "${HOME}/.bash_profile" "${HOME}/.bashrc" "${HOME}/.bash_aliases" "${HOME}/.bash_completion" \
   "${HOME}/.gitconfig" "${HOME}/.gitignore" \
-  "${HOME}/.vimrc"
+  "${HOME}/.vimrc" "${HOME}/README.md"
 
 rm -rf ${HOME}/.git ${HOME}/.dotfiles
 ```
