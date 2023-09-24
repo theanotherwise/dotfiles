@@ -3,15 +3,15 @@ rm -rf "${HOME}"/binaries
 ```
 
 ```bash
-rm -f .bash_profile .bashrc .gitconfig .gitignore .vimrc README.md
-rm -rf "${HOME}"/.git 
-rm -rf "${HOME}"/.dotfiles
+rm -f .bash_profile .bashrc .bash_aliases
+rm -f .gitconfig .gitignore .vimrc
+rm -f  README.md
+rm -rf ~/.git ~/.dotfiles 
 
-git init "${HOME}"
+git init ~/
 git remote add origin https://github.com/theanotherwise/dotfiles.git
 git fetch --all
 git checkout main
 
-
-python3 "${HOME}"/.dotfiles/init.py
+python3 ~/.dotfiles/init.py
 ```
