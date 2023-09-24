@@ -1,28 +1,28 @@
-if [ -f ${HOME}/.bashrc ] ; then
-  . ${HOME}/.bashrc
+if [ -f ~/.bashrc ] ; then
+  . ~/.bashrc
 fi
 
-PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
-PATH="${HOME}/binaries/jq/latest/bin:${PATH}"
-PATH="${HOME}/binaries/k3d/latest/bin:${PATH}"
-PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubectl/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubectx/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubens/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubetail/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kube-capacity/latest/bin:${PATH}"
-PATH="${HOME}/binaries/helm/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kustomize/latest/bin:${PATH}"
-PATH="${HOME}/binaries/go/latest/bin:${PATH}"
-PATH="${HOME}/binaries/groovy/latest/bin:${PATH}"
-PATH="${HOME}/binaries/python/latest/bin:${PATH}"
-PATH="${HOME}/binaries/ruby/latest/bin:${PATH}"
-PATH="${HOME}/binaries/node/latest/bin:${PATH}"
-PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
-PATH="${HOME}/binaries/terraform/latest/bin:${PATH}"
-PATH="${HOME}/binaries/terragrunt/latest/bin:${PATH}"
-PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
-PATH="${HOME}/binaries/k9s/latest/bin:${PATH}"
+PATH="~/binaries/yq/latest/bin:${PATH}"
+PATH="~/binaries/jq/latest/bin:${PATH}"
+PATH="~/binaries/k3d/latest/bin:${PATH}"
+PATH="~/binaries/okd/latest/bin:${PATH}"
+PATH="~/binaries/kubectl/latest/bin:${PATH}"
+PATH="~/binaries/kubectx/latest/bin:${PATH}"
+PATH="~/binaries/kubens/latest/bin:${PATH}"
+PATH="~/binaries/kubetail/latest/bin:${PATH}"
+PATH="~/binaries/kube-capacity/latest/bin:${PATH}"
+PATH="~/binaries/helm/latest/bin:${PATH}"
+PATH="~/binaries/kustomize/latest/bin:${PATH}"
+PATH="~/binaries/go/latest/bin:${PATH}"
+PATH="~/binaries/groovy/latest/bin:${PATH}"
+PATH="~/binaries/python/latest/bin:${PATH}"
+PATH="~/binaries/ruby/latest/bin:${PATH}"
+PATH="~/binaries/node/latest/bin:${PATH}"
+PATH="~/binaries/yarn/latest/bin:${PATH}"
+PATH="~/binaries/terraform/latest/bin:${PATH}"
+PATH="~/binaries/terragrunt/latest/bin:${PATH}"
+PATH="~/binaries/upx/latest/bin:${PATH}"
+PATH="~/binaries/k9s/latest/bin:${PATH}"
 
 export PATH
 
@@ -47,20 +47,20 @@ if command -v k3d > /dev/null 2>&1 ; then
   . <(k3d  completion bash)
 fi
 
-if [ -f ${HOME}/.dotfiles/completion/git.bash ] ; then
-  . ${HOME}/.dotfiles/completion/git.bash
+if [ -f ~/.dotfiles/completion/git.bash ] ; then
+  . ~/.dotfiles/completion/git.bash
 fi
 
-if [ -f ${HOME}/.dotfiles/completion/kubectx.bash ] ; then
-  . ${HOME}/.dotfiles/completion/kubectx.bash
+if [ -f ~/.dotfiles/completion/kubectx.bash ] ; then
+  . ~/.dotfiles/completion/kubectx.bash
 fi
 
-if [ -f ${HOME}/.dotfiles/completion/kubens.bash ] ; then
-  . ${HOME}/.dotfiles/completion/kubens.bash
+if [ -f ~/.dotfiles/completion/kubens.bash ] ; then
+  . ~/.dotfiles/completion/kubens.bash
 fi
 
-if [ -f ${HOME}/.dotfiles/completion/kubetail.bash ] ; then
-  . ${HOME}/.dotfiles/completion/kubetail.bash
+if [ -f ~/.dotfiles/completion/kubetail.bash ] ; then
+  . ~/.dotfiles/completion/kubetail.bash
 fi
 
 if command -v oc3.11 > /dev/null 2>&1 ; then
@@ -76,6 +76,6 @@ if command -v oc4.11 > /dev/null 2>&1 ; then
 fi
 
 # Must be in End of Profile
-if [ -f ${HOME}/.dotfiles/completion/generic.bash ] ; then
-  . ${HOME}/.dotfiles/completion/generic.bash
+if [ -f ~/.dotfiles/completion/generic.bash ] ; then
+  . ~/.dotfiles/completion/generic.bash
 fi

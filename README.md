@@ -1,5 +1,5 @@
 ```bash
-rm -rf "${HOME}"/binaries
+rm -rf ~/binaries
 ```
 
 ```bash
