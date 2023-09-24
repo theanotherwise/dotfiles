@@ -1,4 +1,4 @@
-# .dotfiles
+# `.dotfiles`
 
 ## Requirements
 
@@ -28,7 +28,6 @@ rm -f \
   "${HOME}/README.md" \
   ${HOME}/.git \
   ${HOME}/.dotfiles
-
 ```
 
 ## Setup
