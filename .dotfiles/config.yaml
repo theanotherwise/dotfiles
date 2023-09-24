@@ -199,7 +199,7 @@ binaries:
     type: tar.gz
     override: False
     strip: True
-    inBin: False
+    inBin: True
     latest: 3.9.4
     versions:
       - version: 3.9.4
