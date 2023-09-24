@@ -203,3 +203,12 @@ binaries:
     latest: 3.9.4
     versions:
       - version: 3.9.4
+  - name: docker-compose
+    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-linux-x86_64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 2.20.3
+    versions:
+      - version: 2.20.3

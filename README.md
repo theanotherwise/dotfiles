@@ -6,8 +6,8 @@
 sudo apt-get install -y \
   openjdk-11-jdk openjdk-17-jdk \
   python3 python3-pip \
-  git
-
+  git \
+  ca-certificates curl gnupg  
 ```
 
 ## Cleanup Binaries
