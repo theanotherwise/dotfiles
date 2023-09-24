@@ -61,7 +61,6 @@ complete -o default -F _kube_namespaces kns
 complete -o default -F _kube_contexts kctx
 complete -o default -F __start_kubectl k
 complete -o default -F __start_kubeshark ks
-
-complete -F _kube_contexts kubectx kctx
-complete -F _kube_namespaces kubens kns
-complete -F _kubetail kubetail kt
+complete -o default -F _kube_contexts kubectx kctx
+complete -o default -F _kube_namespaces kubens kns
+complete -o default -F _kubetail kubetail kt
