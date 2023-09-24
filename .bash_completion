@@ -42,7 +42,9 @@ if command -v oc4.11 >/dev/null 2>&1; then
   . <(oc4.11 completion bash | sed "s/_oc/_oc411/g")
 fi
 
-# Must be in End of Profile
-if [ -f ~/.dotfiles/completion/generic.bash ]; then
-  . ~/.dotfiles/completion/generic.bash
-fi
+complete -o default -F __start_oc311 oc3.11
+complete -o default -F __start_oc410 oc4.10
+complete -o default -F __start_oc411 oc4.11
+complete -o default -F _kube_namespaces kns
+complete -o default -F _kube_contexts kctx
+complete -o default -F __start_kubectl k
