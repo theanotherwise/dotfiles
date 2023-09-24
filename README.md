@@ -1,6 +1,6 @@
 # `.dotfiles`
 
-## Requirements
+## Install Requirements
 
 ```bash
 sudo apt-get install -y \
@@ -10,7 +10,7 @@ sudo apt-get install -y \
   python3-pip
 ```
 
-## Cleanup
+## Cleanup Binaries
 
 ```bash
 rm -rf ${HOME}/binaries
@@ -32,9 +32,7 @@ rm -rf \
   ${HOME}/.dotfiles
 ```
 
-## Setup
-
-### Fetch `.dotfiles`
+## Setup Repository
 
 ```bash
 git init "${HOME}"
