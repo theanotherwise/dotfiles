@@ -1,17 +1,29 @@
 umask 0022
 
+###################################
+#
+#     Branch Name is PS1
+#
 bashrc_branch() {
   if git branch >/dev/null 2>&1; then
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
   fi
 }
 
+###################################
+#
+#     Kube Info on Right of Console
+#
 bashrc_kube() {
   if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1; then
     printf "%*s\r%s" $((COLUMNS - 1)) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
   fi
 }
 
+###################################
+#
+#     Cursor Character
+#
 bashrc_cursor() {
   [[ "${UID}" == "0" ]] && echo '#' || echo '$'
 }

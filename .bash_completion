@@ -1,3 +1,7 @@
+###################################
+#
+#     Completions
+#
 if command -v kubectl >/dev/null 2>&1; then
   . <(kubectl completion bash)
 fi
@@ -46,6 +50,10 @@ if command -v oc4.11 >/dev/null 2>&1; then
   . <(oc4.11 completion bash | sed "s/_oc/_oc411/g")
 fi
 
+###################################
+#
+#     Completion for Alias
+#
 complete -o default -F __start_oc311 oc3.11
 complete -o default -F __start_oc410 oc4.10
 complete -o default -F __start_oc411 oc4.11
