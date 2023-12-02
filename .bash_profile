@@ -25,6 +25,8 @@ PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 
+PATH="${HOME}/.yarn/bin:${PATH}"
+
 export PATH
 
 ###################################
