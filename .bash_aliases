@@ -45,4 +45,4 @@ alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.arg
 alias urlenc='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1].rstrip()) if len(sys.argv) > 1 else ul.quote_plus(sys.stdin.read().rstrip()))"'
 alias urldec='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1].rstrip()) if len(sys.argv) > 1 else ul.unquote_plus(sys.stdin.read().rstrip()))"'
 
-alias decodecert='python3 -c "import sys; from asn1crypto import x509; with open(sys.argv[1], \"rb\") if len(sys.argv) > 1 else sys.stdin.buffer as f: cert = x509.Certificate.load(f.read()); print(cert.native.pretty())"'
+alias decodecert='python3 -c "from asn1crypto import x509; import sys; cert_data = open(sys.argv[1], \"rb\").read() if len(sys.argv) > 1 else sys.stdin.buffer.read(); cert = x509.Certificate.load(cert_data); print(cert.native.pretty())"'
