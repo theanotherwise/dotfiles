@@ -57,6 +57,8 @@ sc_helper_x509_leaf() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
 
+  [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca
+
   openssl req \
     -nodes -new -newkey rsa:2048 \
     -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
@@ -77,3 +79,4 @@ export HISTSIZE="10000"
 export HISTFILESIZE="10000"
 export HISTTIMEFORMAT="%Y-%m-%d %T "
 export EDITOR="vim"
+1
