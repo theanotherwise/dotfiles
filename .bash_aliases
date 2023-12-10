@@ -49,3 +49,9 @@ alias urlenc='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sy
 alias urldec='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1].rstrip()) if len(sys.argv) > 1 else ul.unquote_plus(sys.stdin.read().rstrip()))"'
 
 alias x509dec='sc_helper_x509_decoder'
+
+###################################
+#
+#     Helpers
+#
+alias makeca='sc_helper_ca_make'

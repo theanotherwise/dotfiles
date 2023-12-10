@@ -30,7 +30,7 @@ sc_helper_bashrc_cursor() {
 
 ###################################
 #
-#     Helpers
+#     Others
 #
 sc_helper_x509_decoder (){
   if [ -z "${1}" ] ; then
@@ -43,6 +43,23 @@ sc_helper_x509_decoder (){
   fi
 }
 
+sc_helper_ca_make() {
+  if [ -z "${1}" ] ; then
+    CA_NAME="ca"
+  else
+    CA_NAME="${1}"
+  fi
+
+  openssl req \
+    -nodes -x509 -days 3650 -newkey rsa:2048 \
+    -subj "/C=US/ST=Mazovia/L=Warsaw/O=Local/OU=Root/CN=Root CA" \
+    -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
+}
+
+###################################
+#
+#     Exports
+#
 export PS1="\[\e[1;34m\]\$(sc_helper_bashrc_kube)\[\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]\$(sc_helper_bashrc_cursor) \[\e[33m\]\$(sc_helper_bashrc_branch)\[\e[m\]"
 export HISTSIZE="10000"
 export HISTFILESIZE="10000"
