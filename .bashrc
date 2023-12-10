@@ -45,10 +45,11 @@ sc_helper_x509_decoder (){
 
 sc_helper_x509_make_ca() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
+  [ -z "${2}" ] && CN_NAME="Root CA" || CN_NAME="${2}"
 
   openssl req \
     -nodes -x509 -days 3650 -newkey rsa:4096 \
-    -subj "/C=US/O=Seems Cloud/OU=Untrusted Local CA/CN=Root CA" \
+    -subj "/C=US/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
     -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
 
