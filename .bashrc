@@ -54,8 +54,8 @@ sc_helper_x509_ca() {
 }
 
 sc_helper_x509_leaf() {
-  [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
-  [ -z "${2}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
+  [ -z "${2}" ] && CA_NAME="ca" || CA_NAME="${2}"
+  [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${1}"
 
   [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca "${CA_NAME}"
 
