@@ -43,7 +43,7 @@ sc_helper_x509_decoder (){
   fi
 }
 
-sc_helper_x509_ca() {
+sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && CN_NAME= || CN_NAME="${2}"
 
@@ -53,11 +53,11 @@ sc_helper_x509_ca() {
     -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
 
-sc_helper_x509_leaf() {
+sc_helper_x509_ca_make_leaf() {
   [ -z "${2}" ] && CA_NAME="ca" || CA_NAME="${2}"
   [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${1}"
 
-  [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca "${CA_NAME}"
+  [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca_make "${CA_NAME}"
 
   openssl req \
     -nodes -new -newkey rsa:2048 \
