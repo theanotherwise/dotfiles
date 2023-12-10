@@ -29,6 +29,7 @@ alias kt="kubetail"
 alias ks="kubeshark"
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
+
 ###################################
 #
 #     Git
