@@ -62,7 +62,7 @@ sc_helper_x509_leaf() {
   openssl req \
     -nodes -new -newkey rsa:2048 \
     -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
-    -keyout "${LEAF_NAME}".key.pem -out "${LEAF_NAME}".csr.pem
+    -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
 
   openssl x509 \
     -req -days 730 \
