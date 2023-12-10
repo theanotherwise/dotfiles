@@ -40,6 +40,8 @@ alias gitref="git show-ref --tags --heads"
 alias gitstatus="git status -vvv --long"
 alias gitshow="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
 alias gitlog='sc_helper_git_log_n_commits'
+alias gitsoft='git reset --soft HEAD^'
+alias gitsoftrev='git reset --soft HEAD@{1}'
 
 ###################################
 #
