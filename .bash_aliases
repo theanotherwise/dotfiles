@@ -40,7 +40,7 @@ alias gr="git show-ref --tags --heads"
 
 ###################################
 #
-#     Encoding / Decoding
+#     Generic Encoding / Decoding
 #
 alias base64enc='python3 -c "import sys, base64 ; print(base64.b64encode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
@@ -48,11 +48,11 @@ alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.arg
 alias urlenc='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1].rstrip()) if len(sys.argv) > 1 else ul.quote_plus(sys.stdin.read().rstrip()))"'
 alias urldec='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1].rstrip()) if len(sys.argv) > 1 else ul.unquote_plus(sys.stdin.read().rstrip()))"'
 
-alias x509dec='sc_helper_x509_decoder'
-
 ###################################
 #
 #     Certificate Authority
 #
+alias x509dec='sc_helper_x509_decoder'
+
 alias x509makeca='sc_helper_x509_make_ca'
 alias x509makeleaf='sc_helper_x509_make_leaf'

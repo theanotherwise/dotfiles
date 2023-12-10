@@ -49,7 +49,7 @@ sc_helper_x509_make_ca() {
 
   openssl req \
     -nodes -x509 -days 3650 -newkey rsa:4096 \
-    -subj "/C=US/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
+    -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
     -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
 
@@ -59,7 +59,7 @@ sc_helper_x509_make_leaf() {
 
   openssl req \
     -nodes -new -newkey rsa:2048 \
-    -subj "/C=US/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
+    -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
     -keyout "${LEAF_NAME}".key.pem -out "${LEAF_NAME}".csr.pem
 
   openssl x509 \
