@@ -31,7 +31,7 @@ alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 ###################################
 #
-#     Gi
+#     Git
 #
 alias gg="git log --graph --abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat"
 alias gr="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\""
