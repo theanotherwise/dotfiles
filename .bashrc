@@ -93,7 +93,7 @@ sc_helper_tcp_linux_check(){
 sc_helper_git_log_n_commits(){
   [ -z "${1}" ] && N_COMMITS="5" || N_COMMITS="${1}"
 
-  git log -n "${N_COMMITS}" --oneline --format='%h' | xargs -I {} sh -c 'echo git diff {}^..{}'
+  git log -n "${N_COMMITS}" --oneline --format='%h' | xargs -I {} sh -c 'git diff {}^..{}'
 }
 
 ###################################
