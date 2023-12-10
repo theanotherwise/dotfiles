@@ -52,7 +52,7 @@ alias urldec='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(
 #
 #     Certificate Authority
 #
-alias x509dec='sc_helper_x509_decoder'
+alias x509dec='sc_helper_x509_decode'
 
-alias x509ca='sc_helper_x509_ca'
-alias x509leaf='sc_helper_x509_leaf'
+alias x509ca='sc_helper_x509_ca_make'
+alias x509leaf='sc_helper_x509_ca_make_leaf'

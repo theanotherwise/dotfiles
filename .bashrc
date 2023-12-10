@@ -32,7 +32,7 @@ sc_helper_bashrc_cursor() {
 #
 #     Others
 #
-sc_helper_x509_decoder (){
+sc_helper_x509_decode (){
   if [ -z "${1}" ] ; then
     while IFS= read -r LINE; do
       lines="${lines}${LINE}\n"
