@@ -45,10 +45,11 @@ sc_helper_x509_decoder (){
 
 sc_helper_x509_ca() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
+  [ -z "${2}" ] && CN_NAME= || CN_NAME="${2}"
 
   openssl req \
     -nodes -x509 -days 3650 -newkey rsa:4096 \
-    -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=Root CA" \
+    -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
     -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
 
@@ -66,7 +67,7 @@ sc_helper_x509_leaf() {
   openssl x509 \
     -req -days 730 \
     -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
-    -in "${LEAF_NAME}".csr.pem -out "${LEAF_NAME}".crt.pem
+    -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem
 }
 
 ###################################
