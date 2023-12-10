@@ -56,3 +56,10 @@ alias x509dec='sc_helper_x509_decode'
 
 alias x509ca='sc_helper_x509_ca_make'
 alias x509leaf='sc_helper_x509_ca_make_leaf'
+
+###################################
+#
+#     Performance Tests
+#
+
+alias curlperf='sc_helper_curl_format_file && curl -w "@format.txt" -o /dev/null -s -L'

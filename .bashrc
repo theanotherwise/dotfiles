@@ -70,6 +70,19 @@ sc_helper_x509_ca_make_leaf() {
     -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem
 }
 
+sc_helper_curl_format_file(){
+cat > format.txt << EndOfMessage
+     time_namelookup:  %{time_namelookup}s\n
+        time_connect:  %{time_connect}s\n
+     time_appconnect:  %{time_appconnect}s\n
+    time_pretransfer:  %{time_pretransfer}s\n
+       time_redirect:  %{time_redirect}s\n
+  time_starttransfer:  %{time_starttransfer}s\n
+                     ----------\n
+          time_total:  %{time_total}s\n
+EndOfMessage
+}
+
 ###################################
 #
 #     Exports
