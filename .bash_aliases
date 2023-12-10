@@ -54,5 +54,5 @@ alias urldec='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(
 #
 alias x509dec='sc_helper_x509_decoder'
 
-alias x509makeca='sc_helper_x509_make_ca'
-alias x509makeleaf='sc_helper_x509_make_leaf'
+alias x509ca='sc_helper_x509_make_ca'
+alias x509leaf='sc_helper_x509_make_leaf'
