@@ -39,6 +39,7 @@ alias gitfresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup 
 alias gitref="git show-ref --tags --heads"
 alias gitstatus="git status -vvv --long"
 alias gitshow="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
+alias gitlog='sc_helper_git_log_n_commits'
 
 ###################################
 #
