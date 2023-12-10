@@ -34,11 +34,11 @@ alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 #
 #     Git
 #
-alias gitgraph="git log --graph --no-abbrev-commit --decorate=full --all --color=always --date=iso --log-size --raw --stat --pretty=oneline"
+alias gitgraph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
 alias gitfresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\""
 alias gitref="git show-ref --tags --heads"
 alias gitstatus="git status -vvv --long"
-alias gitshow="git show"
+alias gitshow="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
 
 ###################################
 #
