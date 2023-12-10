@@ -71,15 +71,15 @@ sc_helper_x509_ca_make_leaf() {
 }
 
 sc_helper_curl_format_file(){
-cat > format.txt << EndOfMessage
-     time_namelookup:  %{time_namelookup}s\n
-        time_connect:  %{time_connect}s\n
-     time_appconnect:  %{time_appconnect}s\n
-    time_pretransfer:  %{time_pretransfer}s\n
-       time_redirect:  %{time_redirect}s\n
-  time_starttransfer:  %{time_starttransfer}s\n
-                     ----------\n
-          time_total:  %{time_total}s\n
+cat > .curl-timing-format.txt << EndOfMessage
+\t%{time_namelookup}s\tNamelookup (DNS)\n
+\t%{time_connect}s\tConnect (TCP)\n
+\t%{time_appconnect}s\tApp Connect (SSL/SSH/etc.)\n
+\t%{time_pretransfer}s\tPretransfer\n
+\t%{time_starttransfer}s\tStart Transfer (receive first data + Pretransfer)\n
+\t%{time_redirect}s\tRedirect (all before final):\n
+------------------------------\n
+\t%{time_total}s:\tTotal\n
 EndOfMessage
 }
 
