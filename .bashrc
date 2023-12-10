@@ -84,8 +84,8 @@ EndOfMessage
 }
 
 sc_helper_tcp_linux_check(){
-  [ -z "${1}" ] && DEST_NAME="google.com" || DEST_NAME="${2}"
-  [ -z "${2}" ] && DEST_PORT="80" || DEST_PORT="${1}"
+  [ -z "${1}" ] && DEST_NAME="google.com" || DEST_NAME="${1}"
+  [ -z "${2}" ] && DEST_PORT="80" || DEST_PORT="${2}"
 
   (echo > /dev/tcp/"${DEST_NAME}"/"${DEST_PORT}") >/dev/null 2>&1 && echo "UP" || echo "DOWN"
 }
