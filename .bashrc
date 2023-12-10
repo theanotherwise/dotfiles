@@ -75,9 +75,9 @@ cat > .curl-timing-format.txt << EndOfMessage
 \t%{time_namelookup}s\tNamelookup (DNS)\n
 \t%{time_connect}s\tConnect (TCP)\n
 \t%{time_appconnect}s\tApp Connect (SSL/SSH/etc.)\n
-\t%{time_pretransfer}s\tPretransfer\n
-\t%{time_starttransfer}s\tStart Transfer (receive first data + Pretransfer)\n
-\t%{time_redirect}s\tRedirect (all before final):\n
+\t%{time_pretransfer}s\tPretransfer (just before want to start sending)\n
+\t%{time_starttransfer}s\tStart Transfer (first byte + Pretransfer)\n
+\t%{time_redirect}s\tRedirect (all before final request)\n
 ------------------------------\n
 \t%{time_total}s:\tTotal\n
 EndOfMessage
