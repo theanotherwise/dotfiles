@@ -59,7 +59,7 @@ alias x509leaf='sc_helper_x509_ca_make_leaf'
 
 ###################################
 #
-#     Performance Tests
+#     Testing
 #
 alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt" -o /dev/null -s -L'
 alias tcpcheck='sc_helper_tcp_linux_check'
