@@ -52,6 +52,7 @@ alias x509dec='sc_helper_x509_decoder'
 
 ###################################
 #
-#     Helpers
+#     Certificate Authority
 #
-alias makeca='sc_helper_ca_make'
+alias x509makecA='sc_helper_x509_make_ca'
+alias x509makeleaf='sc_helper_x509_make_leaf'
