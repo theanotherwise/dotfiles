@@ -91,11 +91,13 @@ sc_helper_x509_ca_make_leaf() {
       -CA "${CA_FILENAME}".crt.pem -CAkey "${CA_FILENAME}".key.pem -CAcreateserial \
       -in "${LEAF_FILENAME}".csr.pem -out "${LEAF_FILENAME}".crt.pem
   else
+    SAN_NAMES="$(sc_helper_x509_san_names "${LEAF_SANS}")"
+    echo "SAN Names: ${SAN_NAMES}"
     openssl x509 \
       -req -days "${LEAF_DAYS}" \
       -CA "${CA_FILENAME}".crt.pem -CAkey "${CA_FILENAME}".key.pem -CAcreateserial \
       -in "${LEAF_FILENAME}".csr.pem -out "${LEAF_FILENAME}".crt.pem \
-      -extfile <(printf "subjectAltName=$(sc_helper_x509_san_names "${LEAF_SANS}")")
+      -extfile <(printf "subjectAltName=")
   fi
 }
 
