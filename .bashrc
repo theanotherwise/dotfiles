@@ -43,14 +43,34 @@ sc_helper_x509_decode (){
   fi
 }
 
+sc_helper_x509_san_names(){
+  SAN_NAMES=""
+
+  for i in $(echo "${1}" | tr ',' '\n') ; do
+    SAN_NAMES="DNS:${i},${SAN_NAMES}"
+  done
+
+  echo "$(echo "${SAN_NAMES}" | sed "s/,$//g")"
+}
+
 sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
-  [ -z "${2}" ] && CN_NAME= || CN_NAME="${2}"
+  [ -z "${2}" ] && CN_NAME="Root CA" || CN_NAME="${2}"
 
-  openssl req \
-    -nodes -x509 -days 3650 -newkey rsa:4096 \
-    -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
-    -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
+  if [ -z "${3}" ] ; then
+    openssl req \
+      -nodes -x509 -days 3650 -newkey rsa:4096 \
+      -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
+      -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
+  else
+    SAN_NAMES="$(sc_helper_x509_san_names ${3})"
+
+    openssl req \
+      -nodes -x509 -days 3650 -newkey rsa:4096 \
+      -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
+      -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem \
+      -extfile <(echo "subjectAltName=${SAN_NAMES}")
+  fi
 }
 
 sc_helper_x509_ca_make_leaf() {
@@ -59,15 +79,20 @@ sc_helper_x509_ca_make_leaf() {
 
   [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca_make "${CA_NAME}"
 
-  openssl req \
-    -nodes -new -newkey rsa:2048 \
-    -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
-    -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
+  if [ -z "${3}" ] ; then
+    openssl req \
+      -nodes -new -newkey rsa:2048 \
+      -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
+      -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
+  else
+    SAN_NAMES="$(sc_helper_x509_san_names ${3})"
 
-  openssl x509 \
-    -req -days 730 \
-    -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
-    -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem
+    openssl x509 \
+      -req -days 730 \
+      -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
+      -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem \
+      -extfile <(echo "subjectAltName=${SAN_NAMES}")
+  fi
 }
 
 sc_helper_curl_format_file(){
