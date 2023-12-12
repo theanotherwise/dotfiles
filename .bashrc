@@ -57,11 +57,12 @@ sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && CA_CN_NAME="CA" || CA_CN_NAME="${2}"
   [ -z "${3}" ] && CA_DAYS="9125" || CA_DAYS="${3}"
+  [ -z "${4}" ] && CA_SIZE="4096" || CA_SIZE="${4}"
 
-  echo "Generate CA (Filename: '${CA_NAME}.(crt|key).pem', Common Name: '${CA_CN_NAME}')"
+  echo "CA (Files: '${CA_NAME}.(crt|key).pem', CN: '${CA_CN_NAME}', Days: '${CA_DAYS}', Size: '${CA_SIZE}')"
 
   openssl req \
-    -nodes -x509 -days "${CA_DAYS}" -newkey rsa:4096 \
+    -nodes -x509 -days "${CA_DAYS}" -newkey rsa:"${CA_SIZE}" \
     -subj "/CN=${CA_CN_NAME}" \
     -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
@@ -71,15 +72,16 @@ sc_helper_x509_ca_make_leaf() {
   [ -z "${2}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
   [ -z "${3}" ] && LEAF_SANS="-" || LEAF_SANS="${3}"
   [ -z "${4}" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
+  [ -z "${5}" ] && LEAF_SIZE="2048" || LEAF_SIZE="${5}"
 
   CA_FILENAME="${CA_NAME}"
   [ ! -f "${CA_FILENAME}".crt.pem ] && [ ! -f "${CA_FILENAME}".key.pem ] && echo "CA Does Not Exists" && return
 
   LEAF_FILENAME="${CA_NAME}-${LEAF_NAME}"
-  echo "Generate Certificate (Filename: '${LEAF_FILENAME}.(crt|key).pem', Common Name: '${LEAF_NAME})'"
+  echo "Certificate (File: '${LEAF_FILENAME}.(crt|key).pem', CN: '${LEAF_NAME})', Days: '${CA_DAYS}', Size: '${CA_SIZE}')"
 
   openssl req \
-    -nodes -new -newkey rsa:2048 \
+    -nodes -new -newkey rsa:"${LEAF_SIZE}" \
     -subj "/CN=${LEAF_NAME}" \
     -keyout "${LEAF_FILENAME}".key.pem -out "${LEAF_FILENAME}".csr.pem
 
