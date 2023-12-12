@@ -86,6 +86,8 @@ sc_helper_x509_ca_make_leaf() {
   else
     SAN_NAMES="$(sc_helper_x509_san_names ${3})"
 
+    echo "SAN Names: ${SAN_NAMES}"
+
     openssl x509 \
       -req -days 730 \
       -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
