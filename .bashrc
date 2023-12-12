@@ -68,8 +68,7 @@ sc_helper_x509_ca_make() {
     openssl req \
       -nodes -x509 -days 3650 -newkey rsa:4096 \
       -subj "/CN=${CN_NAME}" \
-      -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem \
-      -extfile <(printf "subjectAltName=${SAN_NAMES}")
+      -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
   fi
 }
 
