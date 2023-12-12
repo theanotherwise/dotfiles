@@ -69,11 +69,16 @@ sc_helper_x509_ca_make_leaf() {
 
   [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca_make "${CA_NAME}"
 
+  openssl req \
+    -nodes -new -newkey rsa:2048 \
+    -subj "/CN=${LEAF_NAME}" \
+    -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
+
   if [ -z "${3}" ] ; then
-    openssl req \
-      -nodes -new -newkey rsa:2048 \
-      -subj "/CN=${LEAF_NAME}" \
-      -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
+    openssl x509 \
+      -req -days 730 \
+      -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
+      -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem
   else
     SAN_NAMES="$(sc_helper_x509_san_names ${3})"
 
