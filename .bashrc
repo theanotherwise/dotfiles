@@ -69,8 +69,8 @@ sc_helper_x509_ca_make() {
 
 sc_helper_x509_ca_make_leaf() {
   [ "${1}" == "-" ] || [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${1}"
-  [ "${2}" == "-" ] || [ -z "${2}" ] && CA_NAME="ca" || CA_NAME="${2}"
-  [ "${3}" == "-" ] || [ -z "${3}" ] && LEAF_SANS="-" || LEAF_SANS="${3}"
+  [ "${2}" == "-" ] || [ -z "${2}" ] && LEAF_SANS="-" || LEAF_SANS="${2}"
+  [ "${3}" == "-" ] || [ -z "${3}" ] && CA_NAME="ca" || CA_NAME="${3}"
   [ "${4}" == "-" ] || [ -z "${4}" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
   [ "${5}" == "-" ] || [ -z "${5}" ] && LEAF_SIZE="2048" || LEAF_SIZE="${5}"
 
