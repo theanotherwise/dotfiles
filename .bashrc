@@ -57,7 +57,7 @@ sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && CN_NAME="Root CA" || CN_NAME="${2}"
 
-  echo "Generate CA: ${CA_NAME}/${CN_NAME}"
+  echo "Generate Certificate Authority: ${CA_NAME}/${CN_NAME}"
 
   openssl req \
     -nodes -x509 -days 3650 -newkey rsa:4096 \
