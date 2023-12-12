@@ -59,7 +59,7 @@ sc_helper_x509_ca_make() {
   [ -z "${3}" ] && CA_DAYS="9125" || CA_DAYS="${3}"
   [ -z "${4}" ] && CA_SIZE="4096" || CA_SIZE="${4}"
 
-  echo "CA (Files: '${CA_NAME}.(crt|key).pem', CN: '${CA_CN_NAME}', Days: '${CA_DAYS}', Size: '${CA_SIZE}')"
+  echo "CA, Files: '${CA_NAME}.(crt|key).pem', CN: '${CA_CN_NAME}', Days: '${CA_DAYS}', Size: '${CA_SIZE}'"
 
   openssl req \
     -nodes -x509 -days "${CA_DAYS}" -newkey rsa:"${CA_SIZE}" \
@@ -78,7 +78,7 @@ sc_helper_x509_ca_make_leaf() {
   [ ! -f "${CA_FILENAME}".crt.pem ] && [ ! -f "${CA_FILENAME}".key.pem ] && echo "CA Does Not Exists" && return
 
   LEAF_FILENAME="${CA_NAME}-${LEAF_NAME}"
-  echo "Certificate (File: '${LEAF_FILENAME}.(crt|key).pem', CN: '${LEAF_NAME})', Days: '${CA_DAYS}', Size: '${CA_SIZE}')"
+  echo "Certificate, File: '${LEAF_FILENAME}.(crt|key).pem', CN: '${LEAF_NAME})', Days: '${CA_DAYS}', Size: '${CA_SIZE}'"
 
   openssl req \
     -nodes -new -newkey rsa:"${LEAF_SIZE}" \
