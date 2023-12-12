@@ -54,7 +54,7 @@ sc_helper_x509_san_names(){
 }
 
 sc_helper_x509_ca_make() {
-  [ "${1}" == "-" ] || [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
+  [ "${1}" == "-" ] || [ -z "${1}" ] && CA_NAME="default" || CA_NAME="${1}"
   [ "${2}" == "-" ] || [ -z "${2}" ] && CA_CN_NAME="CA" || CA_CN_NAME="${2}"
   [ "${3}" == "-" ] || [ -z "${3}" ] && CA_DAYS="9125" || CA_DAYS="${3}"
   [ "${4}" == "-" ] || [ -z "${4}" ] && CA_SIZE="4096" || CA_SIZE="${4}"
@@ -70,7 +70,7 @@ sc_helper_x509_ca_make() {
 sc_helper_x509_ca_make_leaf() {
   [ "${1}" == "-" ] || [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${1}"
   [ "${2}" == "-" ] || [ -z "${2}" ] && LEAF_SANS="-" || LEAF_SANS="${2}"
-  [ "${3}" == "-" ] || [ -z "${3}" ] && CA_NAME="ca" || CA_NAME="${3}"
+  [ "${3}" == "-" ] || [ -z "${3}" ] && CA_NAME="default" || CA_NAME="${3}"
   [ "${4}" == "-" ] || [ -z "${4}" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
   [ "${5}" == "-" ] || [ -z "${5}" ] && LEAF_SIZE="2048" || LEAF_SIZE="${5}"
 
@@ -91,7 +91,7 @@ sc_helper_x509_ca_make_leaf() {
       -CA "${CA_FILENAME}".crt.pem -CAkey "${CA_FILENAME}".key.pem -CAcreateserial \
       -in "${LEAF_FILENAME}".csr.pem -out "${LEAF_FILENAME}".crt.pem
   else
-    SAN_NAMES="$(sc_helper_x509_san_names "${LEAF_SANS}")"
+    SAN_NAMES="$(sc_helper_x509_san_names "${LEAF_SANS},${LEAF_NAME}")"
     echo "SAN Names: ${SAN_NAMES}"
     openssl x509 \
       -req -days "${LEAF_DAYS}" \
