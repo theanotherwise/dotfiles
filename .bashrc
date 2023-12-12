@@ -73,7 +73,7 @@ sc_helper_x509_ca_make_leaf() {
   [ -z "${4}" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
 
   CA_FILENAME="${CA_NAME}"
-  [ ! -f "${CA_FILENAME}".crt.pem ] && [ ! -f "${CA_FILENAME}".key.pem ] && echo "CA Does Not Exists" && break
+  [ ! -f "${CA_FILENAME}".crt.pem ] && [ ! -f "${CA_FILENAME}".key.pem ] && echo "CA Does Not Exists" && return
 
   LEAF_FILENAME="${CA_NAME}-${LEAF_NAME}"
   echo "Generate Certificate (Filename: '${LEAF_FILENAME}.(crt|key).pem', Common Name: '${LEAF_NAME})'"
