@@ -55,44 +55,45 @@ sc_helper_x509_san_names(){
 
 sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
-  [ -z "${2}" ] && CN_NAME="Root CA" || CN_NAME="${2}"
+  [ -z "${2}" ] && CA_CN_NAME="Root CA" || CA_CN_NAME="${2}"
+  [ -z "${3}" ] && CA_DAYS="3650" || CA_DAYS="${3}"
 
-  echo "CA (Filename: '${CA_NAME}.(crt|key).pem', Common Name: '${CN_NAME}')"
+  echo "Generate CA (Filename: '${CA_NAME}.(crt|key).pem', Common Name: '${CA_CN_NAME}')"
 
   openssl req \
-    -nodes -x509 -days 3650 -newkey rsa:4096 \
-    -subj "/CN=${CN_NAME}" \
+    -nodes -x509 -days "${CA_DAYS}" -newkey rsa:4096 \
+    -subj "/CN=${CA_CN_NAME}" \
     -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
 
 sc_helper_x509_ca_make_leaf() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
+  [ -z "${3}" ] && LEAF_SANS="-" || LEAF_SANS="${3}"
+  [ -z "${4}" ] && LEAF_DAYS="730" || LEAF_DAYS="${4}"
 
-  [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca_make "${CA_NAME}"
+  CA_FILENAME="${CA_NAME}"
+  [ ! -f "${CA_FILENAME}".crt.pem ] && [ ! -f "${CA_FILENAME}".key.pem ] && echo "CA Does Not Exists" && exit 1
 
-  echo "Certificate (Filename: '${CA_NAME}-${LEAF_NAME}.(crt|key).pem', Common Name: '${LEAF_NAME})'"
+  LEAF_FILENAME="${CA_NAME}-${LEAF_NAME}"
+  echo "Generate Certificate (Filename: '${LEAF_FILENAME}.(crt|key).pem', Common Name: '${LEAF_NAME})'"
 
   openssl req \
     -nodes -new -newkey rsa:2048 \
     -subj "/CN=${LEAF_NAME}" \
-    -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
+    -keyout "${LEAF_FILENAME}".key.pem -out "${LEAF_FILENAME}".csr.pem
 
-  if [ -z "${3}" ] ; then
+  if [ -z "${LEAF_SANS}" ] || [ "${LEAF_SANS}" == "-" ] ; then
     openssl x509 \
-      -req -days 730 \
-      -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
-      -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem
+      -req -days "${LEAF_DAYS}" \
+      -CA "${CA_FILENAME}".crt.pem -CAkey "${CA_FILENAME}".key.pem -CAcreateserial \
+      -in "${LEAF_FILENAME}".csr.pem -out "${LEAF_FILENAME}".crt.pem
   else
-    SAN_NAMES="$(sc_helper_x509_san_names ${3})"
-
-    echo "SAN Names: ${SAN_NAMES}"
-
     openssl x509 \
-      -req -days 730 \
-      -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
-      -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem \
-      -extfile <(printf "subjectAltName=${SAN_NAMES}")
+      -req -days "${LEAF_DAYS}" \
+      -CA "${CA_FILENAME}".crt.pem -CAkey "${CA_FILENAME}".key.pem -CAcreateserial \
+      -in "${LEAF_FILENAME}".csr.pem -out "${LEAF_FILENAME}".crt.pem \
+      -extfile <(printf "subjectAltName=$(sc_helper_x509_san_names "${LEAF_SANS}")")
   fi
 }
 
