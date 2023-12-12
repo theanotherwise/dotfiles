@@ -60,14 +60,14 @@ sc_helper_x509_ca_make() {
   if [ -z "${3}" ] ; then
     openssl req \
       -nodes -x509 -days 3650 -newkey rsa:4096 \
-      -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
+      -subj "CN=${CN_NAME}" \
       -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
   else
     SAN_NAMES="$(sc_helper_x509_san_names ${3})"
 
     openssl req \
       -nodes -x509 -days 3650 -newkey rsa:4096 \
-      -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${CN_NAME}" \
+      -subj "CN=${CN_NAME}" \
       -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem \
       -extfile <(echo "subjectAltName=${SAN_NAMES}")
   fi
@@ -82,7 +82,7 @@ sc_helper_x509_ca_make_leaf() {
   if [ -z "${3}" ] ; then
     openssl req \
       -nodes -new -newkey rsa:2048 \
-      -subj "/C=PL/ST=Mazovia/L=Warsaw/O=Seems Cloud/OU=Untrusted Local CA/CN=${LEAF_NAME}" \
+      -subj "CN=${LEAF_NAME}" \
       -keyout "${CA_NAME}-${LEAF_NAME}".key.pem -out "${CA_NAME}-${LEAF_NAME}".csr.pem
   else
     SAN_NAMES="$(sc_helper_x509_san_names ${3})"
