@@ -97,7 +97,7 @@ sc_helper_x509_ca_make_leaf() {
       -req -days "${LEAF_DAYS}" \
       -CA "${CA_FILENAME}".crt.pem -CAkey "${CA_FILENAME}".key.pem -CAcreateserial \
       -in "${LEAF_FILENAME}".csr.pem -out "${LEAF_FILENAME}".crt.pem \
-      -extfile <(printf "subjectAltName=")
+      -extfile <(printf "subjectAltName=${SAN_NAMES}")
   fi
 }
 
