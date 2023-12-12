@@ -68,8 +68,8 @@ sc_helper_x509_ca_make() {
 }
 
 sc_helper_x509_ca_make_leaf() {
-  [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
-  [ -z "${2}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
+  [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
+  [ -z "${2}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${3}" ] && LEAF_SANS="-" || LEAF_SANS="${3}"
   [ -z "${4}" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
   [ -z "${5}" ] && LEAF_SIZE="2048" || LEAF_SIZE="${5}"
