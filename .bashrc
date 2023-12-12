@@ -54,10 +54,10 @@ sc_helper_x509_san_names(){
 }
 
 sc_helper_x509_ca_make() {
-  [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
-  [ -z "${2}" ] || [ "${3}" == "-" ] && CA_CN_NAME="CA" || CA_CN_NAME="${2}"
-  [ -z "${3}" ] || [ "${3}" == "-" ] && CA_DAYS="9125" || CA_DAYS="${3}"
-  [ -z "${4}" ] || [ "${3}" == "-" ] && CA_SIZE="4096" || CA_SIZE="${4}"
+  [ "${1}" == "-" ] || [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
+  [ "${2}" == "-" ] || [ -z "${2}" ] && CA_CN_NAME="CA" || CA_CN_NAME="${2}"
+  [ "${3}" == "-" ] || [ -z "${3}" ] && CA_DAYS="9125" || CA_DAYS="${3}"
+  [ "${4}" == "-" ] || [ -z "${4}" ] && CA_SIZE="4096" || CA_SIZE="${4}"
 
   echo "CA, Files: '${CA_NAME}.(crt|key).pem', CN: '${CA_CN_NAME}', Days: '${CA_DAYS}', Size: '${CA_SIZE}'"
 
@@ -68,11 +68,11 @@ sc_helper_x509_ca_make() {
 }
 
 sc_helper_x509_ca_make_leaf() {
-  [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${1}"
-  [ -z "${2}" ] || [ "${3}" == "-" ] && CA_NAME="ca" || CA_NAME="${2}"
-  [ -z "${3}" ] || [ "${3}" == "-" ] && LEAF_SANS="-" || LEAF_SANS="${3}"
-  [ -z "${4}" ] || [ "${3}" == "-" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
-  [ -z "${5}" ] || [ "${3}" == "-" ] && LEAF_SIZE="2048" || LEAF_SIZE="${5}"
+  [ "${1}" == "-" ] || [ -z "${1}" ] && LEAF_NAME="leaf" || LEAF_NAME="${1}"
+  [ "${2}" == "-" ] || [ -z "${2}" ] && CA_NAME="ca" || CA_NAME="${2}"
+  [ "${3}" == "-" ] || [ -z "${3}" ] && LEAF_SANS="-" || LEAF_SANS="${3}"
+  [ "${4}" == "-" ] || [ -z "${4}" ] && LEAF_DAYS="1825" || LEAF_DAYS="${4}"
+  [ "${5}" == "-" ] || [ -z "${5}" ] && LEAF_SIZE="2048" || LEAF_SIZE="${5}"
 
   CA_FILENAME="${CA_NAME}"
   [ ! -f "${CA_FILENAME}".crt.pem ] && [ ! -f "${CA_FILENAME}".key.pem ] && echo "CA Does Not Exists" && return
