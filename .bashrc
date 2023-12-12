@@ -67,6 +67,8 @@ sc_helper_x509_ca_make_leaf() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && LEAF_NAME="leaf" || LEAF_NAME="${2}"
 
+  echo "${CA_NAME} -> ${LEAF_NAME}"
+
   [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca_make "${CA_NAME}"
 
   if [ -z "${3}" ] ; then
