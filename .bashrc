@@ -57,19 +57,10 @@ sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && CN_NAME="Root CA" || CN_NAME="${2}"
 
-  if [ -z "${3}" ] ; then
-    openssl req \
-      -nodes -x509 -days 3650 -newkey rsa:4096 \
-      -subj "/CN=${CN_NAME}" \
-      -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
-  else
-    SAN_NAMES="$(sc_helper_x509_san_names ${3})"
-
-    openssl req \
-      -nodes -x509 -days 3650 -newkey rsa:4096 \
-      -subj "/CN=${CN_NAME}" \
-      -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
-  fi
+  openssl req \
+    -nodes -x509 -days 3650 -newkey rsa:4096 \
+    -subj "/CN=${CN_NAME}" \
+    -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem
 }
 
 sc_helper_x509_ca_make_leaf() {
