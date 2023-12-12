@@ -69,7 +69,7 @@ sc_helper_x509_ca_make() {
       -nodes -x509 -days 3650 -newkey rsa:4096 \
       -subj "/CN=${CN_NAME}" \
       -keyout "${CA_NAME}".key.pem -out "${CA_NAME}".crt.pem \
-      -extfile <(echo "subjectAltName=${SAN_NAMES}")
+      -extfile <(printf "subjectAltName=${SAN_NAMES}")
   fi
 }
 
@@ -91,7 +91,7 @@ sc_helper_x509_ca_make_leaf() {
       -req -days 730 \
       -CA "${CA_NAME}".crt.pem -CAkey "${CA_NAME}".key.pem -CAcreateserial \
       -in "${CA_NAME}-${LEAF_NAME}".csr.pem -out "${CA_NAME}-${LEAF_NAME}".crt.pem \
-      -extfile <(echo "subjectAltName=${SAN_NAMES}")
+      -extfile <(printf "subjectAltName=${SAN_NAMES}")
   fi
 }
 
