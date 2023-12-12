@@ -57,7 +57,7 @@ sc_helper_x509_ca_make() {
   [ -z "${1}" ] && CA_NAME="ca" || CA_NAME="${1}"
   [ -z "${2}" ] && CN_NAME="Root CA" || CN_NAME="${2}"
 
-  echo "Generate Certificate Authority: ${CA_NAME}/${CN_NAME}"
+  echo "CA (Filename: '${CA_NAME}.(crt|key).pem', Common Name: '${CN_NAME}')"
 
   openssl req \
     -nodes -x509 -days 3650 -newkey rsa:4096 \
@@ -71,7 +71,7 @@ sc_helper_x509_ca_make_leaf() {
 
   [ ! -f "${CA_NAME}".crt.pem ] && [ ! -f "${CA_NAME}".key.pem ] && sc_helper_x509_ca_make "${CA_NAME}"
 
-  echo "Generate Certificate: ${CA_NAME}/${LEAF_NAME}"
+  echo "Certificate (Filename: '${CA_NAME}-${LEAF_NAME}.(crt|key).pem', Common Name: '${LEAF_NAME})'"
 
   openssl req \
     -nodes -new -newkey rsa:2048 \
