@@ -26,6 +26,7 @@ PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 
 PATH="${HOME}/.yarn/bin:${PATH}"
+PATH="${HOME}/.local/bin:${PATH}"
 
 export PATH
 
