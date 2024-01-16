@@ -27,6 +27,7 @@ PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 
 PATH="${HOME}/.yarn/bin:${PATH}"
 PATH="${HOME}/.local/bin:${PATH}"
+PATH="/opt/homebrew/bin:${PATH}"
 
 export PATH
 
@@ -43,6 +44,12 @@ export MAKEFLAGS
 #
 #     Load Others
 #
+if command -v sw_vers ; then
+  if [ -f /usr/local/etc/bash_completion ]; then
+    . /usr/local/etc/bash_completion
+  fi
+fi
+
 if [ -f ${HOME}/.bashrc ]; then
   . "${HOME}/.bashrc"
 fi
