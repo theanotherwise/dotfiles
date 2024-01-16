@@ -25,9 +25,11 @@ PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
 PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 
+PATH="/opt/homebrew/bin:${PATH}"
+PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
+
 PATH="${HOME}/.yarn/bin:${PATH}"
 PATH="${HOME}/.local/bin:${PATH}"
-PATH="/opt/homebrew/bin:${PATH}"
 
 export PATH
 
