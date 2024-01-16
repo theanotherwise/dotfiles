@@ -13,7 +13,15 @@ import zipfile
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 
-with open(os.path.dirname(__file__) + "/config.yaml", "r") as file:
+if len(sys.argv) == 1:
+    if sys.argv[0] == "macos":
+        config_name = "macos"
+    else:
+        config_name = "linux"
+else:
+    config_name = "linux"
+
+with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
     CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
 PKG_TYPES = {
