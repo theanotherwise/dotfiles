@@ -35,7 +35,7 @@ export PATH
 #
 #     GCC / G++ Cores for Compiler
 #
-MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo 2>/dec/null || sysctl hw.ncpu | grep -oE '[0-9]+')"
+MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo 2>/dev/null || sysctl hw.ncpu | grep -oE '[0-9]+')"
 MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
 export MAKEFLAGS
