@@ -45,8 +45,8 @@ export MAKEFLAGS
 #     Load Others
 #
 if command -v sw_vers ; then
-  if [ -f /usr/local/etc/bash_completion ]; then
-    . /usr/local/etc/bash_completion
+  if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
   fi
 fi
 
