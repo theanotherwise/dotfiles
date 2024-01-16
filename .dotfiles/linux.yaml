@@ -1,9 +1,5 @@
 target_dir: /home/taw/binaries
 
-perms:
-  user: taw
-  group: taw
-
 types:
   binary: binary
   zip: zip
@@ -132,7 +128,7 @@ binaries:
     versions:
       - version: 4.34.2
   - name: jq
-    url: https://github.com/jqlang/jq/releases/download/jq-{version}/jq-linux64
+    url: https://github.com/jqlang/jq/releases/download/jq-{version}/jq-linux-amd64
     type: binary
     override: False
     strip: None

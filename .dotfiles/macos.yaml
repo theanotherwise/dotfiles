@@ -1,8 +1,4 @@
-target_dir: /home/taw/binaries
-
-perms:
-  user: taw
-  group: taw
+target_dir: /Users/taw/binaries
 
 types:
   binary: binary
@@ -12,7 +8,7 @@ types:
 
 binaries:
   - name: k3d
-    url: https://github.com/k3d-io/k3d/releases/download/v{version}/k3d-linux-amd64
+    url: https://github.com/k3d-io/k3d/releases/download/v{version}/k3d-darwin-arm64
     type: binary
     override: False
     strip: None
@@ -21,7 +17,7 @@ binaries:
     versions:
       - version: 5.4.8
   - name: kubectl
-    url: https://dl.k8s.io/release/v{version}/bin/linux/amd64/kubectl
+    url: https://dl.k8s.io/release/v{version}/bin/darwin/arm64/kubectl
     type: binary
     override: False
     strip: None
@@ -30,7 +26,7 @@ binaries:
     versions:
       - version: 1.26.3
   - name: terragrunt
-    url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_linux_amd64
+    url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_darwin_arm64
     type: binary
     override: False
     strip: None
@@ -38,17 +34,17 @@ binaries:
     latest: 0.44.5
     versions:
       - version: 0.44.5
-  - name: okd
-    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
-    type: tar.gz
-    override: False
-    strip: True
-    inBin: False
-    latest: 3.11+4.10+4.11
-    versions:
-      - version: 3.11+4.10+4.11
+  #  - name: okd
+  #    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
+  #    type: tar.gz
+  #    override: False
+  #    strip: True
+  #    inBin: False
+  #    latest: 3.11+4.10+4.11
+  #    versions:
+  #      - version: 3.11+4.10+4.11
   - name: helm
-    url: https://get.helm.sh/helm-v{version}-linux-amd64.tar.gz
+    url: https://get.helm.sh/helm-v{version}-darwin-arm64.tar.gz
     type: tar.gz
     override: False
     strip: True
@@ -57,7 +53,7 @@ binaries:
     versions:
       - version: 3.11.2
   - name: kustomize
-    url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{version}/kustomize_v{version}_linux_amd64.tar.gz
+    url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{version}/kustomize_v{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
@@ -66,7 +62,7 @@ binaries:
     versions:
       - version: 4.5.7
   - name: node
-    url: https://nodejs.org/dist/v{version}/node-v{version}-linux-x64.tar.xz
+    url: https://nodejs.org/dist/v{version}/node-v{version}-darwin-arm64.tar.xz
     type: tar.xz
     override: False
     strip: True
@@ -84,7 +80,7 @@ binaries:
     versions:
       - version: 1.22.19
   - name: terraform
-    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_linux_amd64.zip
+    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_darwin_arm64.zip
     type: zip
     override: False
     strip: False
@@ -92,17 +88,17 @@ binaries:
     latest: 1.4.3
     versions:
       - version: 1.4.3
-  - name: upx
-    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-amd64_linux.tar.xz
-    type: tar.xz
-    override: False
-    strip: True
-    inBin: False
-    latest: 4.0.1
-    versions:
-      - version: 4.0.1
+  #  - name: upx
+  #    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-arm64_linux.tar.xz
+  #    type: tar.xz
+  #    override: False
+  #    strip: True
+  #    inBin: False
+  #    latest: 4.0.1
+  #    versions:
+  #      - version: 4.0.1
   - name: go
-    url: https://go.dev/dl/go{version}.linux-amd64.tar.gz
+    url: https://go.dev/dl/go{version}.darwin-arm64.tar.gz
     type: tar.gz
     override: False
     strip: True
@@ -123,7 +119,7 @@ binaries:
       - version: 2.5.22
       - version: 2.4.21
   - name: yq
-    url: https://github.com/mikefarah/yq/releases/download/v{version}/yq_linux_amd64
+    url: https://github.com/mikefarah/yq/releases/download/v{version}/yq_darwin_arm64
     type: binary
     override: False
     strip: None
@@ -132,16 +128,16 @@ binaries:
     versions:
       - version: 4.34.2
   - name: jq
-    url: https://github.com/jqlang/jq/releases/download/jq-{version}/jq-linux64
+    url: https://github.com/jqlang/jq/releases/download/jq-{version}/jq-macos-arm64
     type: binary
     override: False
     strip: None
     inBin: False
-    latest: 1.6
+    latest: 1.7.1
     versions:
-      - version: 1.6
+      - version: 1.7.1
   - name: kubectx
-    url: https://github.com/ahmetb/kubectx/releases/download/v{version}/kubectx_v{version}_linux_x86_64.tar.gz
+    url: https://github.com/ahmetb/kubectx/releases/download/v{version}/kubectx_v{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
@@ -150,16 +146,16 @@ binaries:
     versions:
       - version: 0.9.5
   - name: kubens
-    url: https://github.com/ahmetb/kubectx/releases/download/v{version}/kubens_v{version}_linux_x86_64.tar.gz
+    url: https://github.com/ahmetb/kubectx/releases/download/v{version}/kubens_v{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
     inBin: False
-    latest: 0.9.1
+    latest: 0.9.5
     versions:
-      - version: 0.9.1
+      - version: 0.9.5
   - name: kube-capacity
-    url: https://github.com/robscott/kube-capacity/releases/download/v{version}/kube-capacity_v{version}_linux_x86_64.tar.gz
+    url: https://github.com/robscott/kube-capacity/releases/download/v{version}/kube-capacity_v{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
@@ -168,7 +164,7 @@ binaries:
     versions:
       - version: 0.7.4
   - name: kubeshark
-    url: https://github.com/kubeshark/kubeshark/releases/download/{version}/kubeshark_{version}_linux_amd64.tar.gz
+    url: https://github.com/kubeshark/kubeshark/releases/download/{version}/kubeshark_{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
@@ -186,14 +182,14 @@ binaries:
     versions:
       - version: 1.6.18
   - name: k9s
-    url: https://github.com/derailed/k9s/releases/download/v{version}/k9s_Linux_amd64.tar.gz
+    url: https://github.com/derailed/k9s/releases/download/v{version}/k9s_Darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
     inBin: False
-    latest: 0.27.4
+    latest: 0.31.5
     versions:
-      - version: 0.27.4
+      - version: 0.31.5
   - name: mvn
     url: https://dlcdn.apache.org/maven/maven-3/{version}/binaries/apache-maven-{version}-bin.tar.gz
     type: tar.gz
@@ -204,11 +200,11 @@ binaries:
     versions:
       - version: 3.9.4
   - name: docker-compose
-    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-linux-x86_64
+    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-darwin-aarch64
     type: binary
     override: False
     strip: None
     inBin: False
-    latest: 2.20.3
+    latest: 2.24.0
     versions:
-      - version: 2.20.3
+      - version: 2.24.0
