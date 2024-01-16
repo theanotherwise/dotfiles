@@ -2,7 +2,7 @@
 #
 #     Generic
 #
-alias ls='ls --color=auto --hide=".*"'
+alias ls='ls --color=auto'
 alias rm="rm -iv"
 alias cp="cp -iv"
 alias mv="mv -iv"
