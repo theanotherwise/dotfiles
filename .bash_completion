@@ -4,6 +4,7 @@
 #
 if command -v kubectl >/dev/null 2>&1; then
   . <(kubectl completion bash)
+  echo "dsa"
 fi
 
 if command -v kustomize >/dev/null 2>&1; then
@@ -50,7 +51,7 @@ fi
 #
 #     Completion for Alias
 #
-complete -o default -F __start_kubectl kubectl k
+complete -o default -F __start_kubectl k
 complete -o default -F _kube_contexts kubectx kctx
 complete -o default -F _kube_namespaces kubens kns
 complete -o default -F _kubetail kubetail kt
