@@ -46,12 +46,6 @@ export MAKEFLAGS
 #
 #     Load Others
 #
-if command -v sw_vers >/dev/null 2>&1 ; then
-  if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-    . /opt/homebrew/etc/profile.d/bash_completion.sh
-  fi
-fi
-
 if [ -f ${HOME}/.bashrc ]; then
   . "${HOME}/.bashrc"
 fi
@@ -62,4 +56,10 @@ fi
 
 if [ -f ${HOME}/.bash_completion ]; then
   . "${HOME}/.bash_completion"
+fi
+
+if command -v sw_vers >/dev/null 2>&1 ; then
+  if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
+  fi
 fi
