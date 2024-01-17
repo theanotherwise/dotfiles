@@ -50,7 +50,6 @@ fi
 #
 #     Completion for Alias
 #
-#complete -o default -F __start_kubectl oc
 complete -o default -F __start_kubectl k
 complete -o default -F _kube_contexts kubectx kctx
 complete -o default -F _kube_namespaces kubens kns
