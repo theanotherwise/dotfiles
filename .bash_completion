@@ -22,16 +22,8 @@ if command -v kubeshark >/dev/null 2>&1; then
   . <(kubeshark completion bash)
 fi
 
-if command -v oc3.11 >/dev/null 2>&1; then
-  . <(oc3.11 completion bash | sed "s/_oc/_oc311/g")
-fi
-
-if command -v oc4.10 >/dev/null 2>&1; then
-  . <(oc4.10 completion bash | sed "s/_oc/_oc410/g")
-fi
-
-if command -v oc4.11 >/dev/null 2>&1; then
-  . <(oc4.11 completion bash | sed "s/_oc/_oc411/g")
+if command -v oc >/dev/null 2>&1; then
+  . <(oc completion bash)
 fi
 
 ###################################
@@ -58,11 +50,7 @@ fi
 #
 #     Completion for Alias
 #
-complete -o default -F __start_oc311 oc3.11
-complete -o default -F __start_oc410 oc4.10
-complete -o default -F __start_oc411 oc4.11
-
-complete -o default -F __start_kubectl k
+complete -o default -F __start_kubectl kubectl k
 complete -o default -F _kube_contexts kubectx kctx
 complete -o default -F _kube_namespaces kubens kns
 complete -o default -F _kubetail kubetail kt
