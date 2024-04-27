@@ -211,7 +211,7 @@ binaries:
   - name: subfinder
     url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_linux_amd64.zip
     type: zip
-    override: True
+    override: False
     strip: false
     inBin: False
     latest: 2.6.6
