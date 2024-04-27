@@ -210,10 +210,10 @@ binaries:
       - version: 2.24.0
   - name: subfinder
     url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_macOS_arm64.zip
-    type: binary
+    type: zip
     override: False
-    strip: None
-    inBin: False
+    strip: True
+    inBin: True
     latest: 2.6.6
     versions:
       - version: 2.6.6
