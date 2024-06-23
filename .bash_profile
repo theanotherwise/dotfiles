@@ -31,6 +31,7 @@ PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
 
 PATH="${HOME}/.yarn/bin:${PATH}"
 PATH="${HOME}/.local/bin:${PATH}"
+PATH="${HOME}/.pyenv/shims:${PATH}"
 
 export PATH
 
