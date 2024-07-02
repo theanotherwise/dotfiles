@@ -65,3 +65,4 @@ complete -o default -F _kubetail kubetail kt
 complete -o default -F __start_kubeshark ks
 complete -o default -F __start_popeye kube-popeye
 complete -o default -F __start_popeye kpe
+complete -o default -F __start_kube-linter kl
