@@ -1,7 +1,3 @@
-###################################
-#
-#     PATH's
-#
 PATH="${HOME}/binaries/docker-compose/latest/bin:${PATH}"
 PATH="${HOME}/binaries/go/latest/bin:${PATH}"
 PATH="${HOME}/binaries/groovy/latest/bin:${PATH}"
@@ -29,29 +25,19 @@ PATH="${HOME}/binaries/kubent/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kube-linter/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kube-popeye/latest/bin:${PATH}"
 PATH="${HOME}/binaries/opentofu/latest/bin:${PATH}"
-
 PATH="/opt/homebrew/bin:${PATH}"
 PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
-
 PATH="${HOME}/.yarn/bin:${PATH}"
 PATH="${HOME}/.local/bin:${PATH}"
 PATH="${HOME}/.pyenv/shims:${PATH}"
 
 export PATH
 
-###################################
-#
-#     GCC / G++ Cores for Compiler
-#
 MAKE_CORES="$(grep -c '^processor' /proc/cpuinfo 2>/dev/null || sysctl hw.ncpu | grep -oE '[0-9]+')"
 MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
 export MAKEFLAGS
 
-###################################
-#
-#     Load Others
-#
 if [ -f ${HOME}/.bashrc ]; then
   . "${HOME}/.bashrc"
 fi
