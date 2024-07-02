@@ -235,3 +235,12 @@ binaries:
     latest: 0.6.8
     versions:
       - version: 0.6.8
+  - name: kube-popeye
+    url: https://github.com/derailed/popeye/releases/download/v{version}/popeye_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 0.21.3
+    versions:
+      - version: 0.21.3
