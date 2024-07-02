@@ -25,8 +25,8 @@ alias watch-30='watch -n 30 '
 #     Kubernetes
 #
 alias k="kubectl"
-alias kctx="kubectx"
 alias kns="kubens"
+alias kc="kube-capacity"
 alias kt="kubetail"
 alias kl="kube-linter"
 alias ks="kubeshark"
