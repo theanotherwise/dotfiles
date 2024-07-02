@@ -169,9 +169,9 @@ binaries:
     override: False
     strip: False
     inBin: False
-    latest: 41.3
+    latest: 52.3.68
     versions:
-      - version: 41.3
+      - version: 52.3.68
   - name: kubetail
     url: https://github.com/johanhaleby/kubetail/archive/refs/tags/{version}.tar.gz
     type: tar.gz
