@@ -163,15 +163,6 @@ binaries:
     latest: 0.7.4
     versions:
       - version: 0.7.4
-  - name: kubeshark
-    url: https://github.com/kubeshark/kubeshark/releases/download/{version}/kubeshark_{version}_darwin_arm64.tar.gz
-    type: tar.gz
-    override: False
-    strip: False
-    inBin: False
-    latest: 52.3.68
-    versions:
-      - version: 52.3.68
   - name: kubetail
     url: https://github.com/johanhaleby/kubetail/archive/refs/tags/{version}.tar.gz
     type: tar.gz
@@ -253,4 +244,12 @@ binaries:
     latest: 1.7.2
     versions:
       - version: 1.7.2
-      
+  - name: kubeshark
+    url: https://github.com/kubeshark/kubeshark/releases/download/v{version}/kubeshark_darwin_arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 52.3.68
+    versions:
+      - version: 52.3.68
