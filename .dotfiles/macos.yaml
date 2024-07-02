@@ -217,3 +217,12 @@ binaries:
     latest: 2.6.6
     versions:
       - version: 2.6.6
+  - name: kubent
+    url: https://github.com/doitintl/kube-no-trouble/releases/download/{version}/kubent-{version}-darwin-arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: True
+    latest: 0.7.2
+    versions:
+      - version: 0.7.2
