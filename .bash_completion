@@ -18,6 +18,10 @@ if command -v k3d >/dev/null 2>&1; then
   . <(k3d completion bash)
 fi
 
+if command -v kube-linter >/dev/null 2>&1; then
+  . <(kube-linter completion bash)
+fi
+
 if command -v kubeshark >/dev/null 2>&1; then
   . <(kubeshark completion bash)
 fi
