@@ -27,7 +27,7 @@ PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
 PATH="${HOME}/binaries/subfinder/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kubent/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kube-linter/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kube-popeue/latest/bin:${PATH}"
+PATH="${HOME}/binaries/kube-popeye/latest/bin:${PATH}"
 
 PATH="/opt/homebrew/bin:${PATH}"
 PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
