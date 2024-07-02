@@ -30,6 +30,10 @@ if command -v oc >/dev/null 2>&1; then
   . <(oc completion bash)
 fi
 
+if command -v popeye >/dev/null 2>&1; then
+  . <(popeye completion bash)
+fi
+
 ###################################
 #
 #     Additional Completions
