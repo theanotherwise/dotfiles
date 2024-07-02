@@ -32,6 +32,7 @@ alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 alias kube-popeye="popeye"
 alias kpe="popeye"
+alias knt="kubent"
 
 ###################################
 #
