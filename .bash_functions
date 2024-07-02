@@ -1,35 +1,19 @@
-###################################
-#
-#     Branch Name is PS1
-#
 sc_helper_bashrc_branch() {
   if git branch >/dev/null 2>&1; then
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
   fi
 }
 
-###################################
-#
-#     Kube Info on Right of Console
-#
 sc_helper_bashrc_kube() {
   if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1; then
     printf "%*s\r%s" $((COLUMNS - 1)) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
   fi
 }
 
-###################################
-#
-#     Cursor Character
-#
 sc_helper_bashrc_cursor() {
   [[ "${UID}" == "0" ]] && echo '#' || echo '$'
 }
 
-###################################
-#
-#     Others
-#
 sc_helper_x509_decode (){
   if [ -z "${1}" ] ; then
     while IFS= read -r LINE; do
