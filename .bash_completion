@@ -39,7 +39,7 @@ if command -v kubespy >/dev/null 2>&1; then
 fi
 
 if command -v terrascan >/dev/null 2>&1; then
-  . <(kubespy completion bash)
+  . <(terrascan completion bash)
 fi
 
 if [ -f ~/.dotfiles/completion/git.bash ]; then
