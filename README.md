@@ -28,7 +28,7 @@ bash .dotfiles
 
 | Variable 	 | Applied To `type`           	 | Description                                            	 |
 |------------|-------------------------------|----------------------------------------------------------|
-| type     	 | -	                            | 	                                                        |
+| type     	 | -	                            | Type of pacakge to download	                             |
 | strip    	 | `tar.xz` / `tar.gz` / `zip` 	 | Set `True` to omit first directory  	                    |
 | inBin    	 | `all`                       	 | Set `True` if binaries of package are not in `bin/`    	 |
 | override 	 | `all`                       	 | Delete package version files and download again        	 |
