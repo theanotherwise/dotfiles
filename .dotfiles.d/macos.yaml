@@ -318,9 +318,9 @@ binaries:
     override: False
     strip: None
     inBin: False
-    latest: 0.59.7
+    latest: 0.48.7
     versions:
-      - version: 0.59.7
+      - version: 0.48.7
   - name: tofu
     url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_darwin_arm64.tar.gz
     type: tar.gz
