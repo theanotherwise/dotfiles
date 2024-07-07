@@ -21,5 +21,3 @@ if [ "${#}" == 1 ]; then
 else
   dotfiles_help
 fi
-
-#
