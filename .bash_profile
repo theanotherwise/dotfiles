@@ -59,8 +59,8 @@ if [ -f ${HOME}/.bash_completion ]; then
   . "${HOME}/.bash_completion"
 fi
 
-if [ -f ${HOME}/.bash_not_tracked ]; then
-  . "${HOME}/.bash_not_tracked"
+if [ -f ${HOME}/.bash_custom ]; then
+  . "${HOME}/.bash_custom"
 fi
 
 if command -v sw_vers >/dev/null 2>&1 ; then
