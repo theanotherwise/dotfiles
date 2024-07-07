@@ -20,6 +20,7 @@ alias kt="kubetail"
 alias kl="kube-linter"
 alias kp="popeye"
 alias knt="kubent"
+alias ks="kubespy"
 
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
