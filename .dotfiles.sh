@@ -13,7 +13,7 @@ dotfiles_help() {
 if [ "${#}" == 1 ]; then
   if [ "${1}" == "macos" ]; then
     python3 ${SCRIPT_DIR_PATH}/.dotfiles/init.py "${1}"
-  elif [ "${1}" == "macos" ]; then
+  elif [ "${1}" == "linux" ]; then
     python3 ${SCRIPT_DIR_PATH}/.dotfiles/init.py "${1}"
   else
     dotfiles_help
