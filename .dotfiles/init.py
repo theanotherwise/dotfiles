@@ -28,19 +28,19 @@ def dotfiles_help():
     sys.exit()
 
 
-DOTFILES_DONE = False
+dotfiles_done = False
 
 if len(sys.argv) == 2:
     if sys.argv[1] == "macos":
         config_name = "macos"
 
-        DOTFILES_DONE = True
+        dotfiles_done = True
     elif sys.argv[1] == "linux":
         config_name = "linux"
 
-        DOTFILES_DONE = True
+        dotfiles_done = True
 
-if not DOTFILES_DONE:
+if not dotfiles_done:
     dotfiles_help()
 
 with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
