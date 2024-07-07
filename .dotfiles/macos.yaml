@@ -25,15 +25,6 @@ binaries:
     latest: 1.26.3
     versions:
       - version: 1.26.3
-  - name: terragrunt
-    url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_darwin_arm64
-    type: binary
-    override: False
-    strip: None
-    inBin: False
-    latest: 0.44.5
-    versions:
-      - version: 0.44.5
   #  - name: okd
   #    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
   #    type: tar.gz
@@ -79,15 +70,6 @@ binaries:
     latest: 1.22.19
     versions:
       - version: 1.22.19
-  - name: terraform
-    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_darwin_arm64.zip
-    type: zip
-    override: False
-    strip: False
-    inBin: False
-    latest: 1.4.3
-    versions:
-      - version: 1.4.3
   #  - name: upx
   #    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-arm64_linux.tar.xz
   #    type: tar.xz
@@ -235,6 +217,33 @@ binaries:
     latest: 0.21.3
     versions:
       - version: 0.21.3
+  ###########################################################################
+  #    _______                        __                        
+  #   |__   __|                      / _|                       
+  #      | |  ___  _ __  _ __  __ _ | |_  ___   _ __  _ __ ___  
+  #      | | / _ \| '__|| '__|/ _` ||  _|/ _ \ | '__|| '_ ` _ \ 
+  #      | ||  __/| |   | |  | (_| || | | (_) || |   | | | | | |
+  #      |_| \___||_|   |_|   \__,_||_|  \___/ |_|   |_| |_| |_|
+  ###########################################################################
+  #
+  - name: terraform
+    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_darwin_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.4.3
+    versions:
+      - version: 1.4.3
+  - name: terragrunt
+    url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_darwin_arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 0.44.5
+    versions:
+      - version: 0.44.5
   - name: opentofu
     url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_darwin_arm64.tar.gz
     type: tar.gz
