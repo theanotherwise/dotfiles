@@ -71,5 +71,7 @@ complete -o default -F __start_kube-linter kl
 complete -o default -F __start_popeye kp
 complete -o default -F __start_kubespy ks
 
+complete -o default -F __start_terrascan tfscan
+
 complete -o default -C ~/binaries/terraform/latest/bin/terraform terraform
 complete -o default -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
