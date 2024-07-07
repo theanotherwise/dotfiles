@@ -59,7 +59,7 @@ if [ -f ${HOME}/.bash_completion ]; then
   . "${HOME}/.bash_completion"
 fi
 
-if [ -f ${HOME}/.bash_completion ]; then
+if [ -f ${HOME}/.bash_not_tracked ]; then
   . "${HOME}/.bash_not_tracked"
 fi
 
