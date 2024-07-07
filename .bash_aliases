@@ -13,6 +13,7 @@ alias watch-15='watch -n 15 '
 alias watch-30='watch -n 30 '
 
 alias k="kubectl"
+alias kctx="kctx"
 alias kns="kubens"
 alias kc="kube-capacity"
 alias kt="kubetail"
