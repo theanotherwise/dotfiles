@@ -14,10 +14,10 @@ alias watch-30='watch -n 30 '
 
 alias k="kubectl"
 alias kns="kubens"
-alias kcapacity="kube-capacity"
-alias ktail="kubetail"
-alias klinter="kube-linter"
-alias kpopeye="popeye"
+alias kc="kube-capacity"
+alias kt="kubetail"
+alias kl="kube-linter"
+alias kp="popeye"
 alias knt="kubent"
 
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
