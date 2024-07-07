@@ -350,10 +350,10 @@ binaries:
     versions:
       - version: 0.52.0
   - name: tfsec
-    url: https://github.com/aquasecurity/tfsec/releases/download/v{version}/tfsec-darwin-arm64
-    type: binary
-    override: True
-    strip: None
+    url: https://github.com/aquasecurity/tfsec/releases/download/v{version}/tfsec_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
     inBin: False
     latest: 1.28.10
     versions:
