@@ -271,3 +271,12 @@ binaries:
     latest: 0.4.13
     versions:
       - version: 0.4.13
+  - name: helmfile
+    url: https://github.com/helmfile/helmfile/releases/download/v{version}/helmfile_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 0.166.0
+    versions:
+      - version: 0.166.0
