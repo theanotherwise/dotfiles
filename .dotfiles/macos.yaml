@@ -339,6 +339,15 @@ binaries:
     latest: 1.19.1
     versions:
       - version: 1.19.1
+  - name: terraenv
+    url: https://github.com/aaratn/terraenv/releases/download/v{version}/terraenv_osx_x64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 0.12
+    versions:
+      - version: 0.12
   #
   #
   #
