@@ -77,4 +77,4 @@ complete -o default -C ~/binaries/terraform/latest/bin/terraform terraform
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
 
 complete -o default -C ~/binaries/terraform/latest/bin/terraform tf
-complete -o nospace -C ~/binaries/terragrunt/latest/bin/terraform tfgrunt
+complete -o nospace -C ~/binaries/terraform/latest/bin/terraform tfgrunt
