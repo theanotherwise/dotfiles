@@ -1,8 +1,5 @@
 #!/bin/bash
 
+SCRIPT_DIR_PATH="$(dirname "$(realpath "$0")")"
 
-script_directory="$(dirname "$(realpath "$0")")"
-
-echo $script_directory
-
-python3 init.py macos
+python3 $SCRIPT_DIR_PATH/init.py macos
