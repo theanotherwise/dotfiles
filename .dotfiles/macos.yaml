@@ -262,3 +262,12 @@ binaries:
     latest: 0.6.3
     versions:
       - version: 0.6.3
+  - name: helmify
+    url: https://github.com/arttor/helmify/releases/download/v{version}/helmify_Darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 0.4.13
+    versions:
+      - version: 0.4.13
