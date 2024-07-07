@@ -19,6 +19,8 @@ script_name = os.path.basename(__file__)
 script_path_dir = os.path.dirname(os.path.abspath(__file__))
 config_name = ""
 
+global CONFIG
+
 
 def dotfiles_help():
     print("Script usage:\t/bin/bash {0} macos/linux".format(script_name))
@@ -29,30 +31,31 @@ def dotfiles_help():
     sys.exit()
 
 
-dotfiles_done = False
+def init():
+    dotfiles_done = False
 
-if len(sys.argv) == 2:
-    if sys.argv[1] == "macos":
-        config_name = "macos"
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "macos":
+            config_name = "macos"
 
-        dotfiles_done = True
-    elif sys.argv[1] == "linux":
-        config_name = "linux"
+            dotfiles_done = True
+        elif sys.argv[1] == "linux":
+            config_name = "linux"
 
-        dotfiles_done = True
+            dotfiles_done = True
 
-if not dotfiles_done:
-    dotfiles_help()
+    if not dotfiles_done:
+        dotfiles_help()
 
-with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
-    CONFIG = yaml.load(file, Loader=yaml.FullLoader)
+    with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
+        CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
-PKG_TYPES = {
-    'binary': CONFIG['types']['binary'],
-    'zip': CONFIG['types']['zip'],
-    'tar_gz': CONFIG['types']['tar_gz'],
-    'tar_xz': CONFIG['types']['tar_xz']
-}
+    PKG_TYPES = {
+        'binary': CONFIG['types']['binary'],
+        'zip': CONFIG['types']['zip'],
+        'tar_gz': CONFIG['types']['tar_gz'],
+        'tar_xz': CONFIG['types']['tar_xz']
+    }
 
 
 class Package:
@@ -300,6 +303,7 @@ def cleanup():
 
 
 def main():
+    init()
     setup()
     fetch_packages(package_versions())
     cleanup()
