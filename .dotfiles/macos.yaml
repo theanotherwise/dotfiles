@@ -7,15 +7,6 @@ types:
   tar_xz: tar.xz
 
 binaries:
-  #  - name: okd
-  #    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
-  #    type: tar.gz
-  #    override: False
-  #    strip: True
-  #    inBin: False
-  #    latest: 3.11+4.10+4.11
-  #    versions:
-  #      - version: 3.11+4.10+4.11
   #
   #
   #
@@ -393,6 +384,16 @@ binaries:
   #
   #
   ###########################################################################
+  #    _    _       _
+  #   | |  | |     | |
+  #   | |  | | ___ | |  ___  ___  ___
+  #   | |  | |/ __|| | / _ \/ __|/ __|
+  #   | |__| |\__ \| ||  __/\__ \\__ \
+  #    \____/ |___/|_| \___||___/|___/
+  ###########################################################################
+  #
+  #
+  #
   #  - name: upx
   #    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-arm64_linux.tar.xz
   #    type: tar.xz
@@ -402,3 +403,12 @@ binaries:
   #    latest: 4.0.1
   #    versions:
   #      - version: 4.0.1
+  #  - name: okd
+  #    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
+  #    type: tar.gz
+  #    override: False
+  #    strip: True
+  #    inBin: False
+  #    latest: 3.11+4.10+4.11
+  #    versions:
+  #      - version: 3.11+4.10+4.11
