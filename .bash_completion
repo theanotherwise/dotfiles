@@ -22,10 +22,6 @@ if command -v kube-linter >/dev/null 2>&1; then
   . <(kube-linter completion bash)
 fi
 
-if command -v kubeshark >/dev/null 2>&1; then
-  . <(kubeshark completion bash)
-fi
-
 if command -v oc >/dev/null 2>&1; then
   . <(oc completion bash)
 fi
