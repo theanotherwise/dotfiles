@@ -34,6 +34,14 @@ if command -v popeye >/dev/null 2>&1; then
   . <(popeye completion bash)
 fi
 
+if command -v kubespy >/dev/null 2>&1; then
+  . <(kubespy completion bash)
+fi
+
+if command -v terrascan >/dev/null 2>&1; then
+  . <(kubespy completion bash)
+fi
+
 if [ -f ~/.dotfiles/completion/git.bash ]; then
   . ~/.dotfiles/completion/git.bash
 fi
