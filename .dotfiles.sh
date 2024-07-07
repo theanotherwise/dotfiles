@@ -10,6 +10,8 @@ dotfiles_help() {
   echo -e "Script Name:\t${0}"
 }
 
+DOTFILES_DONE=false
+
 if [ "${#}" == 1 ]; then
   if [ "${1}" == "macos" ]; then
     python3 ${SCRIPT_DIR_PATH}/.dotfiles/init.py "${1}"
