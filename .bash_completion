@@ -66,3 +66,5 @@ complete -o default -F _kubetail kubetail kt
 complete -o default -F __start_kube-linter kl
 complete -o default -F __start_popeye kp
 complete -o default -F __start_kubespy ks
+
+complete -C ~/binaries/terraform/latest/bin/terraform terraform
