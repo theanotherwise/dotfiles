@@ -10,8 +10,6 @@ import tarfile
 import lzma
 import zipfile
 
-print(os.getcwd())
-
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 
