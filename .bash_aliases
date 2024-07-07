@@ -25,6 +25,7 @@ alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 
 alias tfpike="pike"
+alias tfgrunt="terragrunt"
 alias tfscan="terrascan"
 
 alias gitgraph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
