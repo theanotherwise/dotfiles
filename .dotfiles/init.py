@@ -12,9 +12,9 @@ import zipfile
 import getpass
 import platform
 
-PLATFORM_SYSTEM = {
-    "Darwin": "macos",
-    "Linux": "linux"
+SYSTEM_CONFIG = {
+    "Darwin": "macos.yaml",
+    "Linux": "linux.yaml"
 }
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
@@ -28,9 +28,9 @@ config_name = ""
 def init():
     dotfiles_done = False
 
-    config_name = PLATFORM_SYSTEM[platform.system()]
+    config_name = SYSTEM_CONFIG[platform.system()]
 
-    with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
+    with open(os.path.dirname(__file__) + "/{0}".format(config_name), "r") as file:
         global CONFIG
 
         CONFIG = yaml.load(file, Loader=yaml.FullLoader)
