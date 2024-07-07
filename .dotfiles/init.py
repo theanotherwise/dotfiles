@@ -22,27 +22,17 @@ TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 active_user = getpass.getuser()
 script_name = os.path.basename(__file__)
 script_path_dir = os.path.dirname(os.path.abspath(__file__))
-config_name = ""
+config_name = SYSTEM_CONFIG[platform.system()]
 
+with open(os.path.dirname(__file__) + "/{0}".format(config_name), "r") as file:
+    CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
-def init():
-    dotfiles_done = False
-
-    config_name = SYSTEM_CONFIG[platform.system()]
-
-    with open(os.path.dirname(__file__) + "/{0}".format(config_name), "r") as file:
-        global CONFIG
-
-        CONFIG = yaml.load(file, Loader=yaml.FullLoader)
-
-    global PKG_TYPES
-
-    PKG_TYPES = {
-        'binary': CONFIG['types']['binary'],
-        'zip': CONFIG['types']['zip'],
-        'tar_gz': CONFIG['types']['tar_gz'],
-        'tar_xz': CONFIG['types']['tar_xz']
-    }
+PKG_TYPES = {
+    'binary': CONFIG['types']['binary'],
+    'zip': CONFIG['types']['zip'],
+    'tar_gz': CONFIG['types']['tar_gz'],
+    'tar_xz': CONFIG['types']['tar_xz']
+}
 
 
 class Package:
@@ -290,7 +280,6 @@ def cleanup():
 
 
 def main():
-    init()
     setup()
     fetch_packages(package_versions())
     cleanup()
