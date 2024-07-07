@@ -28,10 +28,10 @@ with open(os.path.dirname(__file__) + "/{0}".format(config_name), "r") as file:
     CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
 PKG_TYPES = {
-    'binary': CONFIG['types']['binary'],
-    'zip': CONFIG['types']['zip'],
-    'tar_gz': CONFIG['types']['tar_gz'],
-    'tar_xz': CONFIG['types']['tar_xz']
+    'binary': "binary",
+    'zip': "zip",
+    'tar_gz': "tar.gz",
+    'tar_xz': "tar.xz"
 }
 
 

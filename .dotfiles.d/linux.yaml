@@ -1,9 +1,3 @@
 target_dir: /home/taw/binaries
 
-types:
-  binary: binary
-  zip: zip
-  tar_gz: tar.gz
-  tar_xz: tar.xz
-
 binaries: [ ]
