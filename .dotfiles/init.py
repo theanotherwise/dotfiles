@@ -47,9 +47,11 @@ def init():
 
     with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
         global CONFIG
-        
+
         CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
+    global PKG_TYPES
+    
     PKG_TYPES = {
         'binary': CONFIG['types']['binary'],
         'zip': CONFIG['types']['zip'],
