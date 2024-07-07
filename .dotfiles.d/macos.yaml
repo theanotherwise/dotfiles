@@ -349,6 +349,15 @@ binaries:
     latest: 0.52.0
     versions:
       - version: 0.52.0
+  - name: tfsec
+    url: https://github.com/aquasecurity/tfsec/releases/download/v{version}/tfsec-checkgen-darwin-arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 1.28.10
+    versions:
+      - version: 1.28.10
   #
   #
   #
