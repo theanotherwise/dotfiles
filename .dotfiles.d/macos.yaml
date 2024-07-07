@@ -358,6 +358,15 @@ binaries:
     latest: 1.28.10
     versions:
       - version: 1.28.10
+  - name: pike
+    url: https://github.com/JamesWoolfenden/pike/releases/download/v{version}/pike_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.3.16
+    versions:
+      - version: 0.3.16
   #
   #
   #
