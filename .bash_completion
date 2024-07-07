@@ -42,8 +42,8 @@ if command -v helmfile >/dev/null 2>&1; then
   . <(helmfile completion bash)
 fi
 
-if command -v tfsec >/dev/null 2>&1; then
-  . <(tfsec completion bash)
+if command -v tfsec-checkgen >/dev/null 2>&1; then
+  . <(tfsec-checkgen completion bash)
 fi
 
 if [ -f ~/.dotfiles/completion/git.bash ]; then
