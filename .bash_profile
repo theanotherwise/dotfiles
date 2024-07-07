@@ -28,6 +28,7 @@ PATH="${HOME}/binaries/helmify/latest/bin:${PATH}"
 PATH="${HOME}/binaries/helmfile/latest/bin:${PATH}"
 PATH="${HOME}/binaries/tflint/latest/bin:${PATH}"
 PATH="${HOME}/binaries/tfsec/latest/bin:${PATH}"
+PATH="${HOME}/binaries/pike/latest/bin:${PATH}"
 PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
 PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
 
