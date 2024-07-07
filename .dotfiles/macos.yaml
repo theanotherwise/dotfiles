@@ -309,9 +309,11 @@ binaries:
     override: False
     strip: False
     inBin: False
-    latest: 0.13.4
+    latest: 1.6.6
     versions:
-      - version: 1.4.3
+      - version: 1.4.7
+      - version: 1.5.7
+      - version: 1.6.6
       - version: 0.13.4
   - name: terragrunt
     url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_darwin_arm64
