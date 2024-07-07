@@ -17,6 +17,7 @@ TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 active_user = getpass.getuser()
 script_name = os.path.basename(__file__)
 script_path_dir = os.path.dirname(os.path.abspath(__file__))
+config_name = ""
 
 
 def dotfiles_help():
