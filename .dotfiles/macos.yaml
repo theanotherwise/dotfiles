@@ -253,6 +253,15 @@ binaries:
     latest: 1.19.1
     versions:
       - version: 1.19.1
+  - name: kubespy
+    url: https://github.com/pulumi/kubespy/releases/download/v{version}/kubespy-v{version}-darwin-arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 0.6.3
+    versions:
+      - version: 0.6.3
   - name: kubeshark
     url: https://github.com/kubeshark/kubeshark/releases/download/v{version}/kubeshark_darwin_arm64
     type: binary
