@@ -25,7 +25,7 @@ alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 
 alias tf="terraform"
-alias tfgrunt="terragrunt"
+alias tg="terragrunt"
 alias tfpike="pike"
 alias tfscan="terrascan"
 
