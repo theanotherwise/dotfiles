@@ -15,14 +15,33 @@ RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 
 active_user = getpass.getuser()
+script_name = os.path.basename(__file__)
+script_path_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+def dotfiles_help():
+    print("Script usage:\t/bin/bash {0} macos/linux".format(script_name))
+    print()
+    print("Script Dir:\t{0}".format(script_path_dir))
+    print("Script Name:\t{0}".format(script_name))
+
+    sys.exit()
+
+
+DOTFILES_DONE = False
 
 if len(sys.argv) == 2:
     if sys.argv[1] == "macos":
         config_name = "macos"
-    else:
+
+        DOTFILES_DONE = True
+    elif sys.argv[1] == "linux":
         config_name = "linux"
-else:
-    config_name = "linux"
+
+        DOTFILES_DONE = True
+
+if not DOTFILES_DONE:
+    dotfiles_help()
 
 with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
     CONFIG = yaml.load(file, Loader=yaml.FullLoader)
