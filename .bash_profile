@@ -26,8 +26,10 @@ PATH="${HOME}/binaries/kube-popeye/latest/bin:${PATH}"
 PATH="${HOME}/binaries/opentofu/latest/bin:${PATH}"
 PATH="${HOME}/binaries/terrascan/latest/bin:${PATH}"
 PATH="${HOME}/binaries/kubespy/latest/bin:${PATH}"
+
 PATH="/opt/homebrew/bin:${PATH}"
 PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
+
 PATH="${HOME}/.yarn/bin:${PATH}"
 PATH="${HOME}/.local/bin:${PATH}"
 PATH="${HOME}/.pyenv/shims:${PATH}"
