@@ -26,6 +26,7 @@ PATH="${HOME}/binaries/terrascan/latest/bin:${PATH}"
 PATH="${HOME}/binaries/helm/latest/bin:${PATH}"
 PATH="${HOME}/binaries/helmify/latest/bin:${PATH}"
 PATH="${HOME}/binaries/helmfile/latest/bin:${PATH}"
+PATH="${HOME}/binaries/tflint/latest/bin:${PATH}"
 PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
 PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
 
