@@ -309,7 +309,7 @@ binaries:
     override: False
     strip: False
     inBin: False
-    latest: 1.4.3
+    latest: 0.13.4
     versions:
       - version: 1.4.3
       - version: 0.13.4
