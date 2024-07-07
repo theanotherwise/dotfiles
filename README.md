@@ -17,12 +17,12 @@ bash .dotfiles
 
 ### Values
 
-| Variable 	 | Values                                          	 | Applied To `type`           	 |
-|------------|---------------------------------------------------|-------------------------------|
-| type     	 | `tar.xz` / `tar.gz` / `zip` / `binary`          	 | 	                             |
-| strip    	 | `True` / `False`                                	 | `tar.xz` / `tar.gz` / `zip` 	 |
-| inBin    	 | `True` / `False`                                	 | `all`                       	 |
-| override 	 | `True` / `False` 	                                | `all`                       	 |
+| Variable 	 | Values                                          	 |
+|------------|---------------------------------------------------|
+| type     	 | `tar.xz` / `tar.gz` / `zip` / `binary`          	 |
+| strip    	 | `True` / `False`                                	 |
+| inBin    	 | `True` / `False`                                	 |
+| override 	 | `True` / `False` 	                                |
 
 ### Description
 

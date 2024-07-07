@@ -157,7 +157,7 @@ binaries:
     url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_macOS_arm64.zip
     type: zip
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 2.6.6
     versions:
@@ -252,7 +252,7 @@ binaries:
     url: https://github.com/doitintl/kube-no-trouble/releases/download/{version}/kubent-{version}-darwin-arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 0.7.2
     versions:
@@ -261,7 +261,7 @@ binaries:
     url: https://github.com/stackrox/kube-linter/releases/download/v{version}/kube-linter-darwin.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 0.6.8
     versions:
@@ -270,7 +270,7 @@ binaries:
     url: https://github.com/derailed/popeye/releases/download/v{version}/popeye_darwin_arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 0.21.3
     versions:
@@ -279,7 +279,7 @@ binaries:
     url: https://github.com/pulumi/kubespy/releases/download/v{version}/kubespy-v{version}-darwin-arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 0.6.3
     versions:
@@ -326,7 +326,7 @@ binaries:
     url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 1.7.2
     versions:
@@ -335,7 +335,7 @@ binaries:
     url: https://github.com/tenable/terrascan/releases/download/v{version}/terrascan_{version}_Darwin_arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 1.19.1
     versions:
@@ -367,7 +367,7 @@ binaries:
     url: https://github.com/arttor/helmify/releases/download/v{version}/helmify_Darwin_arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 0.4.13
     versions:
@@ -376,7 +376,7 @@ binaries:
     url: https://github.com/helmfile/helmfile/releases/download/v{version}/helmfile_{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: False
     inBin: False
     latest: 0.166.0
     versions:
