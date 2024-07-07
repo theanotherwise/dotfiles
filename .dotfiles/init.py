@@ -9,9 +9,12 @@ import re
 import tarfile
 import lzma
 import zipfile
+import getpass
 
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
+
+active_user = getpass.getuser()
 
 if len(sys.argv) == 2:
     if sys.argv[1] == "macos":
@@ -211,7 +214,7 @@ def versioning(versions, url, _type, override, name, strip, in_bin):
         new_in_bin = alternative_key(i, 'inBin', in_bin)
         new_ext = parse_extension(new_url)
 
-        version_path = "{}/{}/{}".format(CONFIG['target_dir'], name, i['version'])
+        version_path = "{}/{}/{}".format(CONFIG['target_dir'].format(user=active_user), name, i['version'])
 
         if dir_exists(version_path) and new_override:
             recursive_remove(version_path)
@@ -235,7 +238,7 @@ def package_versions():
 
 
 def mkdir_package(name):
-    package_path = "{}/{}".format(CONFIG['target_dir'], name)
+    package_path = "{}/{}".format(CONFIG['target_dir'].format(user=active_user), name)
     os.makedirs(package_path, exist_ok=True)
 
     return package_path

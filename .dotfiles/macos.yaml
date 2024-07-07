@@ -1,4 +1,4 @@
-target_dir: /Users/taw/binaries
+target_dir: /Users/{user}/binaries
 
 types:
   binary: binary
