@@ -304,7 +304,7 @@ binaries:
   #
   #
   - name: terraform
-    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_darwin_arm64.zip
+    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_darwin_amd64.zip
     type: zip
     override: False
     strip: False
@@ -312,6 +312,7 @@ binaries:
     latest: 1.4.3
     versions:
       - version: 1.4.3
+      - version: 0.13.4
   - name: terragrunt
     url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_darwin_arm64
     type: binary
