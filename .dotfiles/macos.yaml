@@ -7,24 +7,6 @@ types:
   tar_xz: tar.xz
 
 binaries:
-  - name: k3d
-    url: https://github.com/k3d-io/k3d/releases/download/v{version}/k3d-darwin-arm64
-    type: binary
-    override: False
-    strip: None
-    inBin: False
-    latest: 5.4.8
-    versions:
-      - version: 5.4.8
-  - name: kubectl
-    url: https://dl.k8s.io/release/v{version}/bin/darwin/arm64/kubectl
-    type: binary
-    override: False
-    strip: None
-    inBin: False
-    latest: 1.26.3
-    versions:
-      - version: 1.26.3
   #  - name: okd
   #    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
   #    type: tar.gz
@@ -34,24 +16,22 @@ binaries:
   #    latest: 3.11+4.10+4.11
   #    versions:
   #      - version: 3.11+4.10+4.11
-  - name: helm
-    url: https://get.helm.sh/helm-v{version}-darwin-arm64.tar.gz
-    type: tar.gz
-    override: False
-    strip: True
-    inBin: False
-    latest: 3.11.2
-    versions:
-      - version: 3.11.2
-  - name: kustomize
-    url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{version}/kustomize_v{version}_darwin_arm64.tar.gz
-    type: tar.gz
-    override: False
-    strip: False
-    inBin: False
-    latest: 4.5.7
-    versions:
-      - version: 4.5.7
+  #
+  #
+  #
+  ###########################################################################
+  #    _____                                                       _
+  #   |  __ \                                                     (_)
+  #   | |__) |_ __  ___    __ _  _ __  __ _  _ __ ___   _ __ ___   _  _ __    __ _
+  #   |  ___/| '__|/ _ \  / _` || '__|/ _` || '_ ` _ \ | '_ ` _ \ | || '_ \  / _` |
+  #   | |    | |  | (_) || (_| || |  | (_| || | | | | || | | | | || || | | || (_| |
+  #   |_|    |_|   \___/  \__, ||_|   \__,_||_| |_| |_||_| |_| |_||_||_| |_| \__, |
+  #                        __/ |                                              __/ |
+  #                       |___/                                              |___/
+  ###########################################################################
+  #
+  #
+  #
   - name: node
     url: https://nodejs.org/dist/v{version}/node-v{version}-darwin-arm64.tar.xz
     type: tar.xz
@@ -61,24 +41,6 @@ binaries:
     latest: 18.15.0
     versions:
       - version: 18.15.0
-  - name: yarn
-    url: https://github.com/yarnpkg/yarn/releases/download/v{version}/yarn-v{version}.tar.gz
-    type: tar.gz
-    override: False
-    strip: True
-    inBin: True
-    latest: 1.22.19
-    versions:
-      - version: 1.22.19
-  #  - name: upx
-  #    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-arm64_linux.tar.xz
-  #    type: tar.xz
-  #    override: False
-  #    strip: True
-  #    inBin: False
-  #    latest: 4.0.1
-  #    versions:
-  #      - version: 4.0.1
   - name: go
     url: https://go.dev/dl/go{version}.darwin-arm64.tar.gz
     type: tar.gz
@@ -100,6 +62,56 @@ binaries:
       - version: 3.0.18
       - version: 2.5.22
       - version: 2.4.21
+  #
+  #
+  #
+  ###########################################################################
+  #    _____              _
+  #   |  __ \            | |
+  #   | |__) |__ _   ___ | | __ __ _   __ _   ___  ___
+  #   |  ___// _` | / __|| |/ // _` | / _` | / _ \/ __|
+  #   | |   | (_| || (__ |   <| (_| || (_| ||  __/\__ \
+  #   |_|    \__,_| \___||_|\_\\__,_| \__, | \___||___/
+  #                                    __/ |
+  #                                   |___/
+  ###########################################################################
+  #
+  #
+  #
+  - name: yarn
+    url: https://github.com/yarnpkg/yarn/releases/download/v{version}/yarn-v{version}.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: True
+    latest: 1.22.19
+    versions:
+      - version: 1.22.19
+  - name: mvn
+    url: https://dlcdn.apache.org/maven/maven-3/{version}/binaries/apache-maven-{version}-bin.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: True
+    latest: 3.9.4
+    versions:
+      - version: 3.9.4
+  #
+  #
+  #
+  ###########################################################################
+  #    _____                   _
+  #   |  __ \                 (_)
+  #   | |__) |__ _  _ __  ___  _  _ __    __ _
+  #   |  ___// _` || '__|/ __|| || '_ \  / _` |
+  #   | |   | (_| || |   \__ \| || | | || (_| |
+  #   |_|    \__,_||_|   |___/|_||_| |_| \__, |
+  #                                       __/ |
+  #                                      |___/
+  ###########################################################################
+  #
+  #
+  #
   - name: yq
     url: https://github.com/mikefarah/yq/releases/download/v{version}/yq_darwin_arm64
     type: binary
@@ -118,6 +130,93 @@ binaries:
     latest: 1.7.1
     versions:
       - version: 1.7.1
+  #
+  #
+  #
+  ###########################################################################
+  #    _____                _
+  #   |  __ \              | |
+  #   | |  | |  ___    ___ | | __ ___  _ __
+  #   | |  | | / _ \  / __|| |/ // _ \| '__|
+  #   | |__| || (_) || (__ |   <|  __/| |
+  #   |_____/  \___/  \___||_|\_\\___||_|
+  ###########################################################################
+  #
+  #
+  #
+  - name: docker-compose
+    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-darwin-aarch64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 2.24.0
+    versions:
+      - version: 2.24.0
+  #
+  #
+  #
+  ###########################################################################
+  #     ____    _____  _____  _   _  _______
+  #    / __ \  / ____||_   _|| \ | ||__   __|
+  #   | |  | || (___    | |  |  \| |   | |
+  #   | |  | | \___ \   | |  | . ` |   | |
+  #   | |__| | ____) | _| |_ | |\  |   | |
+  #    \____/ |_____/ |_____||_| \_|   |_|
+  ###########################################################################
+  #
+  #
+  #
+  - name: subfinder
+    url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: false
+    inBin: False
+    latest: 2.6.6
+    versions:
+      - version: 2.6.6
+  #
+  #
+  #
+  ###########################################################################
+  #    _  __                                _
+  #   | |/ /                               | |
+  #   | ' / _   _   ___  _ __  _ __    ___ | |_  ___  ___
+  #   |  < | | | | / _ \| '__|| '_ \  / _ \| __|/ _ \/ __|
+  #   | . \| |_| ||  __/| |   | | | ||  __/| |_|  __/\__ \
+  #   |_|\_\\__,_| \___||_|   |_| |_| \___| \__|\___||___/
+  ###########################################################################
+  #
+  #
+  #
+  - name: k3d
+    url: https://github.com/k3d-io/k3d/releases/download/v{version}/k3d-darwin-arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 5.4.8
+    versions:
+      - version: 5.4.8
+  - name: kubectl
+    url: https://dl.k8s.io/release/v{version}/bin/darwin/arm64/kubectl
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 1.26.3
+    versions:
+      - version: 1.26.3
+  - name: kustomize
+    url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{version}/kustomize_v{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 4.5.7
+    versions:
+      - version: 4.5.7
   - name: kubectx
     url: https://github.com/ahmetb/kubectx/releases/download/v{version}/kubectx_v{version}_darwin_arm64.tar.gz
     type: tar.gz
@@ -163,33 +262,6 @@ binaries:
     latest: 0.31.5
     versions:
       - version: 0.31.5
-  - name: mvn
-    url: https://dlcdn.apache.org/maven/maven-3/{version}/binaries/apache-maven-{version}-bin.tar.gz
-    type: tar.gz
-    override: False
-    strip: True
-    inBin: True
-    latest: 3.9.4
-    versions:
-      - version: 3.9.4
-  - name: docker-compose
-    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-darwin-aarch64
-    type: binary
-    override: False
-    strip: None
-    inBin: False
-    latest: 2.24.0
-    versions:
-      - version: 2.24.0
-  - name: subfinder
-    url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_macOS_arm64.zip
-    type: zip
-    override: False
-    strip: false
-    inBin: False
-    latest: 2.6.6
-    versions:
-      - version: 2.6.6
   - name: kubent
     url: https://github.com/doitintl/kube-no-trouble/releases/download/{version}/kubent-{version}-darwin-arm64.tar.gz
     type: tar.gz
@@ -217,6 +289,18 @@ binaries:
     latest: 0.21.3
     versions:
       - version: 0.21.3
+  - name: kubespy
+    url: https://github.com/pulumi/kubespy/releases/download/v{version}/kubespy-v{version}-darwin-arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 0.6.3
+    versions:
+      - version: 0.6.3
+  #
+  #
+  #
   ###########################################################################
   #    _______                        __                        
   #   |__   __|                      / _|                       
@@ -225,6 +309,8 @@ binaries:
   #      | ||  __/| |   | |  | (_| || | | (_) || |   | | | | | |
   #      |_| \___||_|   |_|   \__,_||_|  \___/ |_|   |_| |_| |_|
   ###########################################################################
+  #
+  #
   #
   - name: terraform
     url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_darwin_arm64.zip
@@ -262,15 +348,29 @@ binaries:
     latest: 1.19.1
     versions:
       - version: 1.19.1
-  - name: kubespy
-    url: https://github.com/pulumi/kubespy/releases/download/v{version}/kubespy-v{version}-darwin-arm64.tar.gz
+  #
+  #
+  #
+  ###########################################################################
+  #    _    _        _
+  #   | |  | |      | |
+  #   | |__| |  ___ | | _ __ ___
+  #   |  __  | / _ \| || '_ ` _ \
+  #   | |  | ||  __/| || | | | | |
+  #   |_|  |_| \___||_||_| |_| |_|
+  ###########################################################################
+  #
+  #
+  #
+  - name: helm
+    url: https://get.helm.sh/helm-v{version}-darwin-arm64.tar.gz
     type: tar.gz
     override: False
-    strip: false
+    strip: True
     inBin: False
-    latest: 0.6.3
+    latest: 3.11.2
     versions:
-      - version: 0.6.3
+      - version: 3.11.2
   - name: helmify
     url: https://github.com/arttor/helmify/releases/download/v{version}/helmify_Darwin_arm64.tar.gz
     type: tar.gz
@@ -289,3 +389,16 @@ binaries:
     latest: 0.166.0
     versions:
       - version: 0.166.0
+  #
+  #
+  #
+  ###########################################################################
+  #  - name: upx
+  #    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-arm64_linux.tar.xz
+  #    type: tar.xz
+  #    override: False
+  #    strip: True
+  #    inBin: False
+  #    latest: 4.0.1
+  #    versions:
+  #      - version: 4.0.1
