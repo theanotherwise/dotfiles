@@ -46,20 +46,20 @@ if command -v tfsec-checkgen >/dev/null 2>&1; then
   . <(tfsec-checkgen completion bash)
 fi
 
-if [ -f ~/.dotfiles/completion/git.bash ]; then
-  . ~/.dotfiles/completion/git.bash
+if [ -f ~/.dotfiles.d/completion/git.bash ]; then
+  . ~/.dotfiles.d/completion/git.bash
 fi
 
-if [ -f ~/.dotfiles/completion/kubectx.bash ]; then
-  . ~/.dotfiles/completion/kubectx.bash
+if [ -f ~/.dotfiles.d/completion/kubectx.bash ]; then
+  . ~/.dotfiles.d/completion/kubectx.bash
 fi
 
-if [ -f ~/.dotfiles/completion/kubens.bash ]; then
-  . ~/.dotfiles/completion/kubens.bash
+if [ -f ~/.dotfiles.d/completion/kubens.bash ]; then
+  . ~/.dotfiles.d/completion/kubens.bash
 fi
 
-if [ -f ~/.dotfiles/completion/kubetail.bash ]; then
-  . ~/.dotfiles/completion/kubetail.bash
+if [ -f ~/.dotfiles.d/completion/kubetail.bash ]; then
+  . ~/.dotfiles.d/completion/kubetail.bash
 fi
 
 complete -o default -F __start_kubectl k
