@@ -38,6 +38,10 @@ if command -v terrascan >/dev/null 2>&1; then
   . <(terrascan completion bash)
 fi
 
+if command -v helmfile >/dev/null 2>&1; then
+  . <(helmfile completion bash)
+fi
+
 if [ -f ~/.dotfiles/completion/git.bash ]; then
   . ~/.dotfiles/completion/git.bash
 fi
