@@ -19,8 +19,6 @@ script_name = os.path.basename(__file__)
 script_path_dir = os.path.dirname(os.path.abspath(__file__))
 config_name = ""
 
-global CONFIG
-
 
 def dotfiles_help():
     print("Script usage:\t/bin/bash {0} macos/linux".format(script_name))
@@ -48,6 +46,8 @@ def init():
         dotfiles_help()
 
     with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
+        global CONFIG
+        
         CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
     PKG_TYPES = {
