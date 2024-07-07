@@ -74,7 +74,8 @@ complete -o default -F __start_kubespy ks
 complete -o default -F __start_terrascan tfscan
 
 complete -o default -C ~/binaries/terraform/latest/bin/terraform terraform
-complete -o default -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
+complete -o default \
+    -C ~/binaries/terragrunt/latest/bin/terragrunt \
+    -C ~/binaries/terraform/latest/bin/terraform terragrunt
 
 complete -o default -C ~/binaries/terraform/latest/bin/terraform tf
-complete -o default -C ~/binaries/terraform/latest/bin/terraform tfgrunt
