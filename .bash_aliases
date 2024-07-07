@@ -21,9 +21,10 @@ alias kl="kube-linter"
 alias kp="popeye"
 alias knt="kubent"
 alias ks="kubespy"
-
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
+
+alias tfpike="tfpike"
 
 alias gitgraph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
 alias gitfresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\""
