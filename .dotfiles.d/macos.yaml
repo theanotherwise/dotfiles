@@ -305,10 +305,10 @@ binaries:
     inBin: False
     latest: 1.6.6
     versions:
+      - version: 0.13.4
       - version: 1.4.7
       - version: 1.5.7
       - version: 1.6.6
-      - version: 0.13.4
       - version: 1.7.5
       - version: 1.8.5
   - name: terragrunt
