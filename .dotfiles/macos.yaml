@@ -321,7 +321,7 @@ binaries:
     latest: 0.44.5
     versions:
       - version: 0.44.5
-  - name: opentofu
+  - name: tofu
     url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
