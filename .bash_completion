@@ -62,17 +62,17 @@ if [ -f ~/.dotfiles.d/completion/kubetail.bash ]; then
   . ~/.dotfiles.d/completion/kubetail.bash
 fi
 
-complete -o default -F __start_kubectl k
-complete -o default -F _kube_contexts kubectx kctx
-complete -o default -F _kube_namespaces kubens kns
-complete -o default -F __start_kube-capacity kc
-complete -o default -F _kubetail kubetail kt
-complete -o default -F __start_kube-linter kl
-complete -o default -F __start_popeye kp
-complete -o default -F __start_kubespy ks
+complete -o nospace -F __start_kubectl k
+complete -o nospace -F _kube_contexts kubectx kctx
+complete -o nospace -F _kube_namespaces kubens kns
+complete -o nospace -F __start_kube-capacity kc
+complete -o nospace -F _kubetail kubetail kt
+complete -o nospace -F __start_kube-linter kl
+complete -o nospace -F __start_popeye kp
+complete -o nospace -F __start_kubespy ks
 
-complete -o default -F __start_terrascan tfscan
-complete -o default -C ~/binaries/terraform/latest/bin/terraform terraform
-complete -o default -C ~/binaries/terraform/latest/bin/terraform tf
-complete -o default -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
-complete -o default -C ~/binaries/terragrunt/latest/bin/terragrunt tfgrunt
+complete -o nospace -F __start_terrascan tfscan
+complete -o nospace -C ~/binaries/terraform/latest/bin/terraform terraform
+complete -o nospace -C ~/binaries/terraform/latest/bin/terraform tf
+complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
+complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt tfgrunt
