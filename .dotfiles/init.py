@@ -10,7 +10,12 @@ import tarfile
 import lzma
 import zipfile
 import getpass
+import platform
 
+PLATFORM_SYSTEM = {
+    "Darwin": "macos",
+    "Linux": "linux"
+}
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 
@@ -20,30 +25,10 @@ script_path_dir = os.path.dirname(os.path.abspath(__file__))
 config_name = ""
 
 
-def dotfiles_help():
-    print("Script usage:\t/bin/bash {0} macos/linux".format(script_name))
-    print()
-    print("Script Dir:\t{0}".format(script_path_dir))
-    print("Script Name:\t{0}".format(script_name))
-
-    sys.exit()
-
-
 def init():
     dotfiles_done = False
 
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "macos":
-            config_name = "macos"
-
-            dotfiles_done = True
-        elif sys.argv[1] == "linux":
-            config_name = "linux"
-
-            dotfiles_done = True
-
-    if not dotfiles_done:
-        dotfiles_help()
+    config_name = PLATFORM_SYSTEM[platform.system()]
 
     with open(os.path.dirname(__file__) + "/{0}.yaml".format(config_name), "r") as file:
         global CONFIG
@@ -51,7 +36,7 @@ def init():
         CONFIG = yaml.load(file, Loader=yaml.FullLoader)
 
     global PKG_TYPES
-    
+
     PKG_TYPES = {
         'binary': CONFIG['types']['binary'],
         'zip': CONFIG['types']['zip'],
