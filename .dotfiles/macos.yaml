@@ -244,6 +244,15 @@ binaries:
     latest: 1.7.2
     versions:
       - version: 1.7.2
+  - name: terrascan
+    url: https://github.com/tenable/terrascan/releases/download/v{version}/terrascan_{version}_Darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: false
+    inBin: False
+    latest: 1.19.1
+    versions:
+      - version: 1.19.1
   - name: kubeshark
     url: https://github.com/kubeshark/kubeshark/releases/download/v{version}/kubeshark_darwin_arm64
     type: binary
