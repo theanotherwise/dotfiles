@@ -176,6 +176,15 @@ binaries:
   #
   #
   #
+  - name: okd
+    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 3.11+4.10+4.11
+    versions:
+      - version: 3.11+4.10+4.11
   - name: k3d
     url: https://github.com/k3d-io/k3d/releases/download/v{version}/k3d-darwin-arm64
     type: binary
@@ -430,12 +439,3 @@ binaries:
   #    latest: 4.0.1
   #    versions:
   #      - version: 4.0.1
-  #  - name: okd
-  #    url: https://github.com/seemscloud/okd-cli/archive/refs/tags/okd-cli-{version}.tar.gz
-  #    type: tar.gz
-  #    override: False
-  #    strip: True
-  #    inBin: False
-  #    latest: 3.11+4.10+4.11
-  #    versions:
-  #      - version: 3.11+4.10+4.11
