@@ -23,10 +23,10 @@ binaries:
     override: False
     strip: True
     inBin: True
-    latest: 18.20.3
+    latest: 20.15.1
     versions:
       - version: 18.20.3
-      - version: 20.15.0
+      - version: 20.15.1
   - name: go
     url: https://go.dev/dl/go{version}.darwin-arm64.tar.gz
     type: tar.gz
