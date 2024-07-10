@@ -58,16 +58,16 @@ if [ -f ${HOME}/.bash_aliases ]; then
   . "${HOME}/.bash_aliases"
 fi
 
-if [ -f ${HOME}/.bash_aliases_adhoc ]; then
-  . "${HOME}/.bash_aliases_adhoc"
-fi
-
 if [ -f ${HOME}/.bash_completion ]; then
   . "${HOME}/.bash_completion"
 fi
 
-if [ -f ${HOME}/.bash_custom ]; then
-  . "${HOME}/.bash_custom"
+if [ -f ${HOME}/.bash_adhoc_functions ]; then
+  . "${HOME}/.bash_adhoc_functions"
+fi
+
+if [ -f ${HOME}/.bash_adhoc_aliases ]; then
+  . "${HOME}/.bash_adhoc_aliases"
 fi
 
 if command -v sw_vers >/dev/null 2>&1; then
