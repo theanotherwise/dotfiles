@@ -321,3 +321,12 @@ binaries:
     latest: 0.60.0
     versions:
       - version: 0.60.0
+  - name: tofu
+    url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_linux_amd64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.7.2
+    versions:
+      - version: 1.7.2
