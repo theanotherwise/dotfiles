@@ -348,3 +348,12 @@ binaries:
     latest: 0.52.0
     versions:
       - version: 0.52.0
+  - name: tfsec
+    url: https://github.com/aquasecurity/tfsec/releases/download/v{version}/tfsec_{version}_linux_amd64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.28.10
+    versions:
+      - version: 1.28.10
