@@ -284,3 +284,31 @@ binaries:
     latest: 0.6.3
     versions:
       - version: 0.6.3
+  #
+  #
+  #
+  ###########################################################################
+  #    _______                        __
+  #   |__   __|                      / _|
+  #      | |  ___  _ __  _ __  __ _ | |_  ___   _ __  _ __ ___
+  #      | | / _ \| '__|| '__|/ _` ||  _|/ _ \ | '__|| '_ ` _ \
+  #      | ||  __/| |   | |  | (_| || | | (_) || |   | | | | | |
+  #      |_| \___||_|   |_|   \__,_||_|  \___/ |_|   |_| |_| |_|
+  ###########################################################################
+  #
+  #
+  #
+  - name: terraform
+    url: https://releases.hashicorp.com/terraform/{version}/terraform_{version}_linux_amd64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.5.7
+    versions:
+      - version: 0.13.4
+      - version: 1.4.7
+      - version: 1.5.7
+      - version: 1.6.6
+      - version: 1.7.5
+      - version: 1.8.5
