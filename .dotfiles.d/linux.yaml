@@ -139,3 +139,26 @@ binaries:
     latest: 2.24.0
     versions:
       - version: 2.24.0
+  #
+  #
+  #
+  ###########################################################################
+  #     ____    _____  _____  _   _  _______
+  #    / __ \  / ____||_   _|| \ | ||__   __|
+  #   | |  | || (___    | |  |  \| |   | |
+  #   | |  | | \___ \   | |  | . ` |   | |
+  #   | |__| | ____) | _| |_ | |\  |   | |
+  #    \____/ |_____/ |_____||_| \_|   |_|
+  ###########################################################################
+  #
+  #
+  #
+  - name: subfinder
+    url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_linux_amd64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 2.6.6
+    versions:
+      - version: 2.6.6
