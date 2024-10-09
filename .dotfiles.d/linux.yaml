@@ -230,3 +230,12 @@ binaries:
     latest: 0.7.4
     versions:
       - version: 0.7.4
+  - name: kubetail
+    url: https://github.com/johanhaleby/kubetail/archive/refs/tags/{version}.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 1.6.18
+    versions:
+      - version: 1.6.18
