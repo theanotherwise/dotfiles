@@ -389,3 +389,12 @@ binaries:
     latest: 3.11.2
     versions:
       - version: 3.11.2
+  - name: helmify
+    url: https://github.com/arttor/helmify/releases/download/v{version}/helmify_Linux_x86_64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.4.13
+    versions:
+      - version: 0.4.13
