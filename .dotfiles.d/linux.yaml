@@ -131,7 +131,7 @@ binaries:
   #
   #
   - name: docker-compose
-    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-linux-amd64
+    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-linux-x86_64
     type: binary
     override: False
     strip: None
