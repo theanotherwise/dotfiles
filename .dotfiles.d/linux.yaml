@@ -36,3 +36,15 @@ binaries:
     latest: 1.20.4
     versions:
       - version: 1.20.4
+  - name: groovy
+    url: https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/apache-groovy-binary-{version}.zip
+    type: zip
+    override: False
+    strip: True
+    inBin: True
+    latest: 4.0.13
+    versions:
+      - version: 4.0.13
+      - version: 3.0.18
+      - version: 2.5.22
+      - version: 2.4.21
