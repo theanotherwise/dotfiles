@@ -330,3 +330,12 @@ binaries:
     latest: 1.7.2
     versions:
       - version: 1.7.2
+  - name: terrascan
+    url: https://github.com/tenable/terrascan/releases/download/v{version}/terrascan_{version}_Linux_x86_64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.19.1
+    versions:
+      - version: 1.19.1
