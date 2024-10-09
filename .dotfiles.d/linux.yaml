@@ -185,3 +185,12 @@ binaries:
     latest: 5.4.8
     versions:
       - version: 5.4.8
+  - name: kubectl
+    url: https://dl.k8s.io/release/v{version}/bin/linux/amd64/kubectl
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 1.26.3
+    versions:
+      - version: 1.26.3
