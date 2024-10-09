@@ -73,3 +73,12 @@ binaries:
     latest: 1.22.19
     versions:
       - version: 1.22.19
+  - name: mvn
+    url: https://dlcdn.apache.org/maven/maven-3/{version}/binaries/apache-maven-{version}-bin.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: True
+    latest: 3.9.4
+    versions:
+      - version: 3.9.4
