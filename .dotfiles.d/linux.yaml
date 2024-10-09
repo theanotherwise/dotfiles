@@ -248,3 +248,12 @@ binaries:
     latest: 0.31.5
     versions:
       - version: 0.31.5
+  - name: kubent
+    url: https://github.com/doitintl/kube-no-trouble/releases/download/{version}/kubent-{version}-linux-amd64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.7.2
+    versions:
+      - version: 0.7.2
