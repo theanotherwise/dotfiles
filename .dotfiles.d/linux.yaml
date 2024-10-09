@@ -275,3 +275,12 @@ binaries:
     latest: 0.21.3
     versions:
       - version: 0.21.3
+  - name: kubespy
+    url: https://github.com/pulumi/kubespy/releases/download/v{version}/kubespy-v{version}-linux-amd64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.6.3
+    versions:
+      - version: 0.6.3
