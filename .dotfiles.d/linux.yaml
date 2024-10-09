@@ -257,3 +257,12 @@ binaries:
     latest: 0.7.2
     versions:
       - version: 0.7.2
+  - name: kube-linter
+    url: https://github.com/stackrox/kube-linter/releases/download/v{version}/kube-linter-linux.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.6.8
+    versions:
+      - version: 0.6.8
