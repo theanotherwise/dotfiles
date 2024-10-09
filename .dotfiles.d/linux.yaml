@@ -116,3 +116,26 @@ binaries:
     latest: 1.7.1
     versions:
       - version: 1.7.1
+  #
+  #
+  #
+  ###########################################################################
+  #    _____                _
+  #   |  __ \              | |
+  #   | |  | |  ___    ___ | | __ ___  _ __
+  #   | |  | | / _ \  / __|| |/ // _ \| '__|
+  #   | |__| || (_) || (__ |   <|  __/| |
+  #   |_____/  \___/  \___||_|\_\\___||_|
+  ###########################################################################
+  #
+  #
+  #
+  - name: docker-compose
+    url: https://github.com/docker/compose/releases/download/v{version}/docker-compose-linux-amd64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 2.24.0
+    versions:
+      - version: 2.24.0
