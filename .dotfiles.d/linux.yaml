@@ -407,3 +407,26 @@ binaries:
     latest: 0.166.0
     versions:
       - version: 0.166.0
+  #
+  #
+  #
+  ###########################################################################
+  #    _    _       _
+  #   | |  | |     | |
+  #   | |  | | ___ | |  ___  ___  ___
+  #   | |  | |/ __|| | / _ \/ __|/ __|
+  #   | |__| |\__ \| ||  __/\__ \\__ \
+  #    \____/ |___/|_| \___||___/|___/
+  ###########################################################################
+  #
+  #
+  #
+  - name: upx
+    url: https://github.com/upx/upx/releases/download/v{version}/upx-{version}-amd64_linux.tar.xz
+    type: tar.xz
+    override: False
+    strip: True
+    inBin: False
+    latest: 4.0.1
+    versions:
+      - version: 4.0.1
