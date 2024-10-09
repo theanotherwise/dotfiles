@@ -312,3 +312,12 @@ binaries:
       - version: 1.6.6
       - version: 1.7.5
       - version: 1.8.5
+  - name: terragrunt
+    url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_linux_amd64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 0.60.0
+    versions:
+      - version: 0.60.0
