@@ -25,9 +25,11 @@ alias ks="kubespy"
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 alias kgnodes='kubectl get nodes -o wide'
-alias kgpods='kubectl get pods -o wide'
 alias kwnodes='watch -n 1 kubectl get nodes -o wide'
+alias kgpods='kubectl get pods -o wide'
 alias kwpods='watch -n 1 kubectl get pods -o wide'
+alias kgsvcs='kubectl get svc -o wide'
+alias kwsvcs='watch -n 1 kubectl get svc -o wide'
 
 alias tf="terraform"
 alias tfgrunt="terragrunt"
