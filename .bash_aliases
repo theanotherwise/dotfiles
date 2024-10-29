@@ -34,8 +34,8 @@ alias kwsvc='watch -n 1 kubectl get svc -o wide'
 alias kgpvc='kubectl get pvc -o wide'
 alias kwpvc='watch -n 1 kubectl get pvc -o wide'
 
-alias tf="terraform"
-alias tfgrunt="terragrunt"
+alias tform="terraform"
+alias tgrunt="terragrunt"
 alias tfpike="pike"
 alias tfscan="terrascan"
 
