@@ -51,6 +51,9 @@ alias gitlog='sc_helper_git_log_n_commits'
 alias gitsoft='git reset --soft HEAD^'
 alias githard='git reset --hard'
 
+alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
+alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
+
 alias base64enc='python3 -c "import sys, base64 ; print(base64.b64encode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 
