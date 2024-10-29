@@ -38,6 +38,7 @@ alias tfgrunt="terragrunt"
 alias tfpike="pike"
 alias tfscan="terrascan"
 
+alias gitpull='git pull'
 alias gitgraph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
 alias gitfresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
 alias gitfreshtags="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
