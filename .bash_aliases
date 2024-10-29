@@ -35,7 +35,7 @@ alias kgpvc='kubectl get pvc -o wide'
 alias kwpvc='watch -n 1 kubectl get pvc -o wide'
 
 alias tform="terraform"
-alias tgrunt="terragrunt"
+alias tgrunt="terragrunt --terragrunt-source-update"
 alias tfpike="pike"
 alias tfscan="terrascan"
 
