@@ -30,6 +30,8 @@ alias kgpods='kubectl get pods -o wide'
 alias kwpods='watch -n 1 kubectl get pods -o wide'
 alias kgsvcs='kubectl get svc -o wide'
 alias kwsvcs='watch -n 1 kubectl get svc -o wide'
+alias kgpvcs='kubectl get pvc -o wide'
+alias kwpvcs='watch -n 1 kubectl get pvc -o wide'
 
 alias tf="terraform"
 alias tfgrunt="terragrunt"
