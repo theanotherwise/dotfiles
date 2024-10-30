@@ -39,6 +39,7 @@ alias tgrunt="terragrunt --terragrunt-source-update"
 alias tfpike="pike"
 alias tfscan="terrascan"
 
+alias gittag='git tag'
 alias gitpushtag='git push origin tag'
 alias gitcommit='git add . && git commit -am "fix: init" && git push'
 alias gitpull='git pull'
