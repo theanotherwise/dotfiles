@@ -40,12 +40,13 @@ alias tfpike="pike"
 alias tfscan="terrascan"
 
 alias gittag='git tag'
-alias gitpushtag='git push origin tag'
+alias gittagpush='git push origin tag'
+alias gittagfresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
+
 alias gitcommit='git add . && git commit -am "fix: init" && git push'
 alias gitpull='git pull'
 alias gitgraph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
 alias gitfresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
-alias gitfreshtags="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 alias gitemptypush="git commit --allow-empty -m \"Empty Commit\" ; git push"
 alias gitref="git show-ref --tags --heads"
 alias gitstatus="git status -vvv --long"
