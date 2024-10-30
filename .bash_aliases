@@ -4,7 +4,7 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
 
-alias watch-1='watch -n 0 '
+alias watch-0='watch -n 0 '
 alias watch-1='watch -n 1 '
 alias watch-2='watch -n 2 '
 alias watch-3='watch -n 3 '
