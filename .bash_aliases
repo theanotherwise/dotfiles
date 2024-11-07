@@ -49,6 +49,7 @@ alias gcloud-container-clusters-list="gcloud container clusters list"
 alias gcloud-container-clusters-creds="gcloud container clusters get-credentials"
 
 
+
 # Git Commit
 alias git-commit-all='git add . && git commit -am "fix: init" && git push'
 alias git-commit-empty-push="git commit --allow-empty -m \"Empty Commit\" ; git push"
@@ -65,10 +66,10 @@ alias git-tag='git tag'
 alias git-tag-push='git push origin tag'
 alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 
-# Git Changes
+# Git Code Follow
 alias git-fresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
 alias git-pull='git pull'
-alias git-reset-soft='git reset --soft HEAD^'
+alias git-reset-soft-once='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 
 
