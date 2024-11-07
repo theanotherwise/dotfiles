@@ -9,7 +9,7 @@ alias rmdir="rmdir -v"
 alias source-reload='bash "${HOME}"/.bash_profile'
 
 
-# asddsa
+
 
 
 # Watches
@@ -101,6 +101,7 @@ alias git-fresh="git pull -vvv ; git fetch --all -vvv ; git fetch --prune -vvv ;
 alias git-pull='git pull -vvv'
 alias git-reset-soft-once='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
+alias git-reset-hard-commited="git reset --hard @{u}"
 
 
 
