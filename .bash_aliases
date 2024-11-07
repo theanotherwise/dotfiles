@@ -56,8 +56,10 @@ alias kwatch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 # Terraform
 alias terragrunt="terragrunt --terragrunt-source-update"
+alias terralint="tflint"
+alias terrasec="tfsec"
 alias terrapike="pike"
-alias terrascan="terrascan"
+
 
 alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
 alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
