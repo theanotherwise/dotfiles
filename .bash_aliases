@@ -75,6 +75,8 @@ alias git-ref="git show-ref --tags --heads"
 alias git-status="git status -vvv --long"
 alias git-show="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
 alias git-log='sc_helper_git_log_n_commits'
+alias git-remote-show-origin="git remote show origin"
+
 
 # Git Tags
 alias git-tag='git tag'
