@@ -60,9 +60,9 @@ if [ -f ${HOME}/.bash_aliases ]; then
   . "${HOME}/.bash_aliases"
 fi
 
-if [ -f ${HOME}/.bash_completion ]; then
-  . "${HOME}/.bash_completion"
-fi
+#if [ -f ${HOME}/.bash_completion ]; then
+#  . "${HOME}/.bash_completion"
+#fi
 
 if [ -f ${HOME}/.bash_adhoc_functions ]; then
   . "${HOME}/.bash_adhoc_functions"
