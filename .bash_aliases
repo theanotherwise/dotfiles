@@ -71,8 +71,8 @@ alias gcloud-project-list="gcloud projects list"
 alias gcloud-project-set="gcloud config set project"
 alias gcloud-auth="gcloud auth login"
 alias gcloud-auth-app="gcloud auth application-default login"
-alias gcloud-gke-list="gcloud container clusters list"
-alias gcloud-gke-creds="gcloud container clusters get-credentials"
+alias gcloud-kube-list="gcloud container clusters list"
+alias gcloud-kube-creds="gcloud container clusters get-credentials"
 
 
 
