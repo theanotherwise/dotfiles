@@ -9,6 +9,9 @@ alias rmdir="rmdir -v"
 alias source-reload='bash "${HOME}"/.bash_profile'
 
 
+
+
+
 # Watches
 alias watch-0='watch -n 0 '
 alias watch-1='watch -n 1 '
@@ -18,6 +21,8 @@ alias watch-5='watch -n 5 '
 alias watch-10='watch -n 10 '
 alias watch-15='watch -n 15 '
 alias watch-30='watch -n 30 '
+
+
 
 
 
@@ -47,6 +52,8 @@ alias k-watch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 
 
+
+
 # Terraform
 alias terragrunt="terragrunt --terragrunt-source-update"
 alias terrapike="pike"
@@ -57,6 +64,8 @@ alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
 
 
 
+
+
 # gcloud
 alias gcloud-project-list="gcloud projects list"
 alias gcloud-project-set="gcloud config set project"
@@ -64,6 +73,8 @@ alias gcloud-auth-login="gcloud auth login"
 alias gcloud-auth-login-app-default="gcloud auth application-default login"
 alias gcloud-container-clusters-list="gcloud container clusters list"
 alias gcloud-container-clusters-creds="gcloud container clusters get-credentials"
+
+
 
 
 
@@ -93,6 +104,8 @@ alias git-reset-hard='git reset --hard'
 
 
 
+
+
 # Data Processing
 alias base64enc='python3 -c "import sys, base64 ; print(base64.b64encode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
@@ -103,6 +116,8 @@ alias urldec='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(
 alias x509dec='sc_helper_x509_decode'
 alias x509ca='sc_helper_x509_ca_make'
 alias x509leaf='sc_helper_x509_ca_make_leaf'
+
+
 
 
 
