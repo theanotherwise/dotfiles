@@ -1,3 +1,5 @@
+echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+
 PATH="${HOME}/binaries/go/latest/bin:${PATH}"
 PATH="${HOME}/binaries/groovy/latest/bin:${PATH}"
 PATH="${HOME}/binaries/node/latest/bin:${PATH}"
