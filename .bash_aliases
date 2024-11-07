@@ -1,4 +1,4 @@
-echo "Load Aliases"
+echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 
 # Generic
 alias ls='ls --color=auto'
