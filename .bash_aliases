@@ -79,8 +79,8 @@ alias gcloud-container-clusters-creds="gcloud container clusters get-credentials
 
 
 # Git Commit
-alias git-commit-all='git add . && git commit -am "fix: init" && git push'
-alias git-commit-empty-push="git commit --allow-empty -m \"Empty Commit\" ; git push"
+alias git-commit-push-all='git add . && git commit -am "fix: init" && git push'
+alias git-commit-push-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
 # Git Details
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
