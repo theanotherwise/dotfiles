@@ -1,3 +1,5 @@
+echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+
 if command -v kubectl >/dev/null 2>&1; then
   . <(kubectl completion bash)
 fi
