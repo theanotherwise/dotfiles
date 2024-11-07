@@ -42,11 +42,12 @@ alias gittag='git tag'
 alias gittagpush='git push origin tag'
 alias gittagfresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 
-alias gcloud-projects-list="gcloud projects list"
-alias gcloud-config-set-project="gcloud config set project"
-alias gcloud-auth-application-default-login="gcloud auth application-default login"
+alias gcloud-project-list="gcloud projects list"
+alias gcloud-project-set="gcloud config set project"
+alias gcloud-auth-login="gcloud auth login"
+alias gcloud-auth-login-app-default="gcloud auth application-default login"
 alias gcloud-container-clusters-list="gcloud container clusters list"
-alias gcloud-container-clusters-get-credentials="gcloud container clusters get-credentials"
+alias gcloud-container-clusters-creds="gcloud container clusters get-credentials"
 
 alias git-commit='git add . && git commit -am "fix: init" && git push'
 alias git-pull='git pull'
