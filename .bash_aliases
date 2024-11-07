@@ -38,10 +38,9 @@ alias terragrunt="terragrunt --terragrunt-source-update"
 alias tf-pike="pike"
 alias tf-scan="terrascan"
 
-alias gittag='git tag'
-alias gittagpush='git push origin tag'
-alias gittagfresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 
+
+# gcloud
 alias gcloud-project-list="gcloud projects list"
 alias gcloud-project-set="gcloud config set project"
 alias gcloud-auth-login="gcloud auth login"
@@ -49,17 +48,30 @@ alias gcloud-auth-login-app-default="gcloud auth application-default login"
 alias gcloud-container-clusters-list="gcloud container clusters list"
 alias gcloud-container-clusters-creds="gcloud container clusters get-credentials"
 
-alias git-commit='git add . && git commit -am "fix: init" && git push'
-alias git-pull='git pull'
+
+# Git Commit
+alias git-commit-all='git add . && git commit -am "fix: init" && git push'
+alias git-commit-empty-push="git commit --allow-empty -m \"Empty Commit\" ; git push"
+
+# Git Details
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
-alias git-fresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
-alias git-empty-commit-push="git commit --allow-empty -m \"Empty Commit\" ; git push"
 alias git-ref="git show-ref --tags --heads"
 alias git-status="git status -vvv --long"
 alias git-show="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
 alias git-log='sc_helper_git_log_n_commits'
+
+# Git Tags
+alias git-tag='git tag'
+alias git-tag-push='git push origin tag'
+alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
+
+# Git Changes
+alias git-fresh="git pull ; git fetch --all ; git fetch --prune ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
+alias git-pull='git pull'
 alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
+
+
 
 alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
 alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
