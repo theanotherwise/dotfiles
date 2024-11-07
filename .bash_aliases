@@ -67,7 +67,7 @@ alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
 
 
 # gcloud
-alias gcloud-project-list="gcloud projects list"
+alias gcloud-projects="gcloud projects list"
 alias gcloud-project-set="gcloud config set project"
 alias gcloud-auth="gcloud auth login --no-launch-browser"
 alias gcloud-auth-app="gcloud auth application-default login --no-launch-browser"
