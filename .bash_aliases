@@ -1,3 +1,5 @@
+echo "Load Aliases"
+
 # Generic
 alias ls='ls --color=auto'
 alias rm="rm -iv"
