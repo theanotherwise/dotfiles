@@ -36,10 +36,10 @@ alias kl="kube-linter"
 alias kp="popeye"
 alias knt="kubent"
 alias ks="kubespy"
-
-# Kubernetes Watches
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
+
+# Kubernetes Watches
 alias k-get-nodes='kubectl get nodes -o wide'
 alias k-watch-nodes='watch -n 1 kubectl get nodes -o wide'
 alias k-get-pods='kubectl get pods -o wide'
@@ -69,10 +69,10 @@ alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
 # gcloud
 alias gcloud-project-list="gcloud projects list"
 alias gcloud-project-set="gcloud config set project"
-alias gcloud-auth-login="gcloud auth login"
-alias gcloud-auth-login-app-default="gcloud auth application-default login"
-alias gcloud-container-clusters-list="gcloud container clusters list"
-alias gcloud-container-clusters-creds="gcloud container clusters get-credentials"
+alias gcloud-auth="gcloud auth login"
+alias gcloud-auth-app="gcloud auth application-default login"
+alias gcloud-gke-list="gcloud container clusters list"
+alias gcloud-gke-creds="gcloud container clusters get-credentials"
 
 
 
