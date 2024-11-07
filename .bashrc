@@ -1,4 +1,4 @@
-echo "Load: \"${0}\""
+basename "$0"
 
 umask 0022
 
