@@ -1,4 +1,4 @@
-basename "$0"
+echo "Loading file: $(basename "$0")"
 
 umask 0022
 
