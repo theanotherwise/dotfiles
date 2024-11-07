@@ -1,9 +1,13 @@
+# Generic
 alias ls='ls --color=auto'
 alias rm="rm -iv"
 alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
 
+
+
+# Watches
 alias watch-0='watch -n 0 '
 alias watch-1='watch -n 1 '
 alias watch-2='watch -n 2 '
@@ -13,6 +17,9 @@ alias watch-10='watch -n 10 '
 alias watch-15='watch -n 15 '
 alias watch-30='watch -n 30 '
 
+
+
+# Kubernetes Defaults
 alias k="kubectl"
 alias kctx="kubectx"
 alias kns="kubens"
@@ -22,6 +29,8 @@ alias kl="kube-linter"
 alias kp="popeye"
 alias knt="kubent"
 alias ks="kubespy"
+
+# Kubernetes Watches
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 alias k-get-nodes='kubectl get nodes -o wide'
@@ -34,9 +43,15 @@ alias k-watch-svc='watch -n 1 kubectl get svc -o wide'
 alias k-get-pvc='kubectl get pvc -o wide'
 alias k-watch-pvc='watch -n 1 kubectl get pvc -o wide'
 
+
+
+# Terraform
 alias terragrunt="terragrunt --terragrunt-source-update"
-alias tf-pike="pike"
-alias tf-scan="terrascan"
+alias terrapike="pike"
+alias terrascan="terrascan"
+
+alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
+alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
 
 
 
@@ -74,9 +89,7 @@ alias git-reset-hard='git reset --hard'
 
 
 
-alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
-alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
-
+# Data Processing
 alias base64enc='python3 -c "import sys, base64 ; print(base64.b64encode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 
@@ -87,5 +100,8 @@ alias x509dec='sc_helper_x509_decode'
 alias x509ca='sc_helper_x509_ca_make'
 alias x509leaf='sc_helper_x509_ca_make_leaf'
 
+
+
+# Tests
 alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt" -o /dev/null -s -L'
 alias tcpcheck='sc_helper_tcp_linux_check'
