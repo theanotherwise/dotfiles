@@ -24,15 +24,15 @@ alias knt="kubent"
 alias ks="kubespy"
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
-alias kgnodes='kubectl get nodes -o wide'
-alias kwnodes='watch -n 1 kubectl get nodes -o wide'
-alias kgpods='kubectl get pods -o wide'
-alias kwpods='watch -n 1 kubectl get pods -o wide'
-alias ktpods='watch -n 1 kubectl top pods'
-alias kgsvc='kubectl get svc -o wide'
-alias kwsvc='watch -n 1 kubectl get svc -o wide'
-alias kgpvc='kubectl get pvc -o wide'
-alias kwpvc='watch -n 1 kubectl get pvc -o wide'
+alias k-get-nodes='kubectl get nodes -o wide'
+alias k-watch-nodes='watch -n 1 kubectl get nodes -o wide'
+alias k-get-pods='kubectl get pods -o wide'
+alias k-watch-pods='watch -n 1 kubectl get pods -o wide'
+alias k-top-pods='watch -n 1 kubectl top pods'
+alias k-get-svc='kubectl get svc -o wide'
+alias k-watch-svc='watch -n 1 kubectl get svc -o wide'
+alias k-get-pvc='kubectl get pvc -o wide'
+alias k-watch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 alias terragrunt="terragrunt --terragrunt-source-update"
 alias tf-pike="pike"
