@@ -34,10 +34,9 @@ alias kwsvc='watch -n 1 kubectl get svc -o wide'
 alias kgpvc='kubectl get pvc -o wide'
 alias kwpvc='watch -n 1 kubectl get pvc -o wide'
 
-alias tform="terraform"
-alias tgrunt="terragrunt --terragrunt-source-update"
-alias tfpike="pike"
-alias tfscan="terrascan"
+alias terragrunt="terragrunt --terragrunt-source-update"
+alias tf-pike="pike"
+alias tf-scan="terrascan"
 
 alias gittag='git tag'
 alias gittagpush='git push origin tag'
