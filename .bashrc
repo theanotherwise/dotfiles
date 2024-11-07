@@ -1,4 +1,4 @@
-echo 'Load: "${1}"'
+echo "Load: \"${0}\""
 
 umask 0022
 
