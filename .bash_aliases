@@ -69,11 +69,11 @@ alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
 
 
 # gcloud
-alias gcloud-projects="gcloud projects list"
-alias gcloud-project-set="gcloud config set project"
+alias gcloud-proj="gcloud projects list"
+alias gcloud-proj-set="gcloud config set project"
 alias gcloud-auth="gcloud auth login --no-launch-browser"
 alias gcloud-auth-app="gcloud auth application-default login --no-launch-browser"
-alias gcloud-kube-list="gcloud container clusters list"
+alias gcloud-kube="gcloud container clusters list"
 alias gcloud-kube-creds="gcloud container clusters get-credentials"
 
 
@@ -81,7 +81,7 @@ alias gcloud-kube-creds="gcloud container clusters get-credentials"
 
 
 # Git Commit
-alias git-commit-push-all='git add . && git commit -am "fix: init" && git push'
+alias git-commit-push='git add . && git commit -am "fix: init" && git push'
 alias git-commit-push-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
 # Git Details
@@ -101,7 +101,7 @@ alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 # Git Code Follow
 alias git-fresh="git pull -vvv ; git fetch --all -vvv ; git fetch --prune -vvv ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
 alias git-pull='git pull -vvv'
-alias git-reset-soft-once='git reset --soft HEAD^'
+alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 alias git-reset-hard-commited="git reset --hard @{u}"
 
