@@ -116,6 +116,15 @@ binaries:
     latest: 1.7.1
     versions:
       - version: 1.7.1
+  - name: ripgrep
+    url: https://github.com/BurntSushi/ripgrep/releases/download/{version}/ripgrep-{version}-aarch64-apple-darwin.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: True
+    latest: 14.1.1
+    versions:
+      - version: 14.1.1
   #
   #
   #
