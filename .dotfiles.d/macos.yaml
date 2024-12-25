@@ -121,7 +121,7 @@ binaries:
     type: tar.gz
     override: False
     strip: True
-    inBin: True
+    inBin: False
     latest: 14.1.1
     versions:
       - version: 14.1.1
