@@ -120,7 +120,7 @@ alias x509dec='sc_helper_x509_decode'
 alias x509ca='sc_helper_x509_ca_make'
 alias x509leaf='sc_helper_x509_ca_make_leaf'
 
-alias rg='rg --no-filename --no-line-number'
+alias rg='rg --no-filename --no-line-number --no-ignore'
 
 
 
