@@ -34,6 +34,7 @@ PATH="${HOME}/binaries/pike/latest/bin:${PATH}"
 PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
 PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
 PATH="${HOME}/binaries/ripgrep/latest/bin:${PATH}"
+PATH="${HOME}/binaries/oras/latest/bin:${PATH}"
 
 PATH="/opt/homebrew/bin:${PATH}"
 PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
