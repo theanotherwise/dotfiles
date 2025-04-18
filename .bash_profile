@@ -1,40 +1,12 @@
 echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 
-PATH="${HOME}/binaries/go/latest/bin:${PATH}"
-PATH="${HOME}/binaries/groovy/latest/bin:${PATH}"
-PATH="${HOME}/binaries/node/latest/bin:${PATH}"
-PATH="${HOME}/binaries/yarn/latest/bin:${PATH}"
-PATH="${HOME}/binaries/mvn/latest/bin:${PATH}"
-PATH="${HOME}/binaries/yq/latest/bin:${PATH}"
-PATH="${HOME}/binaries/jq/latest/bin:${PATH}"
-PATH="${HOME}/binaries/docker-compose/latest/bin:${PATH}"
-PATH="${HOME}/binaries/subfinder/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubent/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kube-linter/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kube-popeye/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubespy/latest/bin:${PATH}"
-PATH="${HOME}/binaries/k3d/latest/bin:${PATH}"
-PATH="${HOME}/binaries/k9s/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kube-capacity/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubectl/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubectx/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubens/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kubetail/latest/bin:${PATH}"
-PATH="${HOME}/binaries/kustomize/latest/bin:${PATH}"
-PATH="${HOME}/binaries/tofu/latest/bin:${PATH}"
-PATH="${HOME}/binaries/terraform/latest/bin:${PATH}"
-PATH="${HOME}/binaries/terragrunt/latest/bin:${PATH}"
-PATH="${HOME}/binaries/terrascan/latest/bin:${PATH}"
-PATH="${HOME}/binaries/helm/latest/bin:${PATH}"
-PATH="${HOME}/binaries/helmify/latest/bin:${PATH}"
-PATH="${HOME}/binaries/helmfile/latest/bin:${PATH}"
-PATH="${HOME}/binaries/tflint/latest/bin:${PATH}"
-PATH="${HOME}/binaries/tfsec/latest/bin:${PATH}"
-PATH="${HOME}/binaries/pike/latest/bin:${PATH}"
-PATH="${HOME}/binaries/okd/latest/bin:${PATH}"
-PATH="${HOME}/binaries/upx/latest/bin:${PATH}"
-PATH="${HOME}/binaries/ripgrep/latest/bin:${PATH}"
-PATH="${HOME}/binaries/oras/latest/bin:${PATH}"
+for tool in go groovy node yarn mvn yq jq docker-compose subfinder \
+            kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
+            kubectl kubectx kubens kubetail kustomize tofu terraform \
+            terragrunt terrascan helm helmify helmfile rtfmt tfsec pike \
+            okd upx ripgrep oras; do
+  PATH="${HOME}/binaries/${tool}/latest/bin:${PATH}"
+done
 
 PATH="/opt/homebrew/bin:${PATH}"
 PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
