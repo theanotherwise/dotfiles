@@ -425,6 +425,15 @@ binaries:
     latest: 0.166.0
     versions:
       - version: 0.166.0
+  - name: oras
+    url: https://github.com/oras-project/oras/releases/download/v{version}/oras_${version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.2.2
+    versions:
+      - version: 1.2.2
   #
   #
   #
