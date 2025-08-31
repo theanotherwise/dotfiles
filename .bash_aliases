@@ -39,6 +39,8 @@ alias ks="kubespy"
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 
+alias ksecret='sc_helper_kube_secret'
+
 # Kubernetes Watches
 alias kget-nodes='kubectl get nodes -o wide'
 alias kwatch-nodes='watch -n 1 kubectl get nodes -o wide'
