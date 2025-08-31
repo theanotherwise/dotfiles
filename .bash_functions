@@ -113,3 +113,17 @@ sc_helper_git_log_n_commits(){
 
   git log -n "${N_COMMITS}" --oneline --format='%h' | xargs -I {} sh -c 'git diff {}^..{}'
 }
+
+sc_helper_kube_secret() {
+  if [[ "$1" == "-n" ]]; then
+    ns=$2
+    shift 2
+  else
+    ns=$(kubectl config view --minify -o jsonpath='{..namespace}')
+    [[ -z "$ns" ]] && ns=default
+  fi
+  secret=$1
+  kubectl get secret "$secret" -n "$ns" -o json \
+    | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
+}
+
