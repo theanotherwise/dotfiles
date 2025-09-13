@@ -113,7 +113,7 @@ alias git-ref='git show-ref --tags --heads \
   | awk "{h=substr(\$1,1,10); t=\$2; n=\$3; c=(t==\"branch\"?\"\033[32m\":\"\033[34m\"); printf \"\033[33m%-10s\033[0m %-7s %s%s\033[0m\n\", h, t, c, n}"'
 
 # Git - Show
-alias git-show='git show --no-abbrev-commit --decorate=full \
+alias git-latest='git show --no-abbrev-commit --decorate=full \
   --pretty=format:"%C(yellow)commit %H%Creset%n%Cgreen%ad%Creset %C(auto)%d%Creset%n\
 %CblueAuthor:%Creset %an%n%C(cyan)Message:%Creset%n  %C(red bold)%s%Creset%n%n%b%n\
 %C(magenta)--------------------------------------------------%Creset" \
