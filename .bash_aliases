@@ -83,8 +83,11 @@ alias gcloud-kube-creds="gcloud container clusters get-credentials"
 
 
 # Git Commit
-alias git-commit-push='git add . && git commit -am "fix: init" && git push'
-alias git-commit-push-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
+alias git-commitpush-feat='git add . && git commit -am "feat: new features implemented" && git push'
+alias git-commitpush-fix='git add . && git commit -am "fix: general fixes" && git push'
+alias git-commitpush-chore='git add . && git commit -am "chore: cleanups and maintenance" && git push'
+alias git-commitpush-docs='git add . && git commit -am "chore: update and improve existing docs" && git push'
+alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
 # Git Details
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
