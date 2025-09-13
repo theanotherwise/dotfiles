@@ -127,3 +127,12 @@ sc_helper_kube_secret() {
     | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
 }
 
+sc_helper_git_tag_push() {
+  T=$(date -u +"%Y-%m-%d.%H-%M-%S").$(git rev-parse --short HEAD)
+  git tag "$T"
+  echo "tag: $T"
+  read -p "Push Tags? [y/N]: " a
+  if [[ $a == [yY] ]]; then
+    git push origin "$T"
+  fi
+}
