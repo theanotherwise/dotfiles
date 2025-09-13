@@ -96,6 +96,7 @@ alias git-remote-show-origin="git remote show origin"
 
 
 # Git Tags
+alias git-tag-by-date='sc_helper_git_tag_push'
 alias git-tag='git tag'
 alias git-tag-push='git push origin tag'
 alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
