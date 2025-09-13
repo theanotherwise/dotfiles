@@ -54,7 +54,6 @@ alias kwatch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 
 
-
 # Terraform
 alias terragrunt="terragrunt --terragrunt-source-update"
 alias terralint="tflint"
