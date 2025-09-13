@@ -133,7 +133,6 @@ alias tcpcheck='sc_helper_tcp_linux_check'
 
 
 
-alias besttest='echo test'
 
 
 # function required (alias too limited for this)
