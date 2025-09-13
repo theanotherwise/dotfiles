@@ -93,24 +93,33 @@ alias git-commitpush-chore='git add . && git commit -am "chore: cleanups and mai
 alias git-commitpush-docs='git add . && git commit -am "chore: update and improve existing docs" && git push'
 alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
-# Git Pretty Details
+# Git 
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
-alias git-log='sh -c '\''N=${1:-10}; for h in $(git log --reverse -n "$N" --format=%H); do \
+
+# Git - Log
+alias git-log='sh -c '\''N=${1:-5}; for h in $(git --no-pager log --reverse -n "$N" --format=%H); do \
   echo; printf "\033[35m"; printf "%0.s-" {1..80}; printf "\033[0m\n"; \
-  git show -s --date=iso --format="%C(yellow)%h %Cgreen%ad %Creset %C(blue)[%an]%Creset%n%C(red bold)%s%Creset%n%b" "$h"; \
+  git --no-pager show -s --date=iso --format="%C(yellow)%h %Cgreen%ad %Creset %C(blue)[%an]%Creset%n%C(red bold)%s%Creset%n%b" "$h"; \
   printf "\033[35m"; printf "%0.s-" {1..80}; printf "\033[0m\n"; \
-  git diff "$h^..$h"; \
+  git --no-pager diff "$h^..$h"; \
 done'\'' sh'
 
+# Git - Status
 alias git-status="git status -vvv --long"
+
+# Git - Ref
 alias git-ref='git show-ref --tags --heads \
   | sed -E "s#refs/heads/#branch #; s#refs/tags/#tag    #;" \
   | awk "{h=substr(\$1,1,10); t=\$2; n=\$3; c=(t==\"branch\"?\"\033[32m\":\"\033[34m\"); printf \"\033[33m%-10s\033[0m %-7s %s%s\033[0m\n\", h, t, c, n}"'
+
+# Git - Show
 alias git-show='git show --no-abbrev-commit --decorate=full \
   --pretty=format:"%C(yellow)commit %H%Creset%n%Cgreen%ad%Creset %C(auto)%d%Creset%n\
 %CblueAuthor:%Creset %an%n%C(cyan)Message:%Creset%n  %C(red bold)%s%Creset%n%n%b%n\
 %C(magenta)--------------------------------------------------%Creset" \
   --date=iso --color=always'
+
+# Git - Remote Show
 alias git-remote='git remote show origin | sed \
   -e "s/^\\* remote/Remote:/" \
   -e "s/^  Fetch URL:/\x1b[32mFetch URL:\x1b[0m/" \
