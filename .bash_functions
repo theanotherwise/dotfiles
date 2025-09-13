@@ -136,3 +136,8 @@ sc_helper_git_tag_push() {
     git push origin "$T"
   fi
 }
+
+sc_helper_source_reload() {
+  source "${HOME}/.bash_profile"
+  echo "🔄 Reloaded ${HOME}/.bash_profile"
+}
