@@ -104,6 +104,7 @@ alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 # Git Code Follow
 alias git-fresh="git pull -vvv ; git fetch --all -vvv ; git fetch --prune -vvv ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
 alias git-pull='git pull -vvv'
+alias git-pull-origin-main='git pull origin main -vvv'
 alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 alias git-reset-hard-commited="git reset --hard @{u}"
