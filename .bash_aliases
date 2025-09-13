@@ -134,5 +134,9 @@ alias tcpcheck='sc_helper_tcp_linux_check'
 
 
 
+# function required (alias too limited for this)
+reload() {
+  source "${HOME}/.bash_profile"
+  echo "🔄 Reloaded ${HOME}/.bash_profile"
+}
 
-# End
