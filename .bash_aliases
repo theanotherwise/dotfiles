@@ -10,7 +10,6 @@ alias rmdir="rmdir -v"
 
 
 
-
 # Watches
 alias watch-0='watch -n 0 '
 alias watch-1='watch -n 1 '
@@ -20,7 +19,6 @@ alias watch-5='watch -n 5 '
 alias watch-10='watch -n 10 '
 alias watch-15='watch -n 15 '
 alias watch-30='watch -n 30 '
-
 
 
 
