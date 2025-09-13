@@ -97,7 +97,7 @@ alias git-remote-show="git remote show origin"
 
 
 
-# Git Syn
+# Git Sync
 alias git-sync-tag="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 alias git-sync-branch='git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv'
 
@@ -108,6 +108,12 @@ alias git-sync-branch='git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv'
 alias git-tag='git tag'
 alias git-tag-push='git push origin tag'
 alias git-tag-by-date='sc_helper_git_tag_push'
+
+
+
+
+
+
 
 # Git Code Follow
 alias git-reset-soft='git reset --soft HEAD^'
