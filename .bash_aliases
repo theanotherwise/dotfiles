@@ -10,6 +10,8 @@ alias rmdir="rmdir -v"
 
 
 
+
+
 # Watches
 alias watch-0='watch -n 0 '
 alias watch-1='watch -n 1 '
@@ -19,6 +21,7 @@ alias watch-5='watch -n 5 '
 alias watch-10='watch -n 10 '
 alias watch-15='watch -n 15 '
 alias watch-30='watch -n 30 '
+
 
 
 
@@ -54,6 +57,7 @@ alias kwatch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 
 
+
 # Terraform
 alias terragrunt="terragrunt --terragrunt-source-update"
 alias terralint="tflint"
@@ -63,6 +67,7 @@ alias terrapike="pike"
 
 alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
 alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
+
 
 
 
@@ -112,9 +117,14 @@ alias git-remote='git remote show origin | sed \
 
 
 
+
+
 # Git Sync
 alias git-sync-tag="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 alias git-sync-branch='git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv'
+
+
+
 
 
 
@@ -123,6 +133,7 @@ alias git-sync-branch='git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv'
 alias git-tag='git tag'
 alias git-tag-push='git push origin tag'
 alias git-tag-by-date='sc_helper_git_tag_push'
+
 
 
 
@@ -145,6 +156,7 @@ alias git-pull-home='git -C "${HOME}" pull origin main -vvv'
 
 
 
+
 # Data Processing
 alias base64enc='python3 -c "import sys, base64 ; print(base64.b64encode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
 alias base64dec='python3 -c "import sys, base64 ; print(base64.b64decode(sys.argv[1].rstrip().encode() if len(sys.argv) > 1 else sys.stdin.read().rstrip().encode()).decode())"'
@@ -161,9 +173,12 @@ alias rg='rg --no-filename --no-line-number --no-ignore'
 
 
 
+
+
 # Tests
 alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt" -o /dev/null -s -L'
 alias tcpcheck='sc_helper_tcp_linux_check'
+
 
 
 
