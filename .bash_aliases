@@ -85,7 +85,7 @@ alias git-commit-push='git add . && git commit -am "fix: init" && git push'
 alias git-commit-push-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
 # Git Details
-alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all"
+alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
 alias git-ref="git show-ref --tags --heads"
 alias git-status="git status -vvv --long"
 alias git-show="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
