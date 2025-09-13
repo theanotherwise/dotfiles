@@ -95,7 +95,13 @@ alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git p
 
 # Git Pretty Details
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
-alias git-log='sc_helper_git_log_n_commits'
+alias git-log='sh -c '\''N=${1:-10}; for h in $(git log --reverse -n "$N" --format=%H); do \
+  echo; printf "\033[35m"; printf "%0.s-" {1..80}; printf "\033[0m\n"; \
+  git show -s --date=iso --format="%C(yellow)%h %Cgreen%ad %Creset %C(blue)[%an]%Creset%n%C(red bold)%s%Creset%n%b" "$h"; \
+  printf "\033[35m"; printf "%0.s-" {1..80}; printf "\033[0m\n"; \
+  git diff "$h^..$h"; \
+done'\'' sh'
+
 alias git-status="git status -vvv --long"
 alias git-ref='git show-ref --tags --heads \
   | sed -E "s#refs/heads/#branch #; s#refs/tags/#tag    #;" \
