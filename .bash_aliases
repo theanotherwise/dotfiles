@@ -54,6 +54,7 @@ alias kwatch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 
 
+
 # Terraform
 alias terragrunt="terragrunt --terragrunt-source-update"
 alias terralint="tflint"
@@ -63,6 +64,7 @@ alias terrapike="pike"
 
 alias export-tofu='export TERRAGRUNT_TFPATH=tofu'
 alias export-terraform='export TERRAGRUNT_TFPATH=terraform'
+
 
 
 
@@ -93,6 +95,10 @@ alias git-log='sc_helper_git_log_n_commits'
 alias git-remote-show-origin="git remote show origin"
 
 
+
+
+
+
 # Git Tags
 alias git-tag-by-date='sc_helper_git_tag_push'
 alias git-tag='git tag'
@@ -101,11 +107,16 @@ alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 
 # Git Code Follow
 alias git-fresh="git pull -vvv ; git fetch --all -vvv ; git fetch --prune -vvv ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
-alias git-pull='git pull -vvv'
-alias git-pull-origin-main='git pull origin main -vvv'
+
 alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 alias git-reset-hard-commited="git reset --hard @{u}"
+
+alias git-pull-current='git pull -vvv'
+alias git-pull-current-main='git pull origin main -vvv'
+alias git-pull-current-master='git pull origin master -vvv'
+alias git-pull-home-main='git -C "${HOME}" pull origin main -vvv'
+
 
 
 
