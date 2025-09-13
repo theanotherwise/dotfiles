@@ -1,1 +1,18 @@
 /.idea
+
+# Ignore All
+*
+
+# Keep Specific
+!.gitignore
+!.gitconfig
+!.gitignore
+!.vimrc
+!README.md
+!.dotfiles
+!.dotfiles.d/
+!.bash_aliases
+!.bash_completion
+!.bash_functions
+!.bash_profile
+!.bashrc
