@@ -92,9 +92,16 @@ alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git p
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
 alias git-ref="git show-ref --tags --heads"
 alias git-status="git status -vvv --long"
-alias git-show-pretty='git show --no-abbrev-commit --decorate=full \
-  --pretty=format:"%C(yellow)commit %H%Creset%n%Cgreen%ad%Creset %C(auto)%d%Creset%n%n%CblueAuthor:%Creset %an%n%n%C(cyan)Message:%Creset%n  %C(red;bold)%s%Creset%n%n%b%n%C(magenta)--------------------------------------------------%Creset" \
-  --date=iso --color=always'
+alias git-show-pretty='git show \
+  --no-abbrev-commit \
+  --decorate=full \
+  --pretty=format:"%C(yellow)commit %H%Creset%n\
+%Cgreen%ad%Creset %C(auto)%d%Creset%n%n\
+%CblueAuthor:%Creset %an%n%n\
+%C(cyan)Message:%Creset%n  %C(red bold)%s%Creset%n%n%b%n\
+%C(magenta)--------------------------------------------------%Creset" \
+  --date=iso \
+  --color=always'
 alias git-log='sc_helper_git_log_n_commits'
 alias git-remote-show="git remote show origin"
 
