@@ -108,12 +108,6 @@ sc_helper_tcp_linux_check(){
   timeout 5 bash -c "(echo > /dev/tcp/${DEST_NAME}/${DEST_PORT}) >/dev/null 2>&1 && echo UP || echo DOWN" || echo TIMEOUT
 }
 
-sc_helper_git_log_n_commits(){
-  [ -z "${1}" ] && N_COMMITS="5" || N_COMMITS="${1}"
-
-  git log -n "${N_COMMITS}" --oneline --format='%h' | xargs -I {} sh -c 'git diff {}^..{}'
-}
-
 sc_helper_kube_secret() {
   if [[ "$1" == "-n" ]]; then
     ns=$2
