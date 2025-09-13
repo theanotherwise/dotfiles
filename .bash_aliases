@@ -6,7 +6,7 @@ alias rm="rm -iv"
 alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
-alias source-reload='bash "${HOME}"/.bash_profile'
+alias reload='sc_helper_source_reload'
 
 
 
