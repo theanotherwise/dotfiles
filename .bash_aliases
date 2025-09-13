@@ -92,22 +92,24 @@ alias git-ref="git show-ref --tags --heads"
 alias git-status="git status -vvv --long"
 alias git-show="git show --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size"
 alias git-log='sc_helper_git_log_n_commits'
-alias git-remote-show-origin="git remote show origin"
+alias git-remote-show="git remote show origin"
 
 
 
 
+# Git Syn
+alias git-sync-tag="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
+alias git-sync-branch-"git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv"
 
 
-# Git Tags\
+
+
+# Git Tags
 alias git-tag='git tag'
 alias git-tag-push='git push origin tag'
 alias git-tag-by-date='sc_helper_git_tag_push'
-alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 
 # Git Code Follow
-alias git-fresh="git pull -vvv ; git fetch --all -vvv ; git fetch --prune -vvv ; git fetch -fup origin \"+refs/*:refs/*\" -vvv"
-
 alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 alias git-reset-hard-commited="git reset --hard @{u}"
