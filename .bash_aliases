@@ -99,7 +99,7 @@ alias git-remote-show="git remote show origin"
 
 # Git Syn
 alias git-sync-tag="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
-alias git-sync-branch-"git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv"
+alias git-sync-branch-'git fetch -fup origin "+refs/heads/*:refs/heads/*" -vvv'
 
 
 
