@@ -92,18 +92,15 @@ alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git p
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
 alias git-log='sc_helper_git_log_n_commits'
 alias git-status="git status -vvv --long"
-
 alias git-pretty-ref='git show-ref --tags --heads \
   | sed -E "s#refs/heads/#branch #; s#refs/tags/#tag    #;" \
   | awk "{h=substr(\$1,1,10); t=\$2; n=\$3; c=(t==\"branch\"?\"\033[32m\":\"\033[34m\"); printf \"\033[33m%-10s\033[0m %-7s %s%s\033[0m\n\", h, t, c, n}"'
-
 alias git-pretty-latest='git show --no-abbrev-commit --decorate=full \
   --pretty=format:"%C(yellow)commit %H%Creset%n%Cgreen%ad%Creset %C(auto)%d%Creset%n\
 %CblueAuthor:%Creset %an%n%C(cyan)Message:%Creset%n  %C(red bold)%s%Creset%n%n%b%n\
 %C(magenta)--------------------------------------------------%Creset" \
   --date=iso --color=always'
-
-alias git-remote-show='git remote show origin | sed \
+alias git-pretty-remote='git remote show origin | sed \
   -e "s/^\\* remote/Remote:/" \
   -e "s/^  Fetch URL:/\x1b[32mFetch URL:\x1b[0m/" \
   -e "s/^  Push  URL:/\x1b[36mPush  URL:\x1b[0m/" \
