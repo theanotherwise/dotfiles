@@ -6,8 +6,6 @@ alias rm="rm -iv"
 alias cp="cp -iv"
 alias mv="mv -iv"
 alias rmdir="rmdir -v"
-alias reload='source "${HOME}/.bash_profile" && echo "🔄 Reloaded ${HOME}/.bash_profile"'
-
 
 
 
