@@ -97,7 +97,7 @@ alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git p
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
 
 # Git - Log
-alias git-log='sh -c '\''N=${1:-15}; for h in $(git --no-pager log --reverse -n "$N" --format=%H); do \
+alias git-log='sh -c '\''N=${1:-5}; for h in $(git --no-pager log --reverse -n "$N" --format=%H); do \
   echo; printf "\033[35m"; printf "%0.s-" {1..80}; printf "\033[0m\n"; \
   git --no-pager show -s --date=iso --format="%C(yellow)%h %Cgreen%ad %Creset %C(blue)[%an]%Creset%n%C(red bold)%s%Creset%n%b" "$h"; \
   printf "\033[35m"; printf "%0.s-" {1..80}; printf "\033[0m\n"; \
