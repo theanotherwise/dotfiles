@@ -90,7 +90,9 @@ alias git-commitpush-docs='git add . && git commit -am "chore: update and improv
 alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
 # Git 
-alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
+alias git-graph='git log --graph --no-abbrev-commit --decorate=full \
+  --pretty=format:"%C(yellow)%h%Creset %Cgreen%ad%Creset %C(auto)%d %s" \
+  --date=iso --color=always --log-size --raw --stat --all'
 
 # Git - Log
 alias git-log='bash -c '"'"'
