@@ -99,10 +99,10 @@ alias git-remote-show-origin="git remote show origin"
 
 
 
-# Git Tags
-alias git-tag-by-date='sc_helper_git_tag_push'
+# Git Tags\
 alias git-tag='git tag'
 alias git-tag-push='git push origin tag'
+alias git-tag-by-date='sc_helper_git_tag_push'
 alias git-tag-fresh="git fetch -fup origin \"+refs/tags/*:refs/tags/*\" -vvv"
 
 # Git Code Follow
@@ -112,10 +112,10 @@ alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 alias git-reset-hard-commited="git reset --hard @{u}"
 
-alias git-pull-current='git pull -vvv'
-alias git-pull-current-main='git pull origin main -vvv'
-alias git-pull-current-master='git pull origin master -vvv'
-alias git-pull-home-main='git -C "${HOME}" pull origin main -vvv'
+alias git-pull='git pull -vvv'
+alias git-pull-main='git pull origin main -vvv'
+alias git-pull-master='git pull origin master -vvv'
+alias git-pull-home='git -C "${HOME}" pull origin main -vvv'
 
 
 
