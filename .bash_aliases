@@ -88,9 +88,9 @@ alias git-commitpush-chore='git add . && git commit -am "chore: cleanups and mai
 alias git-commitpush-docs='git add . && git commit -am "chore: update and improve existing docs" && git push'
 alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
-# Git Details
+# Git Pretty Details
 alias git-graph="git log --graph --no-abbrev-commit --decorate=full --pretty=oneline --color=always --log-size --date=iso  --raw --stat --all --reverse"
-alias git-ref='git show-ref --tags --heads \
+alias git-pretty-ref='git show-ref --tags --heads \
   | sed -E "s#refs/heads/#branch #; s#refs/tags/#tag    #;" \
   | awk "{h=substr(\$1,1,10); t=\$2; n=\$3; c=(t==\"branch\"?\"\033[32m\":\"\033[34m\"); printf \"\033[33m%-10s\033[0m %-7s %s%s\033[0m\n\", h, t, c, n}"'
 alias git-status="git status -vvv --long"
