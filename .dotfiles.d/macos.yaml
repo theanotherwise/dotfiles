@@ -411,7 +411,7 @@ binaries:
     url: https://github.com/helm-unittest/helm-unittest/releases/download/v{version}/helm-unittest-macos-arm64-{version}.tgz
     type: tar.gz
     override: False
-    strip: True
+    strip: False
     inBin: False
     latest: 1.0.1
     versions:
