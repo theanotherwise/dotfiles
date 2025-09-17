@@ -52,6 +52,9 @@ alias kwatch-pvc='watch -n 1 kubectl get pvc -o wide'
 
 
 
+alias helm-unittest=untt
+
+
 
 
 # Terraform
@@ -63,6 +66,8 @@ alias terrapike="pike"
 
 alias export-tofu='export TG_TF_PATH=tofu'
 alias export-terraform='export TG_TF_PATH=terraform'
+
+
 
 
 
