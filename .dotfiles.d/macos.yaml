@@ -407,7 +407,7 @@ binaries:
     latest: 3.11.2
     versions:
       - version: 3.11.2
-  - name: helm
+  - name: helm-unittest
     url: https://github.com/helm-unittest/helm-unittest/releases/download/v{version}/helm-unittest-macos-arm64-{version}.tgz
     type: tar.gz
     override: False
