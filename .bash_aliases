@@ -57,6 +57,14 @@ alias helm-unittest=untt
 
 
 
+# Docker
+alias docker-compose-up-clean="docker-compose up --force-recreate --remove-orphans --build"
+
+
+
+
+
+
 # Terraform
 alias terragrunt="terragrunt"
 alias terralint="tflint"
