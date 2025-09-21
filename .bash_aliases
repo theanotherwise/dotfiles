@@ -64,6 +64,9 @@ alias docker-rm-containers="docker ps -aq | xargs -r docker rm -f"
 alias docker-rm-images="docker images -q | xargs -r docker rmi -f"
 alias docker-rm-networks="docker network ls -q | xargs -r docker network rm"
 alias docker-rm-volumes="docker volume ls -q | xargs -r docker volume rm"
+alias docker-system-prune="docker system prune -f"
+
+
 
 
 
