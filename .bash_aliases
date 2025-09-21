@@ -59,8 +59,11 @@ alias helm-unittest=untt
 
 # Docker
 alias docker-compose-up-clean="docker-compose up --force-recreate --remove-orphans --build"
-
-
+alias docker-stop="docker ps -aq | xargs -r docker stop -t 0"
+alias docker-rm-containers="docker ps -aq | xargs -r docker rm -f"
+alias docker-rm-images="docker images -q | xargs -r docker rmi -f"
+alias docker-rm-networks="docker network ls -q | xargs -r docker network rm"
+alias docker-rm-volumes="docker volume ls -q | xargs -r docker volume rm"
 
 
 
