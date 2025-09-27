@@ -4,7 +4,7 @@ for tool in go groovy node yarn mvn yq jq docker-compose subfinder \
             kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
             kubectl kubectx kubens kubetail kustomize tofu terraform \
             terragrunt terrascan helm helmify helmfile rtfmt tfsec pike helm-unittest \
-            okd upx ripgrep oras; do
+            okd upx ripgrep oras k6; do
   PATH="${HOME}/binaries/${tool}/latest/bin:${PATH}"
 done
 
