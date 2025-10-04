@@ -187,7 +187,7 @@ sc_helper_context_get() {
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
-  local VT="-" VTG="-" VK="-" VH="-" VKU="-"
+  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-"
 
   if command -v terraform >/dev/null 2>&1; then
     VT=$(terraform version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
@@ -211,10 +211,31 @@ sc_helper_versions() {
     [ -n "$VKU" ] || VKU="-"
   fi
 
+  if command -v go >/dev/null 2>&1; then
+    VG=$(go version 2>/dev/null | grep -oE 'go[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^go//')
+    [ -n "$VG" ] || VG="-"
+  fi
+  if command -v groovy >/dev/null 2>&1; then
+    VGR=$( (groovy --version 2>/dev/null || groovy -version 2>/dev/null) | grep -oE '[0-9]+(\.[0-9]+){1,2}' | head -1)
+    [ -n "$VGR" ] || VGR="-"
+  fi
+  if command -v jq >/dev/null 2>&1; then
+    VJQ=$(jq --version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
+    [ -n "$VJQ" ] || VJQ="-"
+  fi
+  if command -v yq >/dev/null 2>&1; then
+    VYQ=$(yq --version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
+    [ -n "$VYQ" ] || VYQ="-"
+  fi
+
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terraform:" "$cR" "$cV" "$VT" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terragrunt:" "$cR" "$cV" "$VTG" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Go:" "$cR" "$cV" "$VG" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Groovy:" "$cR" "$cV" "$VGR" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR"
 }
 
