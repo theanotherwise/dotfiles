@@ -173,7 +173,9 @@ sc_prompt_update() {
         [ -z "$ns" ] && ns=default
         right_text="${ctx}/${ns}"
         # Right-align the kube text and return to line start for the left prompt
-        SC_PROMPT_KUBE=$(printf '%*s\r' "${COLUMNS:-80}" "$right_text")
+        # Use terminal columns if available; fall back to tput cols or 80
+        cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
+        SC_PROMPT_KUBE=$(printf '%*s\r' "$cols" "$right_text")
       else
         SC_PROMPT_KUBE=""
       fi
