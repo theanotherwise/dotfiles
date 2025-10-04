@@ -152,7 +152,7 @@ sc_helper_pod_status_breakdown() {
   imagepull=$(echo "$statuses" | grep -E -c 'ImagePullBackOff|ErrImagePull' 2>/dev/null || true)
   terminating=$(echo "$statuses" | grep -c 'Terminating' 2>/dev/null || true)
   unknown=$(echo "$statuses" | grep -E -c 'Unknown|Init:' 2>/dev/null || true)
-  echo "R:${running} P:${pending} CL:${crash} C:${completed} E:${error} IP:${imagepull} T:${terminating} U:${unknown}"
+  echo "Run:${running} Pen:${pending} CLB:${crash} Cmp:${completed} Err:${error} Img:${imagepull} Ter:${terminating} Unk:${unknown}"
 }
 
 # Print primary context info
