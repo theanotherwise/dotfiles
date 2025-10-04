@@ -187,7 +187,7 @@ sc_helper_context_get() {
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
-  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-"
+  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VYARN="-"
 
   if command -v terraform >/dev/null 2>&1; then
     VT=$(terraform version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
@@ -228,6 +228,15 @@ sc_helper_versions() {
     [ -n "$VYQ" ] || VYQ="-"
   fi
 
+  if command -v node >/dev/null 2>&1; then
+    VN=$(node --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
+    [ -n "$VN" ] || VN="-"
+  fi
+  if command -v yarn >/dev/null 2>&1; then
+    VYARN=$(yarn --version 2>/dev/null | head -1 | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
+    [ -n "$VYARN" ] || VYARN="-"
+  fi
+
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terraform:" "$cR" "$cV" "$VT" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terragrunt:" "$cR" "$cV" "$VTG" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR"
@@ -237,5 +246,7 @@ sc_helper_versions() {
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Groovy:" "$cR" "$cV" "$VGR" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR"
   printf "%b%-${W2}s%b %b%s%b\n" "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Node:" "$cR" "$cV" "$VN" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Yarn:" "$cR" "$cV" "$VYARN" "$cR"
 }
 
