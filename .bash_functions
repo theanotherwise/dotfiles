@@ -187,7 +187,7 @@ sc_helper_context_get() {
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
-  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VYARN="-"
+  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VYARN="-" VDOCKER="-" VCOMPOSE="-"
 
   if command -v terraform >/dev/null 2>&1; then
     VT=$(terraform version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
@@ -237,6 +237,20 @@ sc_helper_versions() {
     [ -n "$VYARN" ] || VYARN="-"
   fi
 
+  if command -v docker >/dev/null 2>&1; then
+    VDOCKER=$(docker --version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
+    [ -n "$VDOCKER" ] || VDOCKER="-"
+    # Prefer plugin syntax; fallback to standalone docker-compose
+    VCOMPOSE=$(docker compose version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
+    if [ -z "$VCOMPOSE" ] && command -v docker-compose >/dev/null 2>&1; then
+      VCOMPOSE=$(docker-compose --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
+    fi
+    [ -n "$VCOMPOSE" ] || VCOMPOSE="-"
+  elif command -v docker-compose >/dev/null 2>&1; then
+    VCOMPOSE=$(docker-compose --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
+    [ -n "$VCOMPOSE" ] || VCOMPOSE="-"
+  fi
+
   local LW=12 VW=16
   # Terraform | Terragrunt
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
@@ -250,6 +264,10 @@ sc_helper_versions() {
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Node:" "$cR" "$cV" "$VN" "$cR" \
     "$lK" "Yarn:" "$cR" "$cV" "$VYARN" "$cR"
+  # Docker | Compose
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Docker:" "$cR" "$cV" "$VDOCKER" "$cR" \
+    "$lK" "Compose:" "$cR" "$cV" "$VCOMPOSE" "$cR"
   # Go | Groovy
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Go:" "$cR" "$cV" "$VG" "$cR" \
