@@ -35,16 +35,4 @@ bash .dotfiles
 | latest     | -                             | Set link to `latest` to specified version                |
 
 ---
-
-## Bash startup performance
-
-Notes:
-
-- Prompt rysowany bez cache; kontekst kube po prawej w PS1.
-- Functions, aliases and completions are loaded only for interactive shells.
-
-Profile startup time quickly:
-
-```bash
-time bash -ic exit
-```
+ 
