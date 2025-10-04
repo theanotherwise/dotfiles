@@ -141,24 +141,39 @@ p() {
     ctx=$(kubectl config current-context 2>/dev/null)
     ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
     [ -z "$ns" ] && ns=default
+    [ -n "$ctx" ] || ctx="- (no context)"
+  else
+    ctx="- (missing: kubectl)"
+    ns="-"
   fi
 
   if command -v gcloud >/dev/null 2>&1; then
     gproj=$(gcloud config get-value project 2>/dev/null)
     [ "$gproj" = "(unset)" ] && gproj=""
+    [ -n "$gproj" ] || gproj="-"
   else
-    gproj=${CLOUDSDK_CORE_PROJECT:-}
+    if [ -n "${CLOUDSDK_CORE_PROJECT:-}" ]; then
+      gproj="${CLOUDSDK_CORE_PROJECT} (env)"
+    else
+      gproj="- (missing: gcloud)"
+    fi
   fi
 
   if command -v az >/dev/null 2>&1; then
     asub=$(az account show --query 'name' -o tsv 2>/dev/null)
-    [ -z "$asub" ] && asub=$(az account show --query 'id' -o tsv 2>/dev/null)
+    [ -n "$asub" ] || asub=$(az account show --query 'id' -o tsv 2>/dev/null)
+    [ -n "$asub" ] || asub="-"
+  else
+    if [ -n "${AZURE_SUBSCRIPTION_ID:-}" ]; then
+      asub="${AZURE_SUBSCRIPTION_ID} (env)"
+    else
+      asub="- (missing: az)"
+    fi
   fi
-  [ -z "$asub" ] && asub=${AZURE_SUBSCRIPTION_ID:-}
 
-  echo "Kube: ${ctx:--}"
-  echo "Namespace: ${ns:--}"
-  echo "GCP (proj.): ${gproj:--}"
-  echo "Azure (sub.): ${asub:--}"
+  echo "Kube: ${ctx}"
+  echo "Namespace: ${ns}"
+  echo "GCP (proj.): ${gproj}"
+  echo "Azure (sub.): ${asub}"
 }
 
