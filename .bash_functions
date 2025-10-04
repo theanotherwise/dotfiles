@@ -155,6 +155,104 @@ sc_helper_pod_status_breakdown() {
   echo "Run:${running} Pen:${pending} CLB:${crash} Cmp:${completed} Err:${error} Img:${imagepull} Ter:${terminating} Unk:${unknown}"
 }
 
+# Print only context (Kube/Namespace/GCP/Azure)
+sc_helper_context_info() {
+  local ctx ns gproj asub
+  local cR="\033[0m" cV="\033[97m"
+  local lK="\033[1;34m" lN="\033[1;34m" lG="\033[1;33m" lA="\033[1;35m" lR="\033[1;31m"
+  local W=14
+
+  if command -v kubectl >/dev/null 2>&1; then
+    ctx=$(kubectl config current-context 2>/dev/null)
+    ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
+    [ -z "$ns" ] && ns=default
+    [ -n "$ctx" ] || ctx="- (no context)"
+  else
+    ctx="- (missing: kubectl)"
+    ns="-"
+  fi
+
+  if command -v gcloud >/dev/null 2>&1; then
+    gproj=$(gcloud config get-value project 2>/dev/null)
+    [ "$gproj" = "(unset)" ] && gproj=""
+    [ -n "$gproj" ] || gproj="-"
+  else
+    if [ -n "${CLOUDSDK_CORE_PROJECT:-}" ]; then
+      gproj="${CLOUDSDK_CORE_PROJECT} (env)"
+    else
+      gproj="- (missing: gcloud)"
+    fi
+  fi
+
+  if command -v az >/dev/null 2>&1; then
+    asub=$(az account show --query 'name' -o tsv 2>/dev/null)
+    [ -n "$asub" ] || asub=$(az account show --query 'id' -o tsv 2>/dev/null)
+    [ -n "$asub" ] || asub="-"
+  else
+    if [ -n "${AZURE_SUBSCRIPTION_ID:-}" ]; then
+      asub="${AZURE_SUBSCRIPTION_ID} (env)"
+    else
+      asub="- (missing: az)"
+    fi
+  fi
+
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Kube:" "$cR" "$cV" "$ctx" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Namespace:" "$cR" "$cV" "$ns" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "GCP (proj.):" "$cR" "$cV" "$gproj" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Azure (sub.):" "$cR" "$cV" "$asub" "$cR"
+  printf "\n"
+}
+
+# Print only live cluster summary
+sc_helper_kube_summary() {
+  local ctx ns
+  local cR="\033[0m" cV="\033[97m" lK="\033[1;34m"
+  local W=14
+
+  if command -v kubectl >/dev/null 2>&1; then
+    ctx=$(kubectl config current-context 2>/dev/null)
+    ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
+    [ -z "$ns" ] && ns=default
+    [ -n "$ctx" ] || ctx="- (no context)"
+  else
+    ctx=""
+    ns=""
+  fi
+
+  local pods_all="-" pods_count="-" pods_all_b="-" pods_ns_b="-" pvc_all="-" pvc_ns="-" svc_all="-" svc_ns="-" svc_ext="-" sc_names="-" nodes_count="-" nodes_ready="-" nodes_notready="-" nodes_schedoff="-"
+  if command -v kubectl >/dev/null 2>&1 && [ -n "$ctx" ] && [ "$ctx" != "- (no context)" ]; then
+    pods_all=$(kubectl get pods -A -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pods_all" ] || pods_all="-"
+    pods_count=$(kubectl get pods -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pods_count" ] || pods_count="-"
+    pods_all_b=$(sc_helper_pod_status_breakdown all)
+    pods_ns_b=$(sc_helper_pod_status_breakdown "$ns")
+    pvc_all=$(kubectl get pvc -A -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pvc_all" ] || pvc_all="-"
+    pvc_ns=$(kubectl get pvc -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pvc_ns" ] || pvc_ns="-"
+    svc_all=$(kubectl get svc -A -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$svc_all" ] || svc_all="-"
+    svc_ns=$(kubectl get svc -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$svc_ns" ] || svc_ns="-"
+    svc_ext=$(kubectl get svc -A -o jsonpath='{range .items[*]}{.status.loadBalancer.ingress[*].ip} {.spec.externalIPs[*]}{"\n"}{end}' 2>/dev/null | awk 'NF>0' | wc -l | tr -d ' ')
+    [ -n "$svc_ext" ] || svc_ext="-"
+    sc_names=$(kubectl get sc -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')
+    [ -n "$sc_names" ] || sc_names="-"
+    nodes_count=$(kubectl get nodes --no-headers 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$nodes_count" ] || nodes_count="-"
+    nodes_ready=$(kubectl get nodes --no-headers 2>/dev/null | awk '{print $2}' | grep -c '^Ready$' 2>/dev/null || true)
+    nodes_notready=$(kubectl get nodes --no-headers 2>/dev/null | awk '{print $2}' | grep -vc '^Ready$' 2>/dev/null || true)
+    nodes_schedoff=$(kubectl get nodes -o json 2>/dev/null | jq -r '.items[] | select(.spec.unschedulable==true) | .metadata.name' | wc -l | tr -d ' ')
+  fi
+
+  printf "%b%-${W}s%b %bNs:%s All:%s%b  %b%s%b\n" "$lK" "Pods:" "$cR" "$cV" "$pods_count" "$pods_all" "$cR" "$cV" "$pods_all_b" "$cR"
+  printf "%b%-${W}s%b %bNs:%s All:%s%b\n" "$lK" "PVC:" "$cR" "$cV" "$pvc_ns" "$pvc_all" "$cR"
+  printf "%b%-${W}s%b %bNs:%s All:%s Ext:%s%b\n" "$lK" "Svc:" "$cR" "$cV" "$svc_ns" "$svc_all" "$svc_ext" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
+  printf "%b%-${W}s%b %b%s%b  %b(Ready:%s NotReady:%s SchedOff:%s)%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR" "$cV" "$nodes_ready" "$nodes_notready" "$nodes_schedoff" "$cR"
+}
+
 # Print primary context info
 sc_helper_context_get() {
   local ctx ns gproj asub
