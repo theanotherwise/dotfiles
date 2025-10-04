@@ -133,6 +133,28 @@ sc_helper_git_tag_push() {
   fi
 }
 
+sc_helper_pod_status_breakdown() {
+  local scope="$1"
+  local statuses
+  if [ "$scope" = "all" ]; then
+    statuses=$(kubectl get pods -A --no-headers 2>/dev/null | awk '{print $4}')
+  else
+    statuses=$(kubectl get pods -n "$scope" --no-headers 2>/dev/null | awk '{print $4}')
+  fi
+  [ -n "$statuses" ] || { echo "-"; return; }
+
+  local running pending crash completed error imagepull terminating unknown
+  running=$(echo "$statuses" | grep -c '^Running$' 2>/dev/null || true)
+  pending=$(echo "$statuses" | grep -c '^Pending$' 2>/dev/null || true)
+  crash=$(echo "$statuses" | grep -c 'CrashLoopBackOff' 2>/dev/null || true)
+  completed=$(echo "$statuses" | grep -c '^Completed$' 2>/dev/null || true)
+  error=$(echo "$statuses" | grep -c '^Error$' 2>/dev/null || true)
+  imagepull=$(echo "$statuses" | grep -E -c 'ImagePullBackOff|ErrImagePull' 2>/dev/null || true)
+  terminating=$(echo "$statuses" | grep -c 'Terminating' 2>/dev/null || true)
+  unknown=$(echo "$statuses" | grep -E -c 'Unknown|Init:' 2>/dev/null || true)
+  echo "R:${running} P:${pending} CL:${crash} C:${completed} E:${error} IP:${imagepull} T:${terminating} U:${unknown}"
+}
+
 # Print primary context info
 sc_helper_context_get() {
   local ctx ns gproj asub
