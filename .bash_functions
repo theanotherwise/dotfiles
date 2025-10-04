@@ -253,6 +253,25 @@ sc_helper_kube_summary() {
   printf "%b%-${W}s%b %b%s%b  %b(Ready:%s NotReady:%s SchedOff:%s)%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR" "$cV" "$nodes_ready" "$nodes_notready" "$nodes_schedoff" "$cR"
 }
 
+sc_helper_kube() {
+  sc_helper_kube_summary
+}
+
+po() {
+  case "$1" in
+    get|"")
+      sc_helper_context_info
+      ;;
+    kube)
+      sc_helper_kube_summary
+      ;;
+    *)
+      echo "Usage: po {get|kube}" 1>&2
+      return 2
+      ;;
+  esac
+}
+
 # Print primary context info
 sc_helper_context_get() {
   local ctx ns gproj asub
