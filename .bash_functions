@@ -22,8 +22,8 @@ sc_helper_bashrc_kube() {
     if [ ${#text} -gt $max ] && [ $max -gt 1 ]; then
       text="…${text: -$((max-1))}"
     fi
-    # Right-justify to the full width and return to line start
-    printf '%*s\r' "$cols" "$text"
+    # Clear current line, draw right-justified text, then restore cursor
+    printf '\e7\r\e[2K%*s\e8' "$cols" "$text"
   fi
 }
 
