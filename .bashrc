@@ -5,6 +5,8 @@ umask 0022
 # Skip the rest for non-interactive shells
 [[ $- != *i* ]] && return
 
+unset SC_PROMPT_KUBE_DISABLED
+
 export PS1="\[\e[1;34m\]${SC_PROMPT_KUBE}\[\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]${SC_PROMPT_CURSOR} \[\e[33m\]${SC_PROMPT_BRANCH}\[\e[m\]"
 export HISTSIZE="10000"
 export HISTFILESIZE="10000"

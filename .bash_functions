@@ -163,7 +163,7 @@ sc_prompt_update() {
   fi
 
   # Kubernetes context/namespace: update on TTL only (can be expensive)
-  if [ -n "$SC_PROMPT_KUBE_DISABLED" ]; then
+  if [ -n "$SC_PROMPT_KUBE_DISABLED" ] && [ "$SC_PROMPT_KUBE_DISABLED" != "0" ]; then
     SC_PROMPT_KUBE=""
   else
     kube_ttl=${SC_PROMPT_KUBE_TTL:-5}

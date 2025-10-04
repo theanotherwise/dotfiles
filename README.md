@@ -41,7 +41,7 @@ bash .dotfiles
 Environment toggles:
 
 - `DOTFILES_DEBUG=1` – print which dotfile is loading.
-- `SC_PROMPT_KUBE_DISABLED=1` – disable kube context in prompt.
+- `SC_PROMPT_KUBE_DISABLED=1` – disable kube context (enabled by default).
 - `SC_PROMPT_BRANCH_TTL` – seconds to cache git branch (default: 2).
 - `SC_PROMPT_KUBE_TTL` – seconds to cache kube context (default: 5).
 
