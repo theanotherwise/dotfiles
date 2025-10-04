@@ -180,5 +180,36 @@ sc_helper_context_get() {
   printf "%b%-${W}s%b %b%s%b\n" "$lN" "Namespace:" "$cR" "$vNc" "$ns" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lG" "GCP (proj.):" "$cR" "$vGc" "$gproj" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lA" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
+
+  # Versions table
+  printf "\n%bVersions:%b\n" "$lK" "$cR"
+  local VT="-" VTG="-" VK="-" VH="-" VKU="-" W2=12
+
+  if command -v terraform >/dev/null 2>&1; then
+    VT=$(terraform version 2>/dev/null | head -n1 | sed -E 's/.* v?([0-9]+(\.[0-9]+)+).*/\1/')
+    [ -n "$VT" ] || VT="-"
+  fi
+  if command -v terragrunt >/dev/null 2>&1; then
+    VTG=$(terragrunt --version 2>/dev/null | head -n1 | sed -E 's/.* v?([0-9]+(\.[0-9]+)+).*/\1/')
+    [ -n "$VTG" ] || VTG="-"
+  fi
+  if command -v kubectl >/dev/null 2>&1; then
+    VK=$(kubectl version --client --short 2>/dev/null | sed -E 's/.*: v?([^ ]+).*/\1/')
+    [ -n "$VK" ] || VK="-"
+  fi
+  if command -v helm >/dev/null 2>&1; then
+    VH=$(helm version --short 2>/dev/null | sed -E 's/^v?([^+]+).*/\1/')
+    [ -n "$VH" ] || VH="-"
+  fi
+  if command -v kustomize >/dev/null 2>&1; then
+    VKU=$(kustomize version 2>/dev/null | sed -E 's/.*v([0-9]+(\.[0-9]+)+).*/\1/')
+    [ -n "$VKU" ] || VKU="-"
+  fi
+
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terraform:" "$cR" "$cV" "$VT" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terragrunt:" "$cR" "$cV" "$VTG" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR"
+  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
 }
 
