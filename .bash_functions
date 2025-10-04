@@ -133,3 +133,32 @@ sc_helper_git_tag_push() {
   fi
 }
 
+# Print primary context info
+p() {
+  local ctx ns gproj asub
+
+  if command -v kubectl >/dev/null 2>&1; then
+    ctx=$(kubectl config current-context 2>/dev/null)
+    ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
+    [ -z "$ns" ] && ns=default
+  fi
+
+  if command -v gcloud >/dev/null 2>&1; then
+    gproj=$(gcloud config get-value project 2>/dev/null)
+    [ "$gproj" = "(unset)" ] && gproj=""
+  else
+    gproj=${CLOUDSDK_CORE_PROJECT:-}
+  fi
+
+  if command -v az >/dev/null 2>&1; then
+    asub=$(az account show --query 'name' -o tsv 2>/dev/null)
+    [ -z "$asub" ] && asub=$(az account show --query 'id' -o tsv 2>/dev/null)
+  fi
+  [ -z "$asub" ] && asub=${AZURE_SUBSCRIPTION_ID:-}
+
+  echo "Kube: ${ctx:--}"
+  echo "Namespace: ${ns:--}"
+  echo "GCP (proj.): ${gproj:--}"
+  echo "Azure (sub.): ${asub:--}"
+}
+
