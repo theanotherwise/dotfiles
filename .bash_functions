@@ -23,7 +23,7 @@ sc_helper_bashrc_kube() {
       text="…${text: -$((max-1))}"
     fi
     # Clear current line, draw right-justified text, then restore cursor
-    printf '\e7\r\e[2K%*s\e8' "$cols" "$text"
+    printf '\e7\r\e[2K%*s\e8' "$max" "$text"
   fi
 }
 
