@@ -47,12 +47,10 @@ if [ -f ${HOME}/.bash_adhoc_aliases ]; then
 fi
 
 if [[ $- == *i* ]] && command -v sw_vers >/dev/null 2>&1; then
-  if ! declare -F _init_completion >/dev/null 2>&1; then
+  if [ -z "${__DOTFILES_BASH_COMPLETION_LOADED:-}" ]; then
+    __DOTFILES_BASH_COMPLETION_LOADED=1
     if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
       . /opt/homebrew/etc/profile.d/bash_completion.sh
-    fi
-    if [ -f ${HOME}/.bash_completion ]; then
-      . "${HOME}/.bash_completion"
     fi
   fi
 fi
