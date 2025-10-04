@@ -182,8 +182,12 @@ sc_helper_context_get() {
   printf "%b%-${W}s%b %b%s%b\n" "$lA" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
 
   # Versions table
-  printf "\n%bVersions:%b\n" "$lK" "$cR"
-  local VT="-" VTG="-" VK="-" VH="-" VKU="-" W2=12
+}
+
+# Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
+sc_helper_versions() {
+  local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
+  local VT="-" VTG="-" VK="-" VH="-" VKU="-"
 
   if command -v terraform >/dev/null 2>&1; then
     VT=$(terraform version 2>/dev/null | head -n1 | sed -E 's/.* v?([0-9]+(\.[0-9]+)+).*/\1/')
@@ -202,7 +206,8 @@ sc_helper_context_get() {
     [ -n "$VH" ] || VH="-"
   fi
   if command -v kustomize >/dev/null 2>&1; then
-    VKU=$(kustomize version 2>/dev/null | sed -E 's/.*v([0-9]+(\.[0-9]+)+).*/\1/')
+    VKU=$(kustomize version --short 2>/dev/null | sed -E 's/^v?([^[:space:]]+).*/\1/')
+    [ -n "$VKU" ] || VKU=$(kustomize version 2>/dev/null | sed -nE 's/.*v([0-9]+(\.[0-9]+)+).*/\1/p' | head -n1)
     [ -n "$VKU" ] || VKU="-"
   fi
 
