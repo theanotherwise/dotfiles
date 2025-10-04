@@ -205,7 +205,7 @@ sc_helper_context_get() {
   printf "\n"
 
   # Live cluster summary
-  local pods_all="-" pods_count="-" pods_all_b="-" pods_ns_b="-" sc_names="-" nodes_count="-"
+  local pods_all="-" pods_count="-" pods_all_b="-" pods_ns_b="-" pvc_all="-" pvc_ns="-" sc_names="-" nodes_count="-"
   if command -v kubectl >/dev/null 2>&1 && [ -n "$ctx" ] && [ "$ctx" != "- (no context)" ]; then
     pods_all=$(kubectl get pods -A -o name 2>/dev/null | wc -l | tr -d ' ')
     [ -n "$pods_all" ] || pods_all="-"
@@ -213,6 +213,10 @@ sc_helper_context_get() {
     [ -n "$pods_count" ] || pods_count="-"
     pods_all_b=$(sc_helper_pod_status_breakdown all)
     pods_ns_b=$(sc_helper_pod_status_breakdown "$ns")
+    pvc_all=$(kubectl get pvc -A -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pvc_all" ] || pvc_all="-"
+    pvc_ns=$(kubectl get pvc -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pvc_ns" ] || pvc_ns="-"
     sc_names=$(kubectl get sc -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')
     [ -n "$sc_names" ] || sc_names="-"
     nodes_count=$(kubectl get nodes -o name 2>/dev/null | wc -l | tr -d ' ')
@@ -220,6 +224,7 @@ sc_helper_context_get() {
   fi
 
   printf "%b%-${W}s%b %bNs:%s All:%s%b  %b%s%b\n" "$lK" "Pods:" "$cR" "$cV" "$pods_count" "$pods_all" "$cR" "$cV" "$pods_all_b" "$cR"
+  printf "%b%-${W}s%b %bNs:%s All:%s%b\n" "$lK" "PVC:" "$cR" "$cV" "$pvc_ns" "$pvc_all" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
 
