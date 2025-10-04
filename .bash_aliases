@@ -90,12 +90,15 @@ alias export-terraform='export TG_TF_PATH=terraform'
 
 
 # gcloud
-alias gcloud-project="gcloud projects list"
+alias gcloud-projects="gcloud projects list"
 alias gcloud-project-set="gcloud config set project"
 alias gcloud-auth="gcloud auth login --no-launch-browser"
 alias gcloud-auth-app="gcloud auth application-default login --no-launch-browser"
 alias gcloud-kube="gcloud container clusters list"
 alias gcloud-kube-creds="gcloud container clusters get-credentials"
+
+# Azure
+alias az-subs="az account subscription list --query '[].{Name:name,Id:id,State:state,IsDefault:isDefault}' -o table"
 
 
 
