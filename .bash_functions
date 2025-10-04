@@ -181,6 +181,21 @@ sc_helper_context_get() {
   printf "%b%-${W}s%b %b%s%b\n" "$lG" "GCP (proj.):" "$cR" "$vGc" "$gproj" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lA" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
 
+  # Live cluster summary
+  local pods_count="-" sc_names="-" nodes_count="-"
+  if command -v kubectl >/dev/null 2>&1 && [ -n "$ctx" ] && [ "$ctx" != "- (no context)" ]; then
+    pods_count=$(kubectl get pods -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$pods_count" ] || pods_count="-"
+    sc_names=$(kubectl get sc -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')
+    [ -n "$sc_names" ] || sc_names="-"
+    nodes_count=$(kubectl get nodes -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$nodes_count" ] || nodes_count="-"
+  fi
+
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Pods(ns):" "$cR" "$cV" "$pods_count" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
+
   # Versions table
 }
 
