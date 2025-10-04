@@ -11,4 +11,4 @@ export HISTFILESIZE="10000"
 export HISTTIMEFORMAT="%Y-%m-%d %T "
 export EDITOR="vim"
 
-# No PROMPT_COMMAND hook; prompt functions run inline on each render
+PROMPT_COMMAND="sc_prompt_header${PROMPT_COMMAND:+;$PROMPT_COMMAND}"

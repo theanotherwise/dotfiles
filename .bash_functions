@@ -16,8 +16,12 @@ sc_helper_bashrc_kube() {
     if command -v gcloud >/dev/null 2>&1; then
       proj=$(gcloud config get-value project 2>/dev/null)
     fi
-    echo "Kube: ${ctx}/${ns}${proj:+ | GCP: ${proj}}"
+    printf "Kube: %s/%s%s\n" "$ctx" "$ns" "${proj:+ | GCP: ${proj}}"
   fi
+}
+
+sc_prompt_header() {
+  sc_helper_bashrc_kube
 }
 
 sc_helper_bashrc_cursor() {
