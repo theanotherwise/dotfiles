@@ -162,13 +162,11 @@ sc_prompt_update() {
     SC_PROMPT_BRANCH_LAST=$now
   fi
 
-  # Kubernetes context/namespace: update on TTL only (can be expensive)
+  # Kubernetes context/namespace: compute every prompt for always-visible info
   if [ -n "$SC_PROMPT_KUBE_DISABLED" ] && [ "$SC_PROMPT_KUBE_DISABLED" != "0" ]; then
     SC_PROMPT_KUBE=""
   else
-    kube_ttl=${SC_PROMPT_KUBE_TTL:-5}
-    last_kube=${SC_PROMPT_KUBE_LAST:-0}
-    if command -v kubectl >/dev/null 2>&1 && [ $((now - last_kube)) -ge ${kube_ttl} ]; then
+    if command -v kubectl >/dev/null 2>&1; then
       ctx=$(kubectl config current-context 2>/dev/null)
       if [ -n "$ctx" ]; then
         ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
@@ -179,7 +177,8 @@ sc_prompt_update() {
       else
         SC_PROMPT_KUBE=""
       fi
-      SC_PROMPT_KUBE_LAST=$now
+    else
+      SC_PROMPT_KUBE=""
     fi
   fi
 }

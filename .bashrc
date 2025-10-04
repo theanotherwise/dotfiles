@@ -17,4 +17,5 @@ export EDITOR="vim"
 if ! declare -F sc_prompt_update >/dev/null 2>&1; then
   sc_prompt_update() { :; }
 fi
+shopt -s promptvars
 PROMPT_COMMAND="sc_prompt_update${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
