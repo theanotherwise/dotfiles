@@ -196,6 +196,7 @@ sc_helper_context_info() {
     fi
   fi
 
+  printf "\n"
   printf "%b%-${W}s%b %b%s%b\n" "$lR" "Kube:" "$cR" "$cV" "$ctx" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lR" "Namespace:" "$cR" "$cV" "$ns" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lR" "GCP (proj.):" "$cR" "$cV" "$gproj" "$cR"
@@ -246,11 +247,13 @@ sc_helper_kube_summary() {
     nodes_schedoff=$(kubectl get nodes -o json 2>/dev/null | jq -r '.items[] | select(.spec.unschedulable==true) | .metadata.name' | wc -l | tr -d ' ')
   fi
 
+  printf "\n"
   printf "%b%-${W}s%b %bNs:%s All:%s%b  %b%s%b\n" "$lK" "Pods:" "$cR" "$cV" "$pods_count" "$pods_all" "$cR" "$cV" "$pods_all_b" "$cR"
   printf "%b%-${W}s%b %bNs:%s All:%s%b\n" "$lK" "PVC:" "$cR" "$cV" "$pvc_ns" "$pvc_all" "$cR"
   printf "%b%-${W}s%b %bNs:%s All:%s Ext:%s%b\n" "$lK" "Svc:" "$cR" "$cV" "$svc_ns" "$svc_all" "$svc_ext" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
   printf "%b%-${W}s%b %b%s%b  %b(Ready:%s NotReady:%s SchedOff:%s)%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR" "$cV" "$nodes_ready" "$nodes_notready" "$nodes_schedoff" "$cR"
+  printf "\n"
 }
 
 sc_helper_kube() {
@@ -281,6 +284,8 @@ sc_helper_context_get() {
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
   local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VYARN="-" VDOCKER="-" VCOMPOSE="-"
+
+  printf "\n"
 
   if command -v terraform >/dev/null 2>&1; then
     VT=$(terraform version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
@@ -370,5 +375,6 @@ sc_helper_versions() {
     "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR" \
     "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR" \
     "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
+  printf "\n"
 }
 
