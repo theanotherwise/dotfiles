@@ -38,16 +38,9 @@ bash .dotfiles
 
 ## Bash startup performance
 
-Environment toggles:
-
-- `SC_PROMPT_KUBE_DISABLED=1` – disable kube context (enabled by default).
-- `SC_PROMPT_BRANCH_TTL` – seconds to cache git branch (default: 2).
-- `SC_PROMPT_KUBE_TTL` – seconds to cache kube context (default: 5).
-
 Notes:
 
-- Prompt content is cached by `sc_prompt_update` via `PROMPT_COMMAND` to avoid
-  running `git`/`kubectl` on every prompt render.
+- Prompt rysowany bez cache; kontekst kube po prawej w PS1.
 - Functions, aliases and completions are loaded only for interactive shells.
 
 Profile startup time quickly:
