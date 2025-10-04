@@ -176,10 +176,10 @@ sc_helper_context_get() {
 
   local vKc="$cV" vNc="$cV" vGc="$cV" vAc="$cV"
 
-  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Kube:" "$cR" "$vKc" "$ctx" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lN" "Namespace:" "$cR" "$vNc" "$ns" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lG" "GCP (proj.):" "$cR" "$vGc" "$gproj" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lA" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Kube:" "$cR" "$vKc" "$ctx" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Namespace:" "$cR" "$vNc" "$ns" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "GCP (proj.):" "$cR" "$vGc" "$gproj" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
   printf "\n"
 
   # Live cluster summary
@@ -195,10 +195,10 @@ sc_helper_context_get() {
     [ -n "$nodes_count" ] || nodes_count="-"
   fi
 
-  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Pods(all):" "$cR" "$cV" "$pods_all" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Pods(ns):" "$cR" "$cV" "$pods_count" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lR" "SC:" "$cR" "$cV" "$sc_names" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Pods(all):" "$cR" "$cV" "$pods_all" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Pods(ns):" "$cR" "$cV" "$pods_count" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
 
   # Versions table
 }
