@@ -7,16 +7,8 @@ sc_helper_bashrc_branch() {
 }
 
 sc_helper_bashrc_kube() {
-  if command -v kubectl >/dev/null 2>&1; then
-    local ctx ns proj
-    ctx=$(kubectl config current-context 2>/dev/null) || return
-    [ -z "$ctx" ] && return
-    ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
-    [ -z "$ns" ] && ns=default
-    if command -v gcloud >/dev/null 2>&1; then
-      proj=$(gcloud config get-value project 2>/dev/null)
-    fi
-    printf "Kube: %s/%s%s\n" "$ctx" "$ns" "${proj:+ | GCP: ${proj}}"
+  if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1; then
+    printf "%*s\r%s" $((COLUMNS - 1)) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
   fi
 }
 
