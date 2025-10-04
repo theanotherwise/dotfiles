@@ -20,9 +20,7 @@ sc_helper_bashrc_kube() {
   fi
 }
 
-sc_prompt_header() {
-  sc_helper_bashrc_kube
-}
+:
 
 sc_helper_bashrc_cursor() {
   [[ "${UID}" == "0" ]] && echo '#' || echo '$'
