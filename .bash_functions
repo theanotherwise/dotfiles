@@ -134,7 +134,7 @@ sc_helper_git_tag_push() {
 }
 
 # Print primary context info
-p() {
+get() {
   local ctx ns gproj asub
 
   if command -v kubectl >/dev/null 2>&1; then
@@ -176,4 +176,6 @@ p() {
   echo "GCP (proj.): ${gproj}"
   echo "Azure (sub.): ${asub}"
 }
+
+p() { get "$@"; }
 
