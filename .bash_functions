@@ -136,6 +136,8 @@ sc_helper_git_tag_push() {
 # Print primary context info
 get() {
   local ctx ns gproj asub
+  local cL="\033[36m" cV="\033[1;37m" cR="\033[0m"
+  local W=14
 
   if command -v kubectl >/dev/null 2>&1; then
     ctx=$(kubectl config current-context 2>/dev/null)
@@ -171,10 +173,10 @@ get() {
     fi
   fi
 
-  echo "Kube: ${ctx}"
-  echo "Namespace: ${ns}"
-  echo "GCP (proj.): ${gproj}"
-  echo "Azure (sub.): ${asub}"
+  printf "%b%-${W}s%b %b%s%b\n" "$cL" "Kube:" "$cR" "$cV" "$ctx" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$cL" "Namespace:" "$cR" "$cV" "$ns" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$cL" "GCP (proj.):" "$cR" "$cV" "$gproj" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$cL" "Azure (sub.):" "$cR" "$cV" "$asub" "$cR"
 }
 
 p() { get "$@"; }
