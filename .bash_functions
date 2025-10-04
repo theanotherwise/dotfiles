@@ -242,24 +242,22 @@ sc_helper_versions() {
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Terraform:" "$cR" "$cV" "$VT" "$cR" \
     "$lK" "Terragrunt:" "$cR" "$cV" "$VTG" "$cR"
-  # kubectl | Helm
+  # yq | jq
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
-    "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR" \
-    "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR"
-  # Kustomize | yq
-  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
-    "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR" \
-    "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR"
-  # jq | Go
-  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
-    "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR" \
-    "$lK" "Go:" "$cR" "$cV" "$VG" "$cR"
+    "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR" \
+    "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR"
   # Node | Yarn
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Node:" "$cR" "$cV" "$VN" "$cR" \
     "$lK" "Yarn:" "$cR" "$cV" "$VYARN" "$cR"
-  # Groovy | (empty)
-  printf "%b%-${LW}s%b %b%-${VW}s%b\n" \
+  # Go | Groovy
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Go:" "$cR" "$cV" "$VG" "$cR" \
     "$lK" "Groovy:" "$cR" "$cV" "$VGR" "$cR"
+  # kubectl | Helm | Kustomize (3 kolumny)
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR" \
+    "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR" \
+    "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
 }
 
