@@ -190,24 +190,24 @@ sc_helper_versions() {
   local VT="-" VTG="-" VK="-" VH="-" VKU="-"
 
   if command -v terraform >/dev/null 2>&1; then
-    VT=$(terraform version 2>/dev/null | head -n1 | sed -E 's/.* v?([0-9]+(\.[0-9]+)+).*/\1/')
+    VT=$(terraform version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VT" ] || VT="-"
   fi
   if command -v terragrunt >/dev/null 2>&1; then
-    VTG=$(terragrunt --version 2>/dev/null | head -n1 | sed -E 's/.* v?([0-9]+(\.[0-9]+)+).*/\1/')
+    VTG=$(terragrunt --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VTG" ] || VTG="-"
   fi
   if command -v kubectl >/dev/null 2>&1; then
-    VK=$(kubectl version --client --short 2>/dev/null | sed -E 's/.*: v?([^ ]+).*/\1/')
+    VK=$(kubectl version --client --short 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VK" ] || VK="-"
   fi
   if command -v helm >/dev/null 2>&1; then
-    VH=$(helm version --short 2>/dev/null | sed -E 's/^v?([^+]+).*/\1/')
+    VH=$(helm version --short 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VH" ] || VH="-"
   fi
   if command -v kustomize >/dev/null 2>&1; then
-    VKU=$(kustomize version --short 2>/dev/null | sed -E 's/^v?([^[:space:]]+).*/\1/')
-    [ -n "$VKU" ] || VKU=$(kustomize version 2>/dev/null | sed -nE 's/.*v([0-9]+(\.[0-9]+)+).*/\1/p' | head -n1)
+    VKU=$(kustomize version --short 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
+    [ -n "$VKU" ] || VKU=$(kustomize version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VKU" ] || VKU="-"
   fi
 
