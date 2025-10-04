@@ -100,6 +100,9 @@ alias gcloud-kube-creds="gcloud container clusters get-credentials"
 # Azure
 alias az-subs="az account subscription list --query '[].{Name:name,Id:id,State:state,IsDefault:isDefault}' -o table"
 
+# Context quick view
+alias get='sc_helper_context_get'
+
 
 
 
