@@ -7,8 +7,23 @@ sc_helper_bashrc_branch() {
 }
 
 sc_helper_bashrc_kube() {
-  if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1; then
-    printf "%*s\r%s" $((COLUMNS - 1)) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
+  if command -v kubectl >/dev/null 2>&1; then
+    local ctx ns text cols max
+    ctx=$(kubectl config current-context 2>/dev/null) || return
+    [ -z "$ctx" ] && return
+    ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
+    [ -z "$ns" ] && ns=default
+    text="${ctx}/${ns}"
+
+    cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
+    [ -z "$cols" ] && cols=80
+    # Ensure we never wrap: trim from the left if too long
+    max=$((cols - 1))
+    if [ ${#text} -gt $max ] && [ $max -gt 1 ]; then
+      text="…${text: -$((max-1))}"
+    fi
+    # Right-justify to the full width and return to line start
+    printf '%*s\r' "$cols" "$text"
   fi
 }
 
@@ -131,56 +146,3 @@ sc_helper_git_tag_push() {
   fi
 }
 
-# Cached prompt updater to avoid slow subshells in PS1
-sc_prompt_update() {
-  # Set once
-  if [ -z "$SC_PROMPT_CURSOR" ]; then
-    if [ "${UID}" = "0" ]; then
-      SC_PROMPT_CURSOR="#"
-    else
-      SC_PROMPT_CURSOR="$"
-    fi
-  fi
-
-  now=${SECONDS:-0}
-
-  # Git branch: update on PWD change or small TTL
-  git_ttl=${SC_PROMPT_BRANCH_TTL:-2}
-  last_git=${SC_PROMPT_BRANCH_LAST:-0}
-  if [ "${SC_PROMPT_LAST_PWD}" != "${PWD}" ] || [ $((now - last_git)) -ge ${git_ttl} ]; then
-    SC_PROMPT_LAST_PWD="${PWD}"
-    if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-      branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
-      if [ -n "$branch" ]; then
-        SC_PROMPT_BRANCH="(${branch}) "
-      else
-        SC_PROMPT_BRANCH=""
-      fi
-    else
-      SC_PROMPT_BRANCH=""
-    fi
-    SC_PROMPT_BRANCH_LAST=$now
-  fi
-
-  # Kubernetes context/namespace: compute every prompt for always-visible info
-  if [ -n "$SC_PROMPT_KUBE_DISABLED" ] && [ "$SC_PROMPT_KUBE_DISABLED" != "0" ]; then
-    SC_PROMPT_KUBE=""
-  else
-    if command -v kubectl >/dev/null 2>&1; then
-      ctx=$(kubectl config current-context 2>/dev/null)
-      if [ -n "$ctx" ]; then
-        ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
-        [ -z "$ns" ] && ns=default
-        right_text="${ctx}/${ns}"
-        # Right-align the kube text and return to line start for the left prompt
-        # Use terminal columns if available; fall back to tput cols or 80
-        cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
-        SC_PROMPT_KUBE=$(printf '%*s\r' "$cols" "$right_text")
-      else
-        SC_PROMPT_KUBE=""
-      fi
-    else
-      SC_PROMPT_KUBE=""
-    fi
-  fi
-}
