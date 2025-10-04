@@ -23,12 +23,13 @@ MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 export MAKEFLAGS
 
 if [[ $- == *i* ]]; then
-  if [ -f ${HOME}/.bashrc ]; then
-    . "${HOME}/.bashrc"
-  fi
-
+  # Ensure prompt update function is defined before PS1/PROMPT_COMMAND from .bashrc
   if [ -f ${HOME}/.bash_functions ]; then
     . "${HOME}/.bash_functions"
+  fi
+
+  if [ -f ${HOME}/.bashrc ]; then
+    . "${HOME}/.bashrc"
   fi
 
   if [ -f ${HOME}/.bash_aliases ]; then
