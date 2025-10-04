@@ -37,10 +37,6 @@ if [[ $- == *i* ]]; then
   fi
 fi
 
-# Header line with kube context / namespace and GCP project
-if command -v kubectl >/dev/null 2>&1; then
-  sc_helper_bashrc_kube || true
-fi
 
 #if [ -f ${HOME}/.bash_completion ]; then
 #  . "${HOME}/.bash_completion"
