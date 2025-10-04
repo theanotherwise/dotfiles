@@ -205,7 +205,7 @@ sc_helper_context_get() {
   printf "\n"
 
   # Live cluster summary
-  local pods_all="-" pods_count="-" pods_all_b="-" pods_ns_b="-" pvc_all="-" pvc_ns="-" sc_names="-" nodes_count="-"
+  local pods_all="-" pods_count="-" pods_all_b="-" pods_ns_b="-" pvc_all="-" pvc_ns="-" svc_all="-" svc_ns="-" svc_ext="-" sc_names="-" nodes_count="-"
   if command -v kubectl >/dev/null 2>&1 && [ -n "$ctx" ] && [ "$ctx" != "- (no context)" ]; then
     pods_all=$(kubectl get pods -A -o name 2>/dev/null | wc -l | tr -d ' ')
     [ -n "$pods_all" ] || pods_all="-"
@@ -217,6 +217,12 @@ sc_helper_context_get() {
     [ -n "$pvc_all" ] || pvc_all="-"
     pvc_ns=$(kubectl get pvc -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
     [ -n "$pvc_ns" ] || pvc_ns="-"
+    svc_all=$(kubectl get svc -A -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$svc_all" ] || svc_all="-"
+    svc_ns=$(kubectl get svc -n "$ns" -o name 2>/dev/null | wc -l | tr -d ' ')
+    [ -n "$svc_ns" ] || svc_ns="-"
+    svc_ext=$(kubectl get svc -A -o jsonpath='{range .items[*]}{.status.loadBalancer.ingress[*].ip} {.spec.externalIPs[*]}{"\n"}{end}' 2>/dev/null | awk 'NF>0' | wc -l | tr -d ' ')
+    [ -n "$svc_ext" ] || svc_ext="-"
     sc_names=$(kubectl get sc -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')
     [ -n "$sc_names" ] || sc_names="-"
     nodes_count=$(kubectl get nodes -o name 2>/dev/null | wc -l | tr -d ' ')
@@ -225,6 +231,7 @@ sc_helper_context_get() {
 
   printf "%b%-${W}s%b %bNs:%s All:%s%b  %b%s%b\n" "$lK" "Pods:" "$cR" "$cV" "$pods_count" "$pods_all" "$cR" "$cV" "$pods_all_b" "$cR"
   printf "%b%-${W}s%b %bNs:%s All:%s%b\n" "$lK" "PVC:" "$cR" "$cV" "$pvc_ns" "$pvc_all" "$cR"
+  printf "%b%-${W}s%b %bNs:%s All:%s Ext:%s%b\n" "$lK" "Svc:" "$cR" "$cV" "$svc_ns" "$svc_all" "$svc_ext" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
 
