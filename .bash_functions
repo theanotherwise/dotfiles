@@ -6,15 +6,10 @@ sc_helper_bashrc_branch() {
   fi
 }
 
-get_kube_right() {
+sc_helper_bashrc_kube() {
   if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1; then
     printf "%*s\r%s" $((COLUMNS - 1)) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
   fi
-}
-
-# Back-compat for PS1: original function name used in prompt
-sc_helper_bashrc_kube() {
-  get_kube_right
 }
 
 :
