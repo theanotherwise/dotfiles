@@ -237,16 +237,29 @@ sc_helper_versions() {
     [ -n "$VYARN" ] || VYARN="-"
   fi
 
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terraform:" "$cR" "$cV" "$VT" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Terragrunt:" "$cR" "$cV" "$VTG" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Go:" "$cR" "$cV" "$VG" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Groovy:" "$cR" "$cV" "$VGR" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Node:" "$cR" "$cV" "$VN" "$cR"
-  printf "%b%-${W2}s%b %b%s%b\n" "$lK" "Yarn:" "$cR" "$cV" "$VYARN" "$cR"
+  local LW=12 VW=16
+  # Terraform | Terragrunt
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Terraform:" "$cR" "$cV" "$VT" "$cR" \
+    "$lK" "Terragrunt:" "$cR" "$cV" "$VTG" "$cR"
+  # kubectl | Helm
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR" \
+    "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR"
+  # Kustomize | yq
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR" \
+    "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR"
+  # jq | Go
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR" \
+    "$lK" "Go:" "$cR" "$cV" "$VG" "$cR"
+  # Node | Yarn
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Node:" "$cR" "$cV" "$VN" "$cR" \
+    "$lK" "Yarn:" "$cR" "$cV" "$VYARN" "$cR"
+  # Groovy | (empty)
+  printf "%b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Groovy:" "$cR" "$cV" "$VGR" "$cR"
 }
 
