@@ -8,22 +8,15 @@ sc_helper_bashrc_branch() {
 
 sc_helper_bashrc_kube() {
   if command -v kubectl >/dev/null 2>&1; then
-    local ctx ns text cols max
+    local ctx ns proj
     ctx=$(kubectl config current-context 2>/dev/null) || return
     [ -z "$ctx" ] && return
     ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
     [ -z "$ns" ] && ns=default
-    text="${ctx}/${ns}"
-
-    cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
-    [ -z "$cols" ] && cols=80
-    # Ensure we never wrap: trim from the left if too long
-    max=$((cols - 1))
-    if [ ${#text} -gt $max ] && [ $max -gt 1 ]; then
-      text="…${text: -$((max-1))}"
+    if command -v gcloud >/dev/null 2>&1; then
+      proj=$(gcloud config get-value project 2>/dev/null)
     fi
-    # Clear current line, draw right-justified text, then restore cursor
-    printf '\e7\r\e[2K%*s\e8' "$max" "$text"
+    echo "Kube: ${ctx}/${ns}${proj:+ | GCP: ${proj}}"
   fi
 }
 
