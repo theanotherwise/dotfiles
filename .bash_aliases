@@ -1,4 +1,4 @@
-echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+[ -n "$DOTFILES_DEBUG" ] && echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
 # Generic
 alias ls='ls --color=auto'

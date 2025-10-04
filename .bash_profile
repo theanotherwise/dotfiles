@@ -1,4 +1,4 @@
-echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+[ -n "$DOTFILES_DEBUG" ] && echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
 for tool in go groovy node yarn mvn yq jq docker-compose subfinder \
             kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
@@ -22,16 +22,18 @@ MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
 export MAKEFLAGS
 
-if [ -f ${HOME}/.bashrc ]; then
-  . "${HOME}/.bashrc"
-fi
+if [[ $- == *i* ]]; then
+  if [ -f ${HOME}/.bashrc ]; then
+    . "${HOME}/.bashrc"
+  fi
 
-if [ -f ${HOME}/.bash_functions ]; then
-  . "${HOME}/.bash_functions"
-fi
+  if [ -f ${HOME}/.bash_functions ]; then
+    . "${HOME}/.bash_functions"
+  fi
 
-if [ -f ${HOME}/.bash_aliases ]; then
-  . "${HOME}/.bash_aliases"
+  if [ -f ${HOME}/.bash_aliases ]; then
+    . "${HOME}/.bash_aliases"
+  fi
 fi
 
 #if [ -f ${HOME}/.bash_completion ]; then
@@ -46,7 +48,7 @@ if [ -f ${HOME}/.bash_adhoc_aliases ]; then
   . "${HOME}/.bash_adhoc_aliases"
 fi
 
-if command -v sw_vers >/dev/null 2>&1; then
+if [[ $- == *i* ]] && command -v sw_vers >/dev/null 2>&1; then
   if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
     . /opt/homebrew/etc/profile.d/bash_completion.sh
   fi
