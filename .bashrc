@@ -5,20 +5,10 @@ umask 0022
 # Skip the rest for non-interactive shells
 [[ $- != *i* ]] && return
 
-unset SC_PROMPT_KUBE_DISABLED
-
-export PS1="\[\e[1;34m\]${SC_PROMPT_KUBE}\[\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]${SC_PROMPT_CURSOR} \[\e[33m\]${SC_PROMPT_BRANCH}\[\e[m\]"
+export PS1="\[\e[1;34m\]\$(sc_helper_bashrc_kube)\[\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]\$(sc_helper_bashrc_cursor) \[\e[33m\]\$(sc_helper_bashrc_branch)\[\e[m\]"
 export HISTSIZE="10000"
 export HISTFILESIZE="10000"
 export HISTTIMEFORMAT="%Y-%m-%d %T "
 export EDITOR="vim"
 
-# Ensure prompt metadata is updated before each prompt without heavy work
-if ! declare -F sc_prompt_update >/dev/null 2>&1; then
-  sc_prompt_update() { :; }
-fi
-shopt -s promptvars
-PROMPT_COMMAND="sc_prompt_update${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
-
-# Precompute prompt pieces for the very first prompt
-sc_prompt_update
+# No PROMPT_COMMAND hook; prompt functions run inline on each render
