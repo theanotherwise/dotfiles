@@ -137,7 +137,7 @@ sc_helper_git_tag_push() {
 sc_helper_context_get() {
   local ctx ns gproj asub
   local cR="\033[0m" cV="\033[97m"
-  local lK="\033[1;34m" lN="\033[1;34m" lG="\033[1;33m" lA="\033[1;35m"
+  local lK="\033[1;34m" lN="\033[1;34m" lG="\033[1;33m" lA="\033[1;35m" lR="\033[1;31m"
   local W=14
 
   if command -v kubectl >/dev/null 2>&1; then
@@ -180,6 +180,7 @@ sc_helper_context_get() {
   printf "%b%-${W}s%b %b%s%b\n" "$lN" "Namespace:" "$cR" "$vNc" "$ns" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lG" "GCP (proj.):" "$cR" "$vGc" "$gproj" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lA" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
+  printf "\n"
 
   # Live cluster summary
   local pods_all="-" pods_count="-" sc_names="-" nodes_count="-"
@@ -194,10 +195,10 @@ sc_helper_context_get() {
     [ -n "$nodes_count" ] || nodes_count="-"
   fi
 
-  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Pods(all):" "$cR" "$cV" "$pods_all" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Pods(ns):" "$cR" "$cV" "$pods_count" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
-  printf "%b%-${W}s%b %b%s%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Pods(all):" "$cR" "$cV" "$pods_all" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Pods(ns):" "$cR" "$cV" "$pods_count" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "SC:" "$cR" "$cV" "$sc_names" "$cR"
+  printf "%b%-${W}s%b %b%s%b\n" "$lR" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
 
   # Versions table
 }
