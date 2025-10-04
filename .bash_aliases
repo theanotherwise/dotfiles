@@ -91,7 +91,7 @@ alias export-terraform='export TG_TF_PATH=terraform'
 
 # gcloud
 alias gcloud-projects="gcloud projects list"
-alias gcloud-project-set="gcloud config set project"
+alias gcloud-set-project="gcloud config set project"
 alias gcloud-auth="gcloud auth login --no-launch-browser"
 alias gcloud-auth-app="gcloud auth application-default login --no-launch-browser"
 alias gcloud-kube="gcloud container clusters list"
