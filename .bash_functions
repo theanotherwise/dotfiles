@@ -137,7 +137,7 @@ sc_helper_git_tag_push() {
 sc_helper_context_get() {
   local ctx ns gproj asub
   local cR="\033[0m" cV="\033[97m"
-  local lK="\033[1;34m" lN="\033[1;36m" lG="\033[1;33m" lA="\033[1;35m"
+  local lK="\033[1;34m" lN="\033[1;34m" lG="\033[1;33m" lA="\033[1;35m"
   local W=14
 
   if command -v kubectl >/dev/null 2>&1; then
