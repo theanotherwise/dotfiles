@@ -1,4 +1,4 @@
-[ -n "$DOTFILES_DEBUG" ] && echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
+echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
 sc_helper_bashrc_branch() {
   if git branch >/dev/null 2>&1; then

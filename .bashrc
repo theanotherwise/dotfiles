@@ -1,4 +1,4 @@
-[ -n "$DOTFILES_DEBUG" ] && echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
+echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
 umask 0022
 

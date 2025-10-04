@@ -1,4 +1,4 @@
-[ -n "$DOTFILES_DEBUG" ] && echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
+echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
 for tool in go groovy node yarn mvn yq jq docker-compose subfinder \
             kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
