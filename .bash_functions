@@ -136,8 +136,7 @@ sc_helper_git_tag_push() {
 # Print primary context info
 sc_helper_context_get() {
   local ctx ns gproj asub
-  local cL="\033[36m" cR="\033[0m"
-  local cK="\033[34m" cN="\033[36m" cG="\033[33m" cA="\033[35m" cDim="\033[90m"
+  local cL="\033[36m" cR="\033[0m" cV="\033[97m"
   local W=14
 
   if command -v kubectl >/dev/null 2>&1; then
@@ -174,11 +173,7 @@ sc_helper_context_get() {
     fi
   fi
 
-  local vKc="$cK" vNc="$cN" vGc="$cG" vAc="$cA"
-  [[ "$ctx" == -* ]] && vKc="$cDim"
-  [[ "$ns" == -* ]] && vNc="$cDim"
-  [[ "$gproj" == -* ]] && vGc="$cDim"
-  [[ "$asub" == -* ]] && vAc="$cDim"
+  local vKc="$cV" vNc="$cV" vGc="$cV" vAc="$cV"
 
   printf "%b%-${W}s%b %b%s%b\n" "$cL" "Kube:" "$cR" "$vKc" "$ctx" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$cL" "Namespace:" "$cR" "$vNc" "$ns" "$cR"
