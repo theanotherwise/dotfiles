@@ -35,10 +35,6 @@ if [[ $- == *i* ]]; then
   if [ -f ${HOME}/.bash_aliases ]; then
     . "${HOME}/.bash_aliases"
   fi
-
-  if [ -f ${HOME}/.bash_completion ]; then
-    . "${HOME}/.bash_completion"
-  fi
 fi
 
 
@@ -51,7 +47,12 @@ if [ -f ${HOME}/.bash_adhoc_aliases ]; then
 fi
 
 if [[ $- == *i* ]] && command -v sw_vers >/dev/null 2>&1; then
-  if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-    . /opt/homebrew/etc/profile.d/bash_completion.sh
+  if ! declare -F _init_completion >/dev/null 2>&1; then
+    if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+      . /opt/homebrew/etc/profile.d/bash_completion.sh
+    fi
+    if [ -f ${HOME}/.bash_completion ]; then
+      . "${HOME}/.bash_completion"
+    fi
   fi
 fi
