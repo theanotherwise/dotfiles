@@ -102,6 +102,7 @@ alias az-subs="az account subscription list --query '[].{Name:name,Id:id,State:s
 
 # Context quick view
 alias get='sc_helper_context_get'
+alias ver='sc_helper_versions'
 
 
 
