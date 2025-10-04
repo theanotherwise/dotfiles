@@ -134,7 +134,7 @@ sc_helper_git_tag_push() {
 }
 
 # Print primary context info
-get() {
+sc_helper_context_get() {
   local ctx ns gproj asub
   local cL="\033[36m" cR="\033[0m"
   local cK="\033[34m" cN="\033[36m" cG="\033[33m" cA="\033[35m" cDim="\033[90m"
@@ -185,6 +185,4 @@ get() {
   printf "%b%-${W}s%b %b%s%b\n" "$cL" "GCP (proj.):" "$cR" "$vGc" "$gproj" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$cL" "Azure (sub.):" "$cR" "$vAc" "$asub" "$cR"
 }
-
-p() { get "$@"; }
 
