@@ -173,7 +173,9 @@ sc_prompt_update() {
       if [ -n "$ctx" ]; then
         ns=$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
         [ -z "$ns" ] && ns=default
-        SC_PROMPT_KUBE="${ctx}/${ns}"
+        right_text="${ctx}/${ns}"
+        # Right-align the kube text and return to line start for the left prompt
+        SC_PROMPT_KUBE=$(printf '%*s\r' "${COLUMNS:-80}" "$right_text")
       else
         SC_PROMPT_KUBE=""
       fi
