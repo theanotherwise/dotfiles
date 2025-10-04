@@ -219,7 +219,7 @@ sc_helper_context_get() {
     [ -n "$nodes_count" ] || nodes_count="-"
   fi
 
-  printf "%b%-${W}s%b %b%s %s%b  %b%s%b\n" "$lK" "Pods:" "$cR" "$cV" "$pods_count" "$pods_all" "$cR" "$cV" "$pods_all_b" "$cR"
+  printf "%b%-${W}s%b %bNs:%s All:%s%b  %b%s%b\n" "$lK" "Pods:" "$cR" "$cV" "$pods_count" "$pods_all" "$cR" "$cV" "$pods_all_b" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "SC:" "$cR" "$cV" "$sc_names" "$cR"
   printf "%b%-${W}s%b %b%s%b\n" "$lK" "Nodes:" "$cR" "$cV" "$nodes_count" "$cR"
 
