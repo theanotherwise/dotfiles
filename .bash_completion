@@ -1,7 +1,10 @@
 echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
+# Disable kubectl completion descriptions to avoid backslashes in Bash 3.x
+export KUBECTL_COMPLETION_SHOW_DESCRIPTIONS=false
+
 if command -v kubectl >/dev/null 2>&1; then
-  . <(KUBECTL_COMPLETION_SHOW_DESCRIPTIONS=0 kubectl completion bash)
+  . <(kubectl completion bash)
 fi
 
 if command -v kustomize >/dev/null 2>&1; then
