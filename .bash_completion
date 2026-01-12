@@ -1,6 +1,5 @@
 echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
-# Base completions (keep stock, we'll override kubectl below)
 if command -v kubectl >/dev/null 2>&1; then
   . <(kubectl completion bash)
 fi
@@ -65,7 +64,7 @@ if [ -f ~/.dotfiles.d/completion/kubetail.bash ]; then
   . ~/.dotfiles.d/completion/kubetail.bash
 fi
 
-complete -o default -F __start_kubectl k
+complete -o nospace -F __start_kubectl k
 complete -o nospace -F _kube_contexts kubectx kctx
 complete -o nospace -F _kube_namespaces kubens kns
 complete -o nospace -F __start_kube-capacity kc
@@ -79,50 +78,3 @@ complete -o nospace -C ~/binaries/terraform/latest/bin/terraform terraform
 complete -o nospace -C ~/binaries/terraform/latest/bin/terraform tform
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt tgrunt
-
-# ---- kubectl/k minimal completion: resources + names, no descriptions/escapes ----
-_k_simple_kubectl() {
-  local cur prev ns=""
-  COMPREPLY=()
-  cur=${COMP_WORDS[COMP_CWORD]}
-  prev=${COMP_WORDS[COMP_CWORD-1]}
-
-  # detect namespace flag if present
-  for i in "${!COMP_WORDS[@]}"; do
-    case "${COMP_WORDS[$i]}" in
-      -n|--namespace)
-        ns="${COMP_WORDS[$((i+1))]}"
-        ;;
-    esac
-  done
-
-  # suggest subcommand when only "kubectl" entered
-  if (( COMP_CWORD == 1 )); then
-    COMPREPLY=( $(compgen -W "get" -- "$cur") )
-    return
-  fi
-
-  # handle "kubectl get ..."
-  if [[ "${COMP_WORDS[1]}" == "get" ]]; then
-    # resource type position
-    if (( COMP_CWORD == 2 )); then
-      local res
-      res=$(kubectl api-resources --verbs=list -o name 2>/dev/null)
-      COMPREPLY=( $(compgen -W "$res" -- "$cur") )
-      return
-    fi
-    # object names after resource
-    local resource="${COMP_WORDS[2]}"
-    local names
-    if [[ -n "$ns" ]]; then
-      names=$(kubectl get "$resource" -n "$ns" --no-headers -o custom-columns=:metadata.name 2>/dev/null)
-    else
-      names=$(kubectl get "$resource" --no-headers -o custom-columns=:metadata.name 2>/dev/null)
-    fi
-    COMPREPLY=( $(compgen -W "$names" -- "$cur") )
-    return
-  fi
-}
-# clear previous completion for kubectl/k and apply the minimal one
-complete -r kubectl k 2>/dev/null || true
-complete -F _k_simple_kubectl kubectl k
