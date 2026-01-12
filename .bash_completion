@@ -1,8 +1,6 @@
 echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
-# Disable kubectl completion descriptions to avoid backslashes in Bash 3.x
-export KUBECTL_COMPLETION_SHOW_DESCRIPTIONS=false
-
+# Base completions (keep stock, we'll override kubectl below)
 if command -v kubectl >/dev/null 2>&1; then
   . <(kubectl completion bash)
 fi
@@ -81,3 +79,15 @@ complete -o nospace -C ~/binaries/terraform/latest/bin/terraform terraform
 complete -o nospace -C ~/binaries/terraform/latest/bin/terraform tform
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt tgrunt
+
+# ---- kubectl/k completion override: resource names only, no descriptions ----
+_k_only_resources() {
+  local cur res
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+  res=$(kubectl api-resources --verbs=list -o name 2>/dev/null)
+  COMPREPLY=( $(compgen -W "$res" -- "$cur") )
+}
+# clear previous completion for kubectl/k and apply slim version
+complete -r kubectl k 2>/dev/null || true
+complete -o default -F _k_only_resources kubectl k
