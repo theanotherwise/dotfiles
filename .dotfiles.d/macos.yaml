@@ -209,9 +209,9 @@ binaries:
     override: False
     strip: None
     inBin: False
-    latest: 1.26.3
+    latest: 1.34.1
     versions:
-      - version: 1.26.3
+      - version: 1.34.1
   - name: kustomize
     url: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{version}/kustomize_v{version}_darwin_arm64.tar.gz
     type: tar.gz
