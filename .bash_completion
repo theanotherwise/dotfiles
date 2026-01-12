@@ -1,7 +1,7 @@
 echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
 
 if command -v kubectl >/dev/null 2>&1; then
-  . <(kubectl completion bash)
+  . <(KUBECTL_COMPLETION_SHOW_DESCRIPTIONS=0 kubectl completion bash)
 fi
 
 if command -v kustomize >/dev/null 2>&1; then
