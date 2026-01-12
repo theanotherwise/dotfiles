@@ -80,14 +80,49 @@ complete -o nospace -C ~/binaries/terraform/latest/bin/terraform tform
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
 complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt tgrunt
 
-# ---- kubectl/k completion override: resource names only, no descriptions ----
-_k_only_resources() {
-  local cur res
+# ---- kubectl/k minimal completion: resources + names, no descriptions/escapes ----
+_k_simple_kubectl() {
+  local cur prev ns=""
   COMPREPLY=()
   cur=${COMP_WORDS[COMP_CWORD]}
-  res=$(kubectl api-resources --verbs=list -o name 2>/dev/null)
-  COMPREPLY=( $(compgen -W "$res" -- "$cur") )
+  prev=${COMP_WORDS[COMP_CWORD-1]}
+
+  # detect namespace flag if present
+  for i in "${!COMP_WORDS[@]}"; do
+    case "${COMP_WORDS[$i]}" in
+      -n|--namespace)
+        ns="${COMP_WORDS[$((i+1))]}"
+        ;;
+    esac
+  done
+
+  # suggest subcommand when only "kubectl" entered
+  if (( COMP_CWORD == 1 )); then
+    COMPREPLY=( $(compgen -W "get" -- "$cur") )
+    return
+  fi
+
+  # handle "kubectl get ..."
+  if [[ "${COMP_WORDS[1]}" == "get" ]]; then
+    # resource type position
+    if (( COMP_CWORD == 2 )); then
+      local res
+      res=$(kubectl api-resources --verbs=list -o name 2>/dev/null)
+      COMPREPLY=( $(compgen -W "$res" -- "$cur") )
+      return
+    fi
+    # object names after resource
+    local resource="${COMP_WORDS[2]}"
+    local names
+    if [[ -n "$ns" ]]; then
+      names=$(kubectl get "$resource" -n "$ns" --no-headers -o custom-columns=:metadata.name 2>/dev/null)
+    else
+      names=$(kubectl get "$resource" --no-headers -o custom-columns=:metadata.name 2>/dev/null)
+    fi
+    COMPREPLY=( $(compgen -W "$names" -- "$cur") )
+    return
+  fi
 }
-# clear previous completion for kubectl/k and apply slim version
+# clear previous completion for kubectl/k and apply the minimal one
 complete -r kubectl k 2>/dev/null || true
-complete -o default -F _k_only_resources kubectl k
+complete -F _k_simple_kubectl kubectl k
