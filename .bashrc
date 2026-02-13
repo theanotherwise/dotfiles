@@ -1,4 +1,6 @@
-echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
+if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
+  echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+fi
 
 umask 0022
 

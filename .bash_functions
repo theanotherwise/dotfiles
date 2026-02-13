@@ -1,4 +1,6 @@
-echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
+if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
+  echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+fi
 
 sc_helper_bashrc_branch() {
   if git branch >/dev/null 2>&1; then
@@ -7,9 +9,13 @@ sc_helper_bashrc_branch() {
 }
 
 sc_helper_bashrc_kube() {
-  if kubectl config view --minify -o jsonpath="{}" >/dev/null 2>&1; then
-    printf "%*s\r%s" $((COLUMNS - 1)) "$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}")"
-  fi
+  local kube_ctx
+
+  command -v kubectl >/dev/null 2>&1 || return 0
+  kube_ctx="$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}" 2>/dev/null)"
+  [ -n "${kube_ctx}" ] || return 0
+
+  printf "%*s\r%s" "$((COLUMNS - 1))" "${kube_ctx}"
 }
 
 :
