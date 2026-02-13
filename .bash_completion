@@ -56,6 +56,7 @@ sc_helper_source_cached_completion() {
 sc_helper_source_cached_completion kubectl
 sc_helper_source_cached_completion kustomize
 sc_helper_source_cached_completion helm
+sc_helper_source_cached_completion docker
 sc_helper_source_cached_completion kube-capacity
 sc_helper_source_cached_completion k3d
 sc_helper_source_cached_completion kube-linter
