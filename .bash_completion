@@ -1,80 +1,98 @@
-echo "Loading file: $(basename \"${BASH_SOURCE[0]}\")"
+if [[ -n "${SC_BASH_COMPLETION_LOADED:-}" ]]; then
+  return
+fi
+export SC_BASH_COMPLETION_LOADED=1
 
-if command -v kubectl >/dev/null 2>&1; then
-  . <(kubectl completion bash)
+if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
+  echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
-if command -v kustomize >/dev/null 2>&1; then
-  . <(kustomize completion bash)
+SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-20}"
+SC_BASH_COMPLETION_CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/dotfiles/bash-completion"
+mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
+
+sc_helper_source_cached_completion() {
+  local cmd="$1"
+  local cmd_path cache_file tmp_file pid ticks
+
+  cmd_path="$(command -v "${cmd}" 2>/dev/null)" || return 0
+  cache_file="${SC_BASH_COMPLETION_CACHE_DIR}/${cmd}.bash"
+
+  if [ -s "${cache_file}" ]; then
+    . "${cache_file}"
+    return 0
+  fi
+
+  tmp_file="${cache_file}.tmp.$$"
+  "${cmd_path}" completion bash >"${tmp_file}" 2>/dev/null &
+  pid=$!
+  ticks=0
+
+  # Avoid blocking shell startup forever on a broken completion command.
+  while kill -0 "${pid}" 2>/dev/null; do
+    ticks=$((ticks + 1))
+    if [ "${ticks}" -ge "${SC_BASH_COMPLETION_TIMEOUT_TENTHS}" ]; then
+      kill "${pid}" >/dev/null 2>&1 || true
+      wait "${pid}" 2>/dev/null || true
+      rm -f "${tmp_file}"
+      return 0
+    fi
+    sleep 0.1
+  done
+
+  if ! wait "${pid}" 2>/dev/null; then
+    rm -f "${tmp_file}"
+    return 0
+  fi
+
+  if [ -s "${tmp_file}" ]; then
+    mv "${tmp_file}" "${cache_file}"
+    . "${cache_file}"
+  else
+    rm -f "${tmp_file}"
+  fi
+}
+
+sc_helper_source_cached_completion kubectl
+sc_helper_source_cached_completion kustomize
+sc_helper_source_cached_completion helm
+sc_helper_source_cached_completion kube-capacity
+sc_helper_source_cached_completion k3d
+sc_helper_source_cached_completion kube-linter
+sc_helper_source_cached_completion oc
+sc_helper_source_cached_completion popeye
+sc_helper_source_cached_completion kubespy
+sc_helper_source_cached_completion terrascan
+sc_helper_source_cached_completion helmfile
+sc_helper_source_cached_completion tfsec-checkgen
+
+if [ -f "${HOME}/.dotfiles.d/completion/git.bash" ]; then
+  . "${HOME}/.dotfiles.d/completion/git.bash"
 fi
 
-if command -v helm >/dev/null 2>&1; then
-  . <(helm completion bash)
+if [ -f "${HOME}/.dotfiles.d/completion/kubectx.bash" ]; then
+  . "${HOME}/.dotfiles.d/completion/kubectx.bash"
 fi
 
-if command -v kube-capacity >/dev/null 2>&1; then
-  . <(kube-capacity completion bash)
+if [ -f "${HOME}/.dotfiles.d/completion/kubens.bash" ]; then
+  . "${HOME}/.dotfiles.d/completion/kubens.bash"
 fi
 
-if command -v k3d >/dev/null 2>&1; then
-  . <(k3d completion bash)
+if [ -f "${HOME}/.dotfiles.d/completion/kubetail.bash" ]; then
+  . "${HOME}/.dotfiles.d/completion/kubetail.bash"
 fi
 
-if command -v kube-linter >/dev/null 2>&1; then
-  . <(kube-linter completion bash)
-fi
+declare -F __start_kubectl >/dev/null 2>&1 && complete -o nospace -F __start_kubectl k
+declare -F _kube_contexts >/dev/null 2>&1 && complete -o nospace -F _kube_contexts kubectx kctx
+declare -F _kube_namespaces >/dev/null 2>&1 && complete -o nospace -F _kube_namespaces kubens kns
+declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
+declare -F _kubetail >/dev/null 2>&1 && complete -o nospace -F _kubetail kubetail kt
+declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
+declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
+declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
+declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan
 
-if command -v oc >/dev/null 2>&1; then
-  . <(oc completion bash)
-fi
-
-if command -v popeye >/dev/null 2>&1; then
-  . <(popeye completion bash)
-fi
-
-if command -v kubespy >/dev/null 2>&1; then
-  . <(kubespy completion bash)
-fi
-
-if command -v terrascan >/dev/null 2>&1; then
-  . <(terrascan completion bash)
-fi
-
-if command -v helmfile >/dev/null 2>&1; then
-  . <(helmfile completion bash)
-fi
-
-if command -v tfsec-checkgen >/dev/null 2>&1; then
-  . <(tfsec-checkgen completion bash)
-fi
-
-if [ -f ~/.dotfiles.d/completion/git.bash ]; then
-  . ~/.dotfiles.d/completion/git.bash
-fi
-
-if [ -f ~/.dotfiles.d/completion/kubectx.bash ]; then
-  . ~/.dotfiles.d/completion/kubectx.bash
-fi
-
-if [ -f ~/.dotfiles.d/completion/kubens.bash ]; then
-  . ~/.dotfiles.d/completion/kubens.bash
-fi
-
-if [ -f ~/.dotfiles.d/completion/kubetail.bash ]; then
-  . ~/.dotfiles.d/completion/kubetail.bash
-fi
-
-complete -o nospace -F __start_kubectl k
-complete -o nospace -F _kube_contexts kubectx kctx
-complete -o nospace -F _kube_namespaces kubens kns
-complete -o nospace -F __start_kube-capacity kc
-complete -o nospace -F _kubetail kubetail kt
-complete -o nospace -F __start_kube-linter kl
-complete -o nospace -F __start_popeye kp
-complete -o nospace -F __start_kubespy ks
-
-complete -o nospace -F __start_terrascan tfscan
-complete -o nospace -C ~/binaries/terraform/latest/bin/terraform terraform
-complete -o nospace -C ~/binaries/terraform/latest/bin/terraform tform
-complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt terragrunt
-complete -o nospace -C ~/binaries/terragrunt/latest/bin/terragrunt tgrunt
+[ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" terraform
+[ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" tform
+[ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" terragrunt
+[ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" tgrunt
