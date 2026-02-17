@@ -1,7 +1,7 @@
 if [[ -n "${SC_BASH_COMPLETION_LOADED:-}" ]]; then
   return
 fi
-export SC_BASH_COMPLETION_LOADED=1
+SC_BASH_COMPLETION_LOADED=1
 
 if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
