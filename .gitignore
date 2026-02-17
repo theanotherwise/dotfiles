@@ -7,6 +7,7 @@
 !README.md
 !.dotfiles
 !.dotfiles.d/
+.dotfiles.cache/
 !.bash_aliases
 !.bash_completion
 !.bash_functions
