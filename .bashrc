@@ -4,8 +4,10 @@ fi
 
 umask 0022
 
-# Skip the rest for non-interactive shells
-[[ $- != *i* ]] && return
+# Load for interactive shells and also for login non-interactive shells (e.g. `bash -lc`).
+if [[ $- != *i* ]]; then
+  shopt -q login_shell || return
+fi
 
 # Keep interactive non-login shells (`bash`) consistent with login shell startup.
 if [ -f "${HOME}/.bash_functions" ]; then
@@ -16,13 +18,11 @@ if [ -f "${HOME}/.bash_adhoc_functions" ]; then
   . "${HOME}/.bash_adhoc_functions"
 fi
 
-SC_BASH_LOAD_COMPLETION_MODE="${SC_BASH_LOAD_COMPLETION_MODE:-always}"
-if [ "${SC_BASH_LOAD_COMPLETION_MODE}" != "never" ]; then
-  if command -v sw_vers >/dev/null 2>&1 && [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-    . /opt/homebrew/etc/profile.d/bash_completion.sh
-  elif [ -f "${HOME}/.bash_completion" ]; then
-    . "${HOME}/.bash_completion"
-  fi
+if command -v sw_vers >/dev/null 2>&1 && [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+  . /opt/homebrew/etc/profile.d/bash_completion.sh
+fi
+if [ -f "${HOME}/.bash_completion" ]; then
+  . "${HOME}/.bash_completion"
 fi
 
 if [ -f "${HOME}/.bash_aliases" ]; then

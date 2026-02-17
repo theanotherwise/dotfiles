@@ -25,9 +25,6 @@ MAKEFLAGS="-j$((MAKE_CORES + 1)) -l${MAKE_CORES}"
 
 export MAKEFLAGS
 
-if [[ $- == *i* ]]; then
-  # Keep interactive setup in one place to avoid duplicates.
-  if [ -f "${HOME}/.bashrc" ]; then
-    . "${HOME}/.bashrc"
-  fi
+if [ -f "${HOME}/.bashrc" ]; then
+  . "${HOME}/.bashrc"
 fi
