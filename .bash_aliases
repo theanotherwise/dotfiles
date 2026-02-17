@@ -235,7 +235,7 @@ reload() {
   source "${HOME}/.bash_profile"
 }
 
-dotfiles() {
+dotsetup() {
   bash "${HOME}/.dotfiles"
 }
 
@@ -263,7 +263,7 @@ _dotfiles_remove_tree_file_by_file() {
   fi
 }
 
-dotfiles-clean() {
+dotflush() {
   # Completion cache used by shell startup.
   _dotfiles_remove_tree_file_by_file "${HOME}/.dotfiles.cache"
 
@@ -279,5 +279,15 @@ dotfiles-clean() {
     [[ "${_tmp_dir}" == /tmp/dotfiles-* ]] || continue
     _dotfiles_remove_tree_file_by_file "${_tmp_dir}"
   done
+}
+
+dotcache() {
+  dotflush
+
+  if [ -f "${HOME}/.bash_completion" ]; then
+    unset SC_BASH_COMPLETION_LOADED_PID
+    unset SC_BASH_COMPLETION_LOADED
+    . "${HOME}/.bash_completion"
+  fi
 }
 
