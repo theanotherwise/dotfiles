@@ -16,11 +16,22 @@ if [ -f "${HOME}/.bash_adhoc_functions" ]; then
   . "${HOME}/.bash_adhoc_functions"
 fi
 
-if command -v sw_vers >/dev/null 2>&1 && [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-  . /opt/homebrew/etc/profile.d/bash_completion.sh
-elif [ -f "${HOME}/.bash_completion" ]; then
-  . "${HOME}/.bash_completion"
+SC_BASH_LOAD_COMPLETION_MODE="${SC_BASH_LOAD_COMPLETION_MODE:-top}"
+SC_BASH_SHOULD_LOAD_COMPLETION=0
+if [ "${SC_BASH_LOAD_COMPLETION_MODE}" = "always" ]; then
+  SC_BASH_SHOULD_LOAD_COMPLETION=1
+elif [ "${SC_BASH_LOAD_COMPLETION_MODE}" = "top" ] && [ "${SHLVL:-1}" -le 3 ]; then
+  SC_BASH_SHOULD_LOAD_COMPLETION=1
 fi
+
+if [ "${SC_BASH_SHOULD_LOAD_COMPLETION}" -eq 1 ]; then
+  if command -v sw_vers >/dev/null 2>&1 && [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
+  elif [ -f "${HOME}/.bash_completion" ]; then
+    . "${HOME}/.bash_completion"
+  fi
+fi
+unset SC_BASH_SHOULD_LOAD_COMPLETION
 
 if [ -f "${HOME}/.bash_aliases" ]; then
   . "${HOME}/.bash_aliases"
