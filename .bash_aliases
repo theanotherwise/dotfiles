@@ -235,3 +235,49 @@ reload() {
   source "${HOME}/.bash_profile"
 }
 
+dotfiles() {
+  bash "${HOME}/.dotfiles"
+}
+
+_dotfiles_remove_tree_file_by_file() {
+  local target="$1"
+  local entry restore_nullglob restore_dotglob
+
+  [ -e "${target}" ] || return 0
+
+  if [ -d "${target}" ] && [ ! -L "${target}" ]; then
+    restore_nullglob="$(shopt -p nullglob)"
+    restore_dotglob="$(shopt -p dotglob)"
+    shopt -s nullglob dotglob
+
+    for entry in "${target}"/*; do
+      _dotfiles_remove_tree_file_by_file "${entry}"
+    done
+
+    eval "${restore_nullglob}"
+    eval "${restore_dotglob}"
+
+    command rmdir -- "${target}" 2>/dev/null || true
+  else
+    command rm -f -- "${target}"
+  fi
+}
+
+dotfiles-clean() {
+  # Completion cache used by shell startup.
+  _dotfiles_remove_tree_file_by_file "${HOME}/.dotfiles.cache"
+
+  # Best-effort cleanup of stale installer temp directories.
+  local -a _dotfiles_tmp
+  local _tmp_dir _restore_nullglob
+  _restore_nullglob="$(shopt -p nullglob)"
+  shopt -s nullglob
+  _dotfiles_tmp=(/tmp/dotfiles-*)
+  eval "${_restore_nullglob}"
+
+  for _tmp_dir in "${_dotfiles_tmp[@]}"; do
+    [[ "${_tmp_dir}" == /tmp/dotfiles-* ]] || continue
+    _dotfiles_remove_tree_file_by_file "${_tmp_dir}"
+  done
+}
+
