@@ -3,12 +3,10 @@
 ## Setup
 
 ```bash
-git init "${HOME}"
-git remote add origin https://github.com/theanotherwise/dotfiles.git
-git fetch --all
-git checkout main
-
-bash .dotfiles
+git -C "${HOME}" init
+git -C "${HOME}" remote add origin https://github.com/theanotherwise/dotfiles.git
+git -C "${HOME}" pull origin main
+bash "${HOME}/.dotfiles"
 ```
 
 ----

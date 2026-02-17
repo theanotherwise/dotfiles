@@ -322,7 +322,7 @@ binaries:
     override: False
     strip: False
     inBin: False
-    latest: 1.13.2
+    latest: 1.14.5
     versions:
       - version: 0.13.4
       - version: 1.4.7
@@ -330,24 +330,25 @@ binaries:
       - version: 1.6.6
       - version: 1.7.5
       - version: 1.13.2
+      - version: 1.14.5
   - name: terragrunt
     url: https://github.com/gruntwork-io/terragrunt/releases/download/v{version}/terragrunt_darwin_arm64
     type: binary
     override: False
     strip: None
     inBin: False
-    latest: 0.87.3
+    latest: 0.99.2
     versions:
-      - version: 0.87.3
+      - version: 0.99.2
   - name: tofu
     url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_darwin_arm64.tar.gz
     type: tar.gz
     override: False
     strip: False
     inBin: False
-    latest: 1.7.2
+    latest: 1.11.4
     versions:
-      - version: 1.7.2
+      - version: 1.11.4
   - name: terrascan
     url: https://github.com/tenable/terrascan/releases/download/v{version}/terrascan_{version}_Darwin_arm64.tar.gz
     type: tar.gz
