@@ -1,7 +1,8 @@
-if [[ -n "${SC_BASH_COMPLETION_LOADED:-}" ]]; then
+if [[ "${SC_BASH_COMPLETION_LOADED_PID:-}" == "${BASHPID:-$$}" ]]; then
   return
 fi
-SC_BASH_COMPLETION_LOADED=1
+SC_BASH_COMPLETION_LOADED_PID="${BASHPID:-$$}"
+unset SC_BASH_COMPLETION_LOADED
 
 if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
@@ -9,7 +10,7 @@ fi
 
 SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-20}"
 SC_BASH_COMPLETION_CACHE_DIR="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
-mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
+command mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
 
 sc_helper_source_cached_completion() {
   local cmd="$1"
@@ -34,22 +35,22 @@ sc_helper_source_cached_completion() {
     if [ "${ticks}" -ge "${SC_BASH_COMPLETION_TIMEOUT_TENTHS}" ]; then
       kill "${pid}" >/dev/null 2>&1 || true
       wait "${pid}" 2>/dev/null || true
-      rm -f "${tmp_file}"
+      command rm -f "${tmp_file}"
       return 0
     fi
     sleep 0.1
   done
 
   if ! wait "${pid}" 2>/dev/null; then
-    rm -f "${tmp_file}"
+    command rm -f "${tmp_file}"
     return 0
   fi
 
   if [ -s "${tmp_file}" ]; then
-    mv "${tmp_file}" "${cache_file}"
+    command mv "${tmp_file}" "${cache_file}"
     . "${cache_file}"
   else
-    rm -f "${tmp_file}"
+    command rm -f "${tmp_file}"
   fi
 }
 
