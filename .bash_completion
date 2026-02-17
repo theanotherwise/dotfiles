@@ -8,7 +8,7 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
 fi
 
 SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-20}"
-SC_BASH_COMPLETION_CACHE_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/dotfiles/bash-completion"
+SC_BASH_COMPLETION_CACHE_DIR="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
 mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
 
 sc_helper_source_cached_completion() {
