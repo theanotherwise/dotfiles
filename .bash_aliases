@@ -39,17 +39,9 @@ alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 
 alias ksecret='sc_helper_kube_secret'
+alias kcontainers='sc_helper_kube_containers'
 
-# Kubernetes Watches
-alias kget-nodes='kubectl get nodes -o wide'
-alias kwatch-nodes='watch -n 1 kubectl get nodes -o wide'
-alias kget-pods='kubectl get pods -o wide'
-alias kwatch-pods='watch -n 1 kubectl get pods -o wide'
-alias ktop-pods='watch -n 1 kubectl top pods'
-alias kget-svc='kubectl get svc -o wide'
-alias kwatch-svc='watch -n 1 kubectl get svc -o wide'
-alias kget-pvc='kubectl get pvc -o wide'
-alias kwatch-pvc='watch -n 1 kubectl get pvc -o wide'
+
 
 
 

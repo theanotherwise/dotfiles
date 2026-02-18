@@ -129,6 +129,45 @@ sc_helper_kube_secret() {
     | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
 }
 
+sc_helper_kube_containers() {
+  if ! command -v kubectl >/dev/null 2>&1; then
+    echo "kubectl not found" 1>&2
+    return 127
+  fi
+
+  local ns pod
+  if [[ "$1" == "-n" ]]; then
+    ns="$2"
+    pod="$3"
+  else
+    pod="$1"
+    ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+    [ -n "${ns}" ] || ns=default
+  fi
+
+  if [ -z "${pod}" ] || [ -z "${ns}" ]; then
+    echo "Usage: kcontainers [-n namespace] <pod>" 1>&2
+    return 2
+  fi
+
+  local containers init_containers
+  containers="$(kubectl get pod "${pod}" -n "${ns}" -o jsonpath='{range .spec.containers[*]}{.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')"
+  init_containers="$(kubectl get pod "${pod}" -n "${ns}" -o jsonpath='{range .spec.initContainers[*]}{.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')"
+
+  if [ -z "${containers}" ] && [ -z "${init_containers}" ]; then
+    if ! kubectl get pod "${pod}" -n "${ns}" >/dev/null 2>&1; then
+      echo "Pod '${pod}' not found in namespace '${ns}'" 1>&2
+      return 1
+    fi
+  fi
+
+  [ -n "${containers}" ] || containers="-"
+  [ -n "${init_containers}" ] || init_containers="-"
+
+  echo "containers: ${containers}"
+  echo "initContainers: ${init_containers}"
+}
+
 sc_helper_git_tag_push() {
   T=$(date -u +"%Y-%m-%d.%H-%M-%S").$(git rev-parse --short HEAD)
   git tag "$T"
