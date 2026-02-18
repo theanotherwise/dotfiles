@@ -84,6 +84,52 @@ if [ -f "${HOME}/.dotfiles.d/completion/kubetail.bash" ]; then
   . "${HOME}/.dotfiles.d/completion/kubetail.bash"
 fi
 
+_sc_helper_kcontainers_completion() {
+  local cur prev ns pods namespaces
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  command -v kubectl >/dev/null 2>&1 || return 0
+
+  if [[ "${prev}" == "-n" ]]; then
+    if declare -F _kube_namespaces >/dev/null 2>&1; then
+      _kube_namespaces
+      return 0
+    fi
+
+    namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+    COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
+    return 0
+  fi
+
+  if [[ "${COMP_WORDS[1]}" == "-n" ]]; then
+    ns="${COMP_WORDS[2]}"
+    [ -n "${ns}" ] || return 0
+
+    # kcontainers -n <namespace> <pod>
+    if [[ "${COMP_CWORD}" -lt 3 ]]; then
+      return 0
+    fi
+  else
+    ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+    [ -n "${ns}" ] || ns=default
+
+    # Keep completion focused on the single pod argument for this helper.
+    if [[ "${COMP_CWORD}" -gt 1 ]]; then
+      return 0
+    fi
+  fi
+
+  pods="$(kubectl get pods -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+
+  if [[ "${COMP_CWORD}" -eq 1 ]]; then
+    COMPREPLY=( $(compgen -W "-n ${pods}" -- "${cur}") )
+  else
+    COMPREPLY=( $(compgen -W "${pods}" -- "${cur}") )
+  fi
+}
+
 declare -F __start_kubectl >/dev/null 2>&1 && complete -o nospace -F __start_kubectl k
 declare -F _kube_contexts >/dev/null 2>&1 && complete -o nospace -F _kube_contexts kubectx kctx
 declare -F _kube_namespaces >/dev/null 2>&1 && complete -o nospace -F _kube_namespaces kubens kns
@@ -92,6 +138,7 @@ declare -F _kubetail >/dev/null 2>&1 && complete -o nospace -F _kubetail kubetai
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
 declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
 declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
+complete -o nospace -F _sc_helper_kcontainers_completion kcontainers
 declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan
 
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" terraform
