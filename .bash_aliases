@@ -39,6 +39,7 @@ alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 
 alias ksecret='sc_helper_kube_secret'
+alias kcontainers='sc_helper_kube_containers'
 
 
 
