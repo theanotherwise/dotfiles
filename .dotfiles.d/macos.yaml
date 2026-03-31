@@ -73,6 +73,15 @@ binaries:
     latest: 1.22.19
     versions:
       - version: 1.22.19
+  - name: pnpm
+    url: https://github.com/pnpm/pnpm/releases/download/v{version}/pnpm-macos-arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 10.33.0
+    versions:
+      - version: 10.33.0
   - name: mvn
     url: https://dlcdn.apache.org/maven/maven-3/{version}/binaries/apache-maven-{version}-bin.tar.gz
     type: tar.gz
