@@ -2,7 +2,7 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
-for tool in go groovy node yarn mvn yq jq docker-compose subfinder \
+for tool in go groovy node yarn pnpm mvn yq jq docker-compose subfinder \
             kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
             kubectl kubectx kubens kubetail kustomize tofu terraform \
             terragrunt terrascan helm helmify helmfile rtfmt tfsec pike helm-unittest \
