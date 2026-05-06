@@ -67,6 +67,7 @@ sc_helper_source_cached_completion kubespy
 sc_helper_source_cached_completion terrascan
 sc_helper_source_cached_completion helmfile
 sc_helper_source_cached_completion tfsec-checkgen
+sc_helper_source_cached_completion codex
 
 if [ -f "${HOME}/.dotfiles.d/completion/git.bash" ]; then
   . "${HOME}/.dotfiles.d/completion/git.bash"
