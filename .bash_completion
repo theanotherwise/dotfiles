@@ -15,8 +15,12 @@ command mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
 sc_helper_source_cached_completion() {
   local cmd="$1"
   local cmd_path cache_file tmp_file pid ticks
+  shift || return 0
 
-  cmd_path="$(command -v "${cmd}" 2>/dev/null)" || return 0
+  [ -n "${cmd}" ] || return 0
+  [ "$#" -gt 0 ] || set -- completion bash
+
+  cmd_path="$(type -P "${cmd}" 2>/dev/null)" || return 0
   cache_file="${SC_BASH_COMPLETION_CACHE_DIR}/${cmd}.bash"
 
   if [ -s "${cache_file}" ]; then
@@ -25,7 +29,7 @@ sc_helper_source_cached_completion() {
   fi
 
   tmp_file="${cache_file}.tmp.$$"
-  "${cmd_path}" completion bash >"${tmp_file}" 2>/dev/null &
+  "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null &
   pid=$!
   ticks=0
 
@@ -58,15 +62,38 @@ sc_helper_source_cached_completion kubectl
 sc_helper_source_cached_completion kustomize
 sc_helper_source_cached_completion helm
 sc_helper_source_cached_completion docker
+sc_helper_source_cached_completion gh
+sc_helper_source_cached_completion github-mcp-server
+# github-mcp-server generates completion for "server"; expose the installed binary name.
+declare -F __start_server >/dev/null 2>&1 && complete -o default -o nospace -F __start_server github-mcp-server
+complete -r server 2>/dev/null || true
+sc_helper_source_cached_completion pnpm
+sc_helper_source_cached_completion node --completion-bash
+sc_helper_source_cached_completion rg --generate=complete-bash
+sc_helper_source_cached_completion delta --generate-completion bash
+sc_helper_source_cached_completion bat --completion bash
+sc_helper_source_cached_completion uv generate-shell-completion bash
+sc_helper_source_cached_completion yq shell-completion bash
+sc_helper_source_cached_completion trivy
+sc_helper_source_cached_completion oras
+sc_helper_source_cached_completion k6
 sc_helper_source_cached_completion kube-capacity
 sc_helper_source_cached_completion k3d
+sc_helper_source_cached_completion k9s
 sc_helper_source_cached_completion kube-linter
 sc_helper_source_cached_completion oc
 sc_helper_source_cached_completion popeye
 sc_helper_source_cached_completion kubespy
+sc_helper_source_cached_completion kubectl-neat
+sc_helper_source_cached_completion stern
 sc_helper_source_cached_completion terrascan
 sc_helper_source_cached_completion helmfile
 sc_helper_source_cached_completion tfsec-checkgen
+sc_helper_source_cached_completion sops
+sc_helper_source_cached_completion conftest
+sc_helper_source_cached_completion syft
+sc_helper_source_cached_completion grype
+sc_helper_source_cached_completion cosign
 sc_helper_source_cached_completion codex
 
 if [ -f "${HOME}/.dotfiles.d/completion/git.bash" ]; then
@@ -146,3 +173,4 @@ declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_t
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" tform
 [ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" terragrunt
 [ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" tgrunt
+[ -x "${HOME}/binaries/tofu/latest/bin/tofu" ] && complete -o nospace -C "${HOME}/binaries/tofu/latest/bin/tofu" tofu
