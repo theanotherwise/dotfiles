@@ -354,6 +354,65 @@ zseed() {
       done
 }
 
+_sc_zoxide_z_completion() {
+  command -v zoxide >/dev/null 2>&1 || return 0
+
+  local cur path name candidate
+  local seen=$'\n'
+  local -a query_terms local_dirs matches
+
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+
+  case "${cur}" in
+    -*)
+      return 0
+      ;;
+    */*|~*)
+      while IFS= read -r candidate; do
+        COMPREPLY+=("${candidate}")
+      done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
+      return 0
+      ;;
+  esac
+
+  local i
+  for ((i = 1; i < COMP_CWORD; i++)); do
+    [ -n "${COMP_WORDS[i]}" ] && query_terms+=("${COMP_WORDS[i]}")
+  done
+
+  while IFS= read -r candidate; do
+    local_dirs+=("${candidate}")
+  done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
+  for candidate in "${local_dirs[@]}"; do
+    candidate="${candidate%/}"
+    [ -n "${candidate}" ] || continue
+    matches+=("${candidate}")
+    seen+="${candidate}"$'\n'
+  done
+
+  if [ -z "${cur}" ] && [ "${#query_terms[@]}" -eq 0 ]; then
+    COMPREPLY=("${matches[@]}")
+    return 0
+  fi
+
+  while IFS= read -r path; do
+    name="${path##*/}"
+    [ -n "${name}" ] || continue
+    [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
+
+    for candidate in "${query_terms[@]}"; do
+      [[ "${path}" == *"${candidate}"* ]] || continue 2
+    done
+
+    [[ "${seen}" == *$'\n'"${name}"$'\n'* ]] && continue
+    matches+=("${name}")
+    seen+="${name}"$'\n'
+  done < <(zoxide query -l 2>/dev/null)
+
+  COMPREPLY=("${matches[@]}")
+}
+
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12

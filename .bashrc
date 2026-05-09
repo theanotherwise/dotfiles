@@ -55,4 +55,5 @@ if command -v zoxide >/dev/null 2>&1; then
   unset _zoxide_excludes
 
   eval "$(zoxide init bash)"
+  declare -F _sc_zoxide_z_completion >/dev/null 2>&1 && complete -F _sc_zoxide_z_completion -o filenames z
 fi
