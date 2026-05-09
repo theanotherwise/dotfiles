@@ -337,6 +337,15 @@ zseed() {
     return 1
   fi
 
+  zoxide query -l 2>/dev/null \
+    | while IFS= read -r dir; do
+        case "${dir}" in
+          */.git|*/.git/*|*/node_modules|*/node_modules/*|*/.terraform|*/.terraform/*|*/.terragrunt-cache|*/.terragrunt-cache/*|*/.venv|*/.venv/*|*/__pycache__|*/__pycache__/*)
+            zoxide remove "${dir}"
+            ;;
+        esac
+      done
+
   find "${root}" \
     \( -name .git -o -name node_modules -o -name .terraform -o -name .terragrunt-cache -o -name .venv -o -name __pycache__ \) -prune \
     -o -type d -print0 \

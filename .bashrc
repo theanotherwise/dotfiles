@@ -47,5 +47,12 @@ export EDITOR="vim"
 # No header on Enter; kube context shown on the right in PS1 as before
 
 if command -v zoxide >/dev/null 2>&1; then
+  _zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**"
+  case ":${_ZO_EXCLUDE_DIRS:-}:" in
+    *":${_zoxide_excludes}:"*) ;;
+    *) export _ZO_EXCLUDE_DIRS="${_ZO_EXCLUDE_DIRS:+${_ZO_EXCLUDE_DIRS}:}${_zoxide_excludes}" ;;
+  esac
+  unset _zoxide_excludes
+
   eval "$(zoxide init bash)"
 fi
