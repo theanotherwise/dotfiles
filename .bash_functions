@@ -919,22 +919,28 @@ sc_helper_dotversions() {
   printf "| %-24s | %-20s |\n" "------------------------" "--------------------"
 
   tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotversions.XXXXXX")" || return 1
-  index=0
-  pids=""
-  status=0
 
-  while IFS= read -r package_dir; do
-    package="${package_dir##*/}"
-    row_file="${tmp_dir}/$(printf "%05d" "${index}").row"
+  (
+    index=0
+    pids=""
+    status=0
 
-    sc_helper_dotversions_row "${package}" >"${row_file}" &
-    pids="${pids} $!"
-    index=$((index + 1))
-  done < <(find -L "${binaries_dir}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+    while IFS= read -r package_dir; do
+      package="${package_dir##*/}"
+      row_file="${tmp_dir}/$(printf "%05d" "${index}").row"
 
-  for pid in ${pids}; do
-    wait "${pid}" || status=1
-  done
+      sc_helper_dotversions_row "${package}" >"${row_file}" &
+      pids="${pids} $!"
+      index=$((index + 1))
+    done < <(find -L "${binaries_dir}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+
+    for pid in ${pids}; do
+      wait "${pid}" || status=1
+    done
+
+    exit "${status}"
+  )
+  status=$?
 
   for row_file in "${tmp_dir}"/*.row; do
     [ -f "${row_file}" ] || continue
