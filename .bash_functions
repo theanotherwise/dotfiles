@@ -867,72 +867,72 @@ sc_helper_dotversions_description() {
   local tool="$1"
 
   case "${tool}" in
-    actionlint) printf "%s\n" "GitHub Actions linter" ;;
-    age) printf "%s\n" "File encryption" ;;
-    argocd) printf "%s\n" "Argo CD CLI" ;;
-    bat) printf "%s\n" "Better cat viewer" ;;
-    conftest) printf "%s\n" "OPA policy tests" ;;
-    containerd) printf "%s\n" "Container runtime" ;;
-    cosign) printf "%s\n" "Container signing" ;;
-    delta) printf "%s\n" "Better git diff" ;;
-    docker\ client) printf "%s\n" "Docker CLI client" ;;
-    docker\ compose) printf "%s\n" "Compose plugin" ;;
-    docker\ engine) printf "%s\n" "Docker Engine server" ;;
-    docker-init) printf "%s\n" "Container init helper" ;;
-    fd) printf "%s\n" "Fast file finder" ;;
-    fzf) printf "%s\n" "Fuzzy finder" ;;
-    gh) printf "%s\n" "GitHub CLI" ;;
-    github-mcp-server) printf "%s\n" "GitHub MCP server" ;;
-    go) printf "%s\n" "Go toolchain" ;;
-    groovy) printf "%s\n" "Groovy runtime" ;;
-    grype) printf "%s\n" "Vulnerability scanner" ;;
-    helm) printf "%s\n" "Helm package manager" ;;
-    helm-unittest) printf "%s\n" "Helm chart tests" ;;
-    helmfile) printf "%s\n" "Helm release orchestration" ;;
-    helmify) printf "%s\n" "Kubernetes to Helm" ;;
-    jq) printf "%s\n" "JSON processor" ;;
-    k3d) printf "%s\n" "Local k3s clusters" ;;
-    k6) printf "%s\n" "Load testing" ;;
-    k9s) printf "%s\n" "Kubernetes TUI" ;;
-    kube-capacity) printf "%s\n" "Cluster resource capacity" ;;
-    kube-linter) printf "%s\n" "Kubernetes manifest lint" ;;
-    kube-popeye|popeye) printf "%s\n" "Kubernetes hygiene scan" ;;
-    kubeconform) printf "%s\n" "Kubernetes schema validation" ;;
+    actionlint) printf "%s\n" "Lints GitHub Actions workflow YAML" ;;
+    age) printf "%s\n" "Encrypts files with public/private keys" ;;
+    argocd) printf "%s\n" "Manages Argo CD apps and syncs" ;;
+    bat) printf "%s\n" "cat with syntax highlighting and paging" ;;
+    conftest) printf "%s\n" "Tests config files with OPA/Rego policies" ;;
+    containerd) printf "%s\n" "Low-level container runtime used by Docker" ;;
+    cosign) printf "%s\n" "Signs and verifies container images" ;;
+    delta) printf "%s\n" "Syntax-highlighted pager for git diffs" ;;
+    docker\ client) printf "%s\n" "Docker command-line client" ;;
+    docker\ compose) printf "%s\n" "Runs multi-container Docker apps" ;;
+    docker\ engine) printf "%s\n" "Docker daemon and API server" ;;
+    docker-init) printf "%s\n" "Tiny init process used inside containers" ;;
+    fd) printf "%s\n" "Fast, friendly alternative to find" ;;
+    fzf) printf "%s\n" "Interactive fuzzy picker for lists" ;;
+    gh) printf "%s\n" "GitHub CLI for repos, PRs, and issues" ;;
+    github-mcp-server) printf "%s\n" "MCP bridge for GitHub automation" ;;
+    go) printf "%s\n" "Go compiler and developer toolchain" ;;
+    groovy) printf "%s\n" "JVM scripting language runtime" ;;
+    grype) printf "%s\n" "Scans images and filesystems for CVEs" ;;
+    helm) printf "%s\n" "Kubernetes package manager for charts" ;;
+    helm-unittest) printf "%s\n" "Unit tests for Helm chart templates" ;;
+    helmfile) printf "%s\n" "Declares and syncs Helm releases" ;;
+    helmify) printf "%s\n" "Converts Kubernetes YAML into Helm charts" ;;
+    jq) printf "%s\n" "Filters and transforms JSON data" ;;
+    k3d) printf "%s\n" "Runs local k3s clusters in Docker" ;;
+    k6) printf "%s\n" "Scriptable HTTP and load test runner" ;;
+    k9s) printf "%s\n" "Terminal UI for Kubernetes clusters" ;;
+    kube-capacity) printf "%s\n" "Shows Kubernetes node and pod resource use" ;;
+    kube-linter) printf "%s\n" "Finds Kubernetes manifest problems" ;;
+    kube-popeye|popeye) printf "%s\n" "Audits live Kubernetes cluster hygiene" ;;
+    kubeconform) printf "%s\n" "Validates manifests against Kubernetes schemas" ;;
     kubectl) printf "%s\n" "Kubernetes CLI" ;;
-    kubectl-neat) printf "%s\n" "Clean kubectl output" ;;
-    kubectx) printf "%s\n" "Switch kube contexts" ;;
-    kubens) printf "%s\n" "Switch namespaces" ;;
-    kubent) printf "%s\n" "Deprecated API scan" ;;
-    kubespy) printf "%s\n" "Kubernetes rollout watch" ;;
-    kubetail) printf "%s\n" "Tail pod logs" ;;
-    kustomize) printf "%s\n" "Kubernetes overlays" ;;
-    mvn) printf "%s\n" "Maven build tool" ;;
-    node) printf "%s\n" "Node.js runtime" ;;
-    oc[0-9]*) printf "%s\n" "OKD OpenShift CLI" ;;
-    okd) printf "%s\n" "OKD CLI bundle" ;;
-    oras) printf "%s\n" "OCI artifact CLI" ;;
-    pike) printf "%s\n" "Terraform permissions" ;;
-    pnpm) printf "%s\n" "Node package manager" ;;
-    ripgrep|rg) printf "%s\n" "Fast text search" ;;
-    runc) printf "%s\n" "OCI runtime" ;;
-    shellcheck) printf "%s\n" "Shell script linter" ;;
-    shfmt) printf "%s\n" "Shell formatter" ;;
-    sops) printf "%s\n" "Encrypted config files" ;;
-    stern) printf "%s\n" "Multi-pod logs" ;;
-    subfinder) printf "%s\n" "Subdomain discovery" ;;
-    syft) printf "%s\n" "SBOM generator" ;;
-    terraform) printf "%s\n" "Infrastructure as code" ;;
-    terragrunt) printf "%s\n" "Terraform wrapper" ;;
-    terrascan) printf "%s\n" "IaC security scan" ;;
-    tflint) printf "%s\n" "Terraform linter" ;;
-    tfsec) printf "%s\n" "Terraform security scan" ;;
-    tofu|opentofu) printf "%s\n" "OpenTofu CLI" ;;
-    trivy) printf "%s\n" "Security scanner" ;;
-    uv) printf "%s\n" "Python package tool" ;;
-    yarn) printf "%s\n" "Node package manager" ;;
-    yq) printf "%s\n" "YAML processor" ;;
-    zoxide) printf "%s\n" "Smart directory jump" ;;
-    *) printf "%s\n" "Local CLI tool" ;;
+    kubectl-neat) printf "%s\n" "Removes noise from kubectl YAML output" ;;
+    kubectx) printf "%s\n" "Switches the current Kubernetes context" ;;
+    kubens) printf "%s\n" "Switches the current Kubernetes namespace" ;;
+    kubent) printf "%s\n" "Finds removed or deprecated Kubernetes APIs" ;;
+    kubespy) printf "%s\n" "Watches Kubernetes resource rollouts" ;;
+    kubetail) printf "%s\n" "Tails logs from many Kubernetes pods" ;;
+    kustomize) printf "%s\n" "Builds patched Kubernetes manifests" ;;
+    mvn) printf "%s\n" "Builds and tests Maven/JVM projects" ;;
+    node) printf "%s\n" "JavaScript runtime for CLIs and apps" ;;
+    oc[0-9]*) printf "%s\n" "OpenShift/OKD command-line client" ;;
+    okd) printf "%s\n" "OpenShift/OKD CLI version bundle" ;;
+    oras) printf "%s\n" "Pushes and pulls OCI registry artifacts" ;;
+    pike) printf "%s\n" "Maps Terraform plans to IAM permissions" ;;
+    pnpm) printf "%s\n" "Fast disk-efficient JS package manager" ;;
+    ripgrep|rg) printf "%s\n" "Recursive regex search across files" ;;
+    runc) printf "%s\n" "OCI container runtime used by Docker" ;;
+    shellcheck) printf "%s\n" "Finds bugs and pitfalls in shell scripts" ;;
+    shfmt) printf "%s\n" "Formats shell scripts consistently" ;;
+    sops) printf "%s\n" "Encrypts YAML/JSON/env config files" ;;
+    stern) printf "%s\n" "Streams logs from matching Kubernetes pods" ;;
+    subfinder) printf "%s\n" "Finds subdomains from OSINT sources" ;;
+    syft) printf "%s\n" "Generates SBOMs for images and filesystems" ;;
+    terraform) printf "%s\n" "Plans and applies infrastructure changes" ;;
+    terragrunt) printf "%s\n" "DRY wrapper around Terraform/OpenTofu" ;;
+    terrascan) printf "%s\n" "Scans IaC for security and compliance issues" ;;
+    tflint) printf "%s\n" "Lints Terraform modules and provider usage" ;;
+    tfsec) printf "%s\n" "Finds Terraform security issues" ;;
+    tofu|opentofu) printf "%s\n" "OpenTofu infrastructure as code CLI" ;;
+    trivy) printf "%s\n" "Scans images, repos, and configs for risk" ;;
+    uv) printf "%s\n" "Fast Python package and environment manager" ;;
+    yarn) printf "%s\n" "JavaScript package manager and script runner" ;;
+    yq) printf "%s\n" "Filters and edits YAML/JSON data" ;;
+    zoxide) printf "%s\n" "cd replacement ranked by frecency" ;;
+    *) printf "%s\n" "Local CLI from the binaries directory" ;;
   esac
 }
 
@@ -941,7 +941,7 @@ sc_helper_dotversions_category() {
 
   case "${tool}" in
     containerd|docker\ client|docker\ compose|docker\ engine|docker-init|k3d|oras|runc)
-      printf "%s\n" "Kontenery"
+      printf "%s\n" "Containers"
       ;;
     argocd|helm|helm-unittest|helmfile|helmify|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl|kubectl-neat|kubectx|kubens|kubent|kubespy|kubetail|kustomize|oc[0-9]*|okd|stern)
       printf "%s\n" "Kubernetes"
@@ -950,41 +950,41 @@ sc_helper_dotversions_category() {
       printf "%s\n" "IaC"
       ;;
     age|conftest|cosign|grype|sops|syft|trivy)
-      printf "%s\n" "Bezpieczenstwo"
+      printf "%s\n" "Security"
       ;;
     actionlint|gh|github-mcp-server)
       printf "%s\n" "GitHub"
       ;;
     go|groovy|mvn|node|pnpm|uv|yarn)
-      printf "%s\n" "Jezyki i build"
+      printf "%s\n" "Languages and Build"
       ;;
     bat|delta|fd|fzf|jq|ripgrep|rg|shellcheck|shfmt|yq|zoxide)
-      printf "%s\n" "Shell i terminal"
+      printf "%s\n" "Shell and Terminal"
       ;;
     k6)
-      printf "%s\n" "Testy i obciazenie"
+      printf "%s\n" "Testing and Load"
       ;;
     subfinder)
-      printf "%s\n" "Siec i recon"
+      printf "%s\n" "Network and Recon"
       ;;
     *)
-      printf "%s\n" "Inne"
+      printf "%s\n" "Other"
       ;;
   esac
 }
 
 sc_helper_dotversions_category_order() {
   printf "%s\n" \
-    "Kontenery" \
+    "Containers" \
     "Kubernetes" \
     "IaC" \
-    "Bezpieczenstwo" \
+    "Security" \
     "GitHub" \
-    "Jezyki i build" \
-    "Shell i terminal" \
-    "Testy i obciazenie" \
-    "Siec i recon" \
-    "Inne"
+    "Languages and Build" \
+    "Shell and Terminal" \
+    "Testing and Load" \
+    "Network and Recon" \
+    "Other"
 }
 
 sc_helper_dotversions_example() {
@@ -1075,14 +1075,61 @@ sc_helper_dotversions_print_row() {
   printf "%s\t%s\t%s\t%s\t%s\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
 }
 
+sc_helper_dotversions_wrap_text() {
+  local width="$1"
+  local text="$2"
+
+  if [ -z "${text}" ]; then
+    printf "\n"
+    return 0
+  fi
+
+  awk -v width="${width}" -v text="${text}" '
+    BEGIN {
+      n = split(text, words, /[[:space:]]+/)
+      line = ""
+
+      for (i = 1; i <= n; i++) {
+        word = words[i]
+        if (word == "") {
+          continue
+        }
+
+        if (line == "") {
+          line = word
+        } else if (length(line) + 1 + length(word) <= width) {
+          line = line " " word
+        } else {
+          print line
+          line = word
+        }
+      }
+
+      if (line != "") {
+        print line
+      }
+    }
+  '
+}
+
 sc_helper_dotversions_print_table_row() {
   local category="$1"
   local tool="$2"
   local version="$3"
   local description="$4"
   local example="$5"
+  local description_line first
 
-  printf "| %-18s | %-24s | %-20s | %-32s | %-40s |\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
+  first=1
+
+  while IFS= read -r description_line; do
+    if [ "${first}" -eq 1 ]; then
+      printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "${category}" "${tool}" "${version}" "${description_line}" "${example}"
+      first=0
+    else
+      printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "" "" "" "${description_line}" ""
+    fi
+  done < <(sc_helper_dotversions_wrap_text 32 "${description}")
 }
 
 sc_helper_dotversions_print_grouped_rows() {
@@ -1239,8 +1286,8 @@ sc_helper_dotversions() {
   )
   status=$?
 
-  printf "| %-18s | %-24s | %-20s | %-32s | %-40s |\n" "KATEGORIA" "TOOL" "VERSION" "OPIS" "PRZYKLAD"
-  printf "| %-18s | %-24s | %-20s | %-32s | %-40s |\n" "------------------" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
+  printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "CATEGORY" "TOOL" "VERSION" "DESCRIPTION" "EXAMPLE"
+  printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "--------------------" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
 
   sc_helper_dotversions_print_grouped_rows "${tmp_dir}"
 
