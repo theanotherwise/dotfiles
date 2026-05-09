@@ -49,7 +49,7 @@ alias untt='sc_helper_helm_unittest'
 #
 #    Docker
 #
-alias docker-compose-up-clean="docker-compose up --force-recreate --remove-orphans --build"
+alias docker-up-clean="docker compose up --force-recreate --remove-orphans --build"
 alias docker-stop="docker ps -aq | xargs -r docker stop -t 0"
 alias docker-rm-containers="docker ps -aq | xargs -r docker rm -f"
 alias docker-rm-images="docker images -q | xargs -r docker rmi -f"

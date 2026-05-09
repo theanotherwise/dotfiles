@@ -596,14 +596,7 @@ sc_helper_versions() {
   if command -v docker >/dev/null 2>&1; then
     VDOCKER=$(docker --version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
     [ -n "$VDOCKER" ] || VDOCKER="-"
-    # Prefer plugin syntax; fallback to standalone docker-compose
     VCOMPOSE=$(docker compose version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
-    if [ -z "$VCOMPOSE" ] && command -v docker-compose >/dev/null 2>&1; then
-      VCOMPOSE=$(docker-compose --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
-    fi
-    [ -n "$VCOMPOSE" ] || VCOMPOSE="-"
-  elif command -v docker-compose >/dev/null 2>&1; then
-    VCOMPOSE=$(docker-compose --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VCOMPOSE" ] || VCOMPOSE="-"
   fi
 
@@ -791,10 +784,6 @@ sc_helper_dotversions_version() {
   fi
 
   case "${package}" in
-    docker-compose)
-      variants="version
---version"
-      ;;
     go|opentofu|terraform|tofu)
       variants="version
 --version"
@@ -883,9 +872,13 @@ sc_helper_dotversions_description() {
     argocd) printf "%s\n" "Argo CD CLI" ;;
     bat) printf "%s\n" "Better cat viewer" ;;
     conftest) printf "%s\n" "OPA policy tests" ;;
+    containerd) printf "%s\n" "Container runtime" ;;
     cosign) printf "%s\n" "Container signing" ;;
     delta) printf "%s\n" "Better git diff" ;;
-    docker-compose) printf "%s\n" "Docker Compose CLI" ;;
+    docker\ client) printf "%s\n" "Docker CLI client" ;;
+    docker\ compose) printf "%s\n" "Compose plugin" ;;
+    docker\ engine) printf "%s\n" "Docker Engine server" ;;
+    docker-init) printf "%s\n" "Container init helper" ;;
     fd) printf "%s\n" "Fast file finder" ;;
     fzf) printf "%s\n" "Fuzzy finder" ;;
     gh) printf "%s\n" "GitHub CLI" ;;
@@ -921,6 +914,7 @@ sc_helper_dotversions_description() {
     pike) printf "%s\n" "Terraform permissions" ;;
     pnpm) printf "%s\n" "Node package manager" ;;
     ripgrep|rg) printf "%s\n" "Fast text search" ;;
+    runc) printf "%s\n" "OCI runtime" ;;
     shellcheck) printf "%s\n" "Shell script linter" ;;
     shfmt) printf "%s\n" "Shell formatter" ;;
     sops) printf "%s\n" "Encrypted config files" ;;
@@ -951,9 +945,13 @@ sc_helper_dotversions_example() {
     argocd) printf "%s\n" "argocd app list" ;;
     bat) printf "%s\n" "bat file.txt" ;;
     conftest) printf "%s\n" "conftest test policy.yaml" ;;
+    containerd) printf "%s\n" "docker version" ;;
     cosign) printf "%s\n" "cosign verify image" ;;
     delta) printf "%s\n" "delta diff.patch" ;;
-    docker-compose) printf "%s\n" "docker-compose up" ;;
+    docker\ client) printf "%s\n" "docker version" ;;
+    docker\ compose) printf "%s\n" "docker compose ps" ;;
+    docker\ engine) printf "%s\n" "docker info" ;;
+    docker-init) printf "%s\n" "docker version" ;;
     fd) printf "%s\n" "fd pattern" ;;
     fzf) printf "%s\n" "fzf" ;;
     gh) printf "%s\n" "gh repo view" ;;
@@ -989,6 +987,7 @@ sc_helper_dotversions_example() {
     pike) printf "%s\n" "pike scan" ;;
     pnpm) printf "%s\n" "pnpm test" ;;
     ripgrep|rg) printf "%s\n" "rg pattern" ;;
+    runc) printf "%s\n" "docker version" ;;
     shellcheck) printf "%s\n" "shellcheck script.sh" ;;
     shfmt) printf "%s\n" "shfmt -w script.sh" ;;
     sops) printf "%s\n" "sops file.yaml" ;;
@@ -1010,17 +1009,97 @@ sc_helper_dotversions_example() {
   esac
 }
 
+sc_helper_dotversions_print_row() {
+  local tool="$1"
+  local version="$2"
+  local description example
+
+  [ -n "${version}" ] || version="-"
+  version="${version#v}"
+
+  description="$(sc_helper_dotversions_description "${tool}")"
+  example="$(sc_helper_dotversions_example "${tool}")"
+
+  printf "| %-24s | %-20s | %-32s | %-40s |\n" "${tool}" "${version}" "${description}" "${example}"
+}
+
+sc_helper_dotversions_docker_rows() {
+  local output compose_version
+
+  command -v docker >/dev/null 2>&1 || return 0
+
+  output="$(sc_helper_dotversions_exec docker version 2>/dev/null || true)"
+  if [ -n "${output}" ]; then
+    printf "%s\n" "${output}" | awk '
+      /^Client:/ {
+        section="client"
+        next
+      }
+      /^Server:/ {
+        section="server"
+        next
+      }
+      /^[[:space:]]Engine:/ {
+        section="engine"
+        next
+      }
+      /^[[:space:]]containerd:/ {
+        section="containerd"
+        next
+      }
+      /^[[:space:]]runc:/ {
+        section="runc"
+        next
+      }
+      /^[[:space:]]docker-init:/ {
+        section="docker-init"
+        next
+      }
+      section == "client" && /^[[:space:]]+Version:/ {
+        print "docker client\t" $2
+        section=""
+        next
+      }
+      section == "engine" && /^[[:space:]]+Version:/ {
+        print "docker engine\t" $2
+        section=""
+        next
+      }
+      section == "containerd" && /^[[:space:]]+Version:/ {
+        print "containerd\t" $2
+        section=""
+        next
+      }
+      section == "runc" && /^[[:space:]]+Version:/ {
+        print "runc\t" $2
+        section=""
+        next
+      }
+      section == "docker-init" && /^[[:space:]]+Version:/ {
+        print "docker-init\t" $2
+        section=""
+        next
+      }
+    ' | while IFS="$(printf "\t")" read -r tool version; do
+      sc_helper_dotversions_print_row "${tool}" "${version}"
+    done
+  fi
+
+  compose_version="$(sc_helper_dotversions_exec docker compose version 2>/dev/null | grep -oE 'v?[0-9]+([.][0-9A-Za-z_-]+)+' | head -1 | sed 's/^v//')"
+  if [ -n "${compose_version}" ]; then
+    sc_helper_dotversions_print_row "docker compose" "${compose_version}"
+  fi
+}
+
 sc_helper_dotversions_row() {
   local package="$1"
-  local binary name version description example
+  local binary name version
 
   if [ "${package}" = "okd" ]; then
     while IFS= read -r binary; do
       name="${binary##*/}"
       version="${name#oc}"
-      description="$(sc_helper_dotversions_description "${name}")"
-      example="$(sc_helper_dotversions_example "${name}")"
-      printf "| %-24s | %-20s | %-32s | %-40s |\n" "${name}" "${version}" "${description}" "${example}"
+      sc_helper_dotversions_print_row "${name}" "${version}"
     done < <(sc_helper_okd_binaries)
     return 0
   fi
@@ -1033,10 +1112,7 @@ sc_helper_dotversions_row() {
     version="-"
   fi
 
-  description="$(sc_helper_dotversions_description "${package}")"
-  example="$(sc_helper_dotversions_example "${package}")"
-
-  printf "| %-24s | %-20s | %-32s | %-40s |\n" "${package}" "${version}" "${description}" "${example}"
+  sc_helper_dotversions_print_row "${package}" "${version}"
 }
 
 sc_helper_dotversions() {
@@ -1051,6 +1127,8 @@ sc_helper_dotversions() {
   printf "| %-24s | %-20s | %-32s | %-40s |\n" "TOOL" "VERSION" "OPIS" "PRZYKLAD"
   printf "| %-24s | %-20s | %-32s | %-40s |\n" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
 
+  sc_helper_dotversions_docker_rows
+
   tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotversions.XXXXXX")" || return 1
 
   (
@@ -1060,6 +1138,12 @@ sc_helper_dotversions() {
 
     while IFS= read -r package_dir; do
       package="${package_dir##*/}"
+      case "${package}" in
+        docker?compose)
+          continue
+          ;;
+      esac
+
       row_file="${tmp_dir}/$(printf "%05d" "${index}").row"
 
       sc_helper_dotversions_row "${package}" >"${row_file}" &
