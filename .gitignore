@@ -3,9 +3,8 @@
 !.gitignore
 !AGENTS.md
 !.gitconfig
-!.gitignore
 !.vimrc
-!README.md
+!.README.md
 !.dotfiles
 !.dotfiles.d/
 .dotfiles.cache/
