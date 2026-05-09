@@ -676,34 +676,12 @@ sc_helper_helm_unittest() {
   "${binary}" "$@"
 }
 
-sc_helper_okd_binary() {
+sc_helper_okd_binaries() {
   local bin_dir="${HOME}/binaries/okd/latest/bin"
-  local path
 
   [ -d "${bin_dir}" ] || return 1
 
-  path="$(
-    find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'oc[0-9]*' 2>/dev/null \
-      | awk '
-          {
-            name = $0
-            sub(/^.*\//, "", name)
-            version = name
-            sub(/^oc/, "", version)
-            count = split(version, parts, ".")
-            major = parts[1] + 0
-            minor = count > 1 ? parts[2] + 0 : 0
-            patch = count > 2 ? parts[3] + 0 : 0
-            printf "%010d.%010d.%010d\t%s\n", major, minor, patch, $0
-          }
-        ' \
-      | sort \
-      | tail -1 \
-      | cut -f2-
-  )"
-
-  [ -n "${path}" ] || return 1
-  printf "%s\n" "${path}"
+  find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'oc[0-9]*' 2>/dev/null | sort -V
 }
 
 sc_helper_dotversions_binary() {
@@ -722,7 +700,7 @@ sc_helper_dotversions_binary() {
       candidate="popeye"
       ;;
     okd)
-      sc_helper_okd_binary
+      sc_helper_okd_binaries | tail -1
       return 0
       ;;
     opentofu|tofu)
@@ -893,7 +871,16 @@ version
 
 sc_helper_dotversions_row() {
   local package="$1"
-  local binary version
+  local binary name version
+
+  if [ "${package}" = "okd" ]; then
+    while IFS= read -r binary; do
+      name="${binary##*/}"
+      version="${name#oc}"
+      printf "| %-24s | %-20s |\n" "${name}" "${version}"
+    done < <(sc_helper_okd_binaries)
+    return 0
+  fi
 
   binary="$(sc_helper_dotversions_binary "${package}")"
 
