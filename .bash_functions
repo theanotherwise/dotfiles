@@ -636,6 +636,67 @@ sc_helper_versions() {
   printf "\n"
 }
 
+sc_helper_helm_unittest_binary() {
+  local bin_dir="${HOME}/binaries/helm-unittest/latest/bin"
+  local candidate path
+
+  [ -d "${bin_dir}" ] || return 1
+
+  for candidate in untt untt-macos-arm64 untt-macos-amd64 untt-linux-arm64 untt-linux-amd64; do
+    path="${bin_dir}/${candidate}"
+    if [ -x "${path}" ] && [ ! -d "${path}" ]; then
+      printf "%s\n" "${path}"
+      return 0
+    fi
+  done
+
+  path="$(find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'untt*' 2>/dev/null | sort | head -1)"
+  [ -n "${path}" ] || return 1
+  printf "%s\n" "${path}"
+}
+
+sc_helper_helm_unittest() {
+  local binary
+
+  binary="$(sc_helper_helm_unittest_binary)"
+  if [ -z "${binary}" ]; then
+    echo "helm-unittest binary not found in ${HOME}/binaries/helm-unittest/latest/bin" 1>&2
+    return 127
+  fi
+
+  "${binary}" "$@"
+}
+
+sc_helper_okd_binary() {
+  local bin_dir="${HOME}/binaries/okd/latest/bin"
+  local path
+
+  [ -d "${bin_dir}" ] || return 1
+
+  path="$(
+    find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'oc[0-9]*' 2>/dev/null \
+      | awk '
+          {
+            name = $0
+            sub(/^.*\//, "", name)
+            version = name
+            sub(/^oc/, "", version)
+            count = split(version, parts, ".")
+            major = parts[1] + 0
+            minor = count > 1 ? parts[2] + 0 : 0
+            patch = count > 2 ? parts[3] + 0 : 0
+            printf "%010d.%010d.%010d\t%s\n", major, minor, patch, $0
+          }
+        ' \
+      | sort \
+      | tail -1 \
+      | cut -f2-
+  )"
+
+  [ -n "${path}" ] || return 1
+  printf "%s\n" "${path}"
+}
+
 sc_helper_dotversions_binary() {
   local package="$1"
   local bin_dir="${HOME}/binaries/${package}/latest/bin"
@@ -645,14 +706,14 @@ sc_helper_dotversions_binary() {
 
   case "${package}" in
     helm-unittest)
-      candidate="untt"
+      sc_helper_helm_unittest_binary
+      return 0
       ;;
     kube-popeye)
       candidate="popeye"
       ;;
     okd)
-      path="$(find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'oc*' 2>/dev/null | sort | tail -1)"
-      [ -n "${path}" ] && printf "%s\n" "${path}"
+      sc_helper_okd_binary
       return 0
       ;;
     opentofu|tofu)
@@ -701,7 +762,7 @@ sc_helper_dotversions_exec() {
 sc_helper_dotversions_version() {
   local package="$1"
   local binary="$2"
-  local variants variant output status version
+  local variants variant output status version name
 
   case "${package}" in
     docker-compose)
@@ -720,6 +781,9 @@ sc_helper_dotversions_version() {
       variants="version --short
 version
 --version"
+      ;;
+    helm-unittest)
+      variants="--version"
       ;;
     kubectl|okd)
       variants="version --client --short
@@ -766,12 +830,40 @@ version
     fi
   done <<< "${variants}"
 
+  if [ "${package}" = "okd" ]; then
+    name="${binary##*/}"
+    case "${name}" in
+      oc[0-9]*)
+        version="${name#oc}"
+        if printf "%s\n" "${version}" | grep -Eq '^[0-9]+([.][0-9A-Za-z_-]+)*$'; then
+          printf "%s\n" "${version}"
+          return 0
+        fi
+        ;;
+    esac
+  fi
+
   printf "%s\n" "-"
+}
+
+sc_helper_dotversions_row() {
+  local package="$1"
+  local binary version
+
+  binary="$(sc_helper_dotversions_binary "${package}")"
+
+  if [ -n "${binary}" ]; then
+    version="$(sc_helper_dotversions_version "${package}" "${binary}")"
+  else
+    version="-"
+  fi
+
+  printf "| %-24s | %-20s |\n" "${package}" "${version}"
 }
 
 sc_helper_dotversions() {
   local binaries_dir="${1:-${HOME}/binaries}"
-  local package_dir package binary version
+  local package_dir package tmp_dir row_file index pids pid status
 
   if [ ! -d "${binaries_dir}" ]; then
     printf "Missing binaries directory: %s\n" "${binaries_dir}" >&2
@@ -781,16 +873,29 @@ sc_helper_dotversions() {
   printf "| %-24s | %-20s |\n" "TOOL" "VERSION"
   printf "| %-24s | %-20s |\n" "------------------------" "--------------------"
 
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotversions.XXXXXX")" || return 1
+  index=0
+  pids=""
+  status=0
+
   while IFS= read -r package_dir; do
     package="${package_dir##*/}"
-    binary="$(sc_helper_dotversions_binary "${package}")"
+    row_file="${tmp_dir}/$(printf "%05d" "${index}").row"
 
-    if [ -n "${binary}" ]; then
-      version="$(sc_helper_dotversions_version "${package}" "${binary}")"
-    else
-      version="-"
-    fi
-
-    printf "| %-24s | %-20s |\n" "${package}" "${version}"
+    sc_helper_dotversions_row "${package}" >"${row_file}" &
+    pids="${pids} $!"
+    index=$((index + 1))
   done < <(find -L "${binaries_dir}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+
+  for pid in ${pids}; do
+    wait "${pid}" || status=1
+  done
+
+  for row_file in "${tmp_dir}"/*.row; do
+    [ -f "${row_file}" ] || continue
+    cat "${row_file}"
+  done
+
+  command rm -rf "${tmp_dir}"
+  return "${status}"
 }

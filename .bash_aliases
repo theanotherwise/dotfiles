@@ -46,7 +46,8 @@ alias kcontainers='sc_helper_kube_containers'
 
 
 
-alias helm-unittest=untt
+alias helm-unittest='sc_helper_helm_unittest'
+alias untt='sc_helper_helm_unittest'
 
 
 
