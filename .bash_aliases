@@ -220,7 +220,7 @@ alias rg='rg --no-filename --no-line-number --no-ignore'
 alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt" -o /dev/null -s -L'
 alias tcpcheck='sc_helper_tcp_linux_check'
 
-alias reload='sc_helper_reload'
+alias dotreload='sc_helper_dotreload'
 alias dotsetup='sc_helper_dotsetup'
 alias dotflush='sc_helper_dotflush'
 alias dotcache='sc_helper_dotcache'

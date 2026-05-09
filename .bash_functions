@@ -223,7 +223,7 @@ sc_helper_gitconfig() {
   git config --file "${identity_file}" --get-regexp '^user\.(name|email)$'
 }
 
-sc_helper_reload() {
+sc_helper_dotreload() {
   source "${HOME}/.bash_profile"
 }
 
