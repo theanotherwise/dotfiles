@@ -178,6 +178,87 @@ sc_helper_git_tag_push() {
   fi
 }
 
+sc_helper_gitconfig() {
+  local identity_file="${HOME}/.gitconfig.identity"
+
+  case "${1:-}" in
+    priv)
+      git config --file "${identity_file}" user.name "Mateusz Adam Katana"
+      git config --file "${identity_file}" user.email "mateusz.adam.katana@gmail.com"
+      ;;
+    silky)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz.katana@silkycoders.com"
+      ;;
+    *)
+      echo "Usage: gitconfig {priv|silky}" >&2
+      return 2
+      ;;
+  esac
+
+  git config --file "${identity_file}" --get-regexp '^user\.(name|email)$'
+}
+
+sc_helper_reload() {
+  source "${HOME}/.bash_profile"
+}
+
+sc_helper_dotsetup() {
+  bash "${HOME}/.dotfiles"
+}
+
+sc_helper_dotfiles_remove_tree_file_by_file() {
+  local target="$1"
+  local entry restore_nullglob restore_dotglob
+
+  [ -e "${target}" ] || return 0
+
+  if [ -d "${target}" ] && [ ! -L "${target}" ]; then
+    restore_nullglob="$(shopt -p nullglob)"
+    restore_dotglob="$(shopt -p dotglob)"
+    shopt -s nullglob dotglob
+
+    for entry in "${target}"/*; do
+      sc_helper_dotfiles_remove_tree_file_by_file "${entry}"
+    done
+
+    eval "${restore_nullglob}"
+    eval "${restore_dotglob}"
+
+    command rmdir -- "${target}" 2>/dev/null || true
+  else
+    command rm -f -- "${target}"
+  fi
+}
+
+sc_helper_dotflush() {
+  # Completion cache used by shell startup.
+  sc_helper_dotfiles_remove_tree_file_by_file "${HOME}/.dotfiles.cache"
+
+  # Best-effort cleanup of stale installer temp directories.
+  local -a _dotfiles_tmp
+  local _tmp_dir _restore_nullglob
+  _restore_nullglob="$(shopt -p nullglob)"
+  shopt -s nullglob
+  _dotfiles_tmp=(/tmp/dotfiles-*)
+  eval "${_restore_nullglob}"
+
+  for _tmp_dir in "${_dotfiles_tmp[@]}"; do
+    [[ "${_tmp_dir}" == /tmp/dotfiles-* ]] || continue
+    sc_helper_dotfiles_remove_tree_file_by_file "${_tmp_dir}"
+  done
+}
+
+sc_helper_dotcache() {
+  sc_helper_dotflush
+
+  if [ -f "${HOME}/.bash_completion" ]; then
+    unset SC_BASH_COMPLETION_LOADED_PID
+    unset SC_BASH_COMPLETION_LOADED
+    . "${HOME}/.bash_completion"
+  fi
+}
+
 sc_helper_pod_status_breakdown() {
   local scope="$1"
   local statuses

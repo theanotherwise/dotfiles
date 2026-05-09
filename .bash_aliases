@@ -131,6 +131,8 @@ alias git-log='bash -c '"'"'
 # Git - Status
 alias git-status="git status -vvv --long"
 
+alias gitconfig='sc_helper_gitconfig'
+
 # Git - Ref
 alias git-ref='git show-ref --tags --heads \
   | sed -E "s#refs/heads/#branch #; s#refs/tags/#tag    #;" \
@@ -218,69 +220,7 @@ alias rg='rg --no-filename --no-line-number --no-ignore'
 alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt" -o /dev/null -s -L'
 alias tcpcheck='sc_helper_tcp_linux_check'
 
-
-
-
-
-
-# function required (alias too limited for this)
-reload() {
-  source "${HOME}/.bash_profile"
-}
-
-dotsetup() {
-  bash "${HOME}/.dotfiles"
-}
-
-_dotfiles_remove_tree_file_by_file() {
-  local target="$1"
-  local entry restore_nullglob restore_dotglob
-
-  [ -e "${target}" ] || return 0
-
-  if [ -d "${target}" ] && [ ! -L "${target}" ]; then
-    restore_nullglob="$(shopt -p nullglob)"
-    restore_dotglob="$(shopt -p dotglob)"
-    shopt -s nullglob dotglob
-
-    for entry in "${target}"/*; do
-      _dotfiles_remove_tree_file_by_file "${entry}"
-    done
-
-    eval "${restore_nullglob}"
-    eval "${restore_dotglob}"
-
-    command rmdir -- "${target}" 2>/dev/null || true
-  else
-    command rm -f -- "${target}"
-  fi
-}
-
-dotflush() {
-  # Completion cache used by shell startup.
-  _dotfiles_remove_tree_file_by_file "${HOME}/.dotfiles.cache"
-
-  # Best-effort cleanup of stale installer temp directories.
-  local -a _dotfiles_tmp
-  local _tmp_dir _restore_nullglob
-  _restore_nullglob="$(shopt -p nullglob)"
-  shopt -s nullglob
-  _dotfiles_tmp=(/tmp/dotfiles-*)
-  eval "${_restore_nullglob}"
-
-  for _tmp_dir in "${_dotfiles_tmp[@]}"; do
-    [[ "${_tmp_dir}" == /tmp/dotfiles-* ]] || continue
-    _dotfiles_remove_tree_file_by_file "${_tmp_dir}"
-  done
-}
-
-dotcache() {
-  dotflush
-
-  if [ -f "${HOME}/.bash_completion" ]; then
-    unset SC_BASH_COMPLETION_LOADED_PID
-    unset SC_BASH_COMPLETION_LOADED
-    . "${HOME}/.bash_completion"
-  fi
-}
-
+alias reload='sc_helper_reload'
+alias dotsetup='sc_helper_dotsetup'
+alias dotflush='sc_helper_dotflush'
+alias dotcache='sc_helper_dotcache'
