@@ -12,5 +12,6 @@
 !.bash_aliases
 !.bash_completion
 !.bash_functions
+!.bash_init
 !.bash_profile
 !.bashrc
