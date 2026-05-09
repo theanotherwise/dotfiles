@@ -116,6 +116,11 @@ sc_helper_tcp_linux_check(){
   timeout 5 bash -c "(echo > /dev/tcp/${DEST_NAME}/${DEST_PORT}) >/dev/null 2>&1 && echo UP || echo DOWN" || echo TIMEOUT
 }
 
+sc_helper_akamai_staging() {
+  local host="${1:-www.reserved.com}"
+  nslookup "${host}.edgekey-staging.net" | awk '/^Address: / && $2 !~ /#/ { print $2; exit }'
+}
+
 sc_helper_kube_secret() {
   if [[ "$1" == "-n" ]]; then
     ns=$2
@@ -410,7 +415,7 @@ sc_helper_kube() {
   sc_helper_kube_summary
 }
 
-po() {
+sc_helper_po() {
   case "$1" in
     get|"")
       sc_helper_context_info
@@ -430,7 +435,7 @@ sc_helper_context_get() {
   sc_helper_context_info
 }
 
-zseed() {
+sc_helper_zseed() {
   if ! command -v zoxide >/dev/null 2>&1; then
     echo "zoxide not found" 1>&2
     return 127
@@ -459,7 +464,22 @@ zseed() {
       done
 }
 
-_sc_zoxide_z_completion() {
+sc_helper_zoxide_init() {
+  command -v zoxide >/dev/null 2>&1 || return 0
+
+  local zoxide_excludes
+  zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**"
+
+  case ":${_ZO_EXCLUDE_DIRS:-}:" in
+    *":${zoxide_excludes}:"*) ;;
+    *) export _ZO_EXCLUDE_DIRS="${_ZO_EXCLUDE_DIRS:+${_ZO_EXCLUDE_DIRS}:}${zoxide_excludes}" ;;
+  esac
+
+  eval "$(zoxide init bash)"
+  declare -F sc_helper_zoxide_z_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_z_completion -o filenames z
+}
+
+sc_helper_zoxide_z_completion() {
   command -v zoxide >/dev/null 2>&1 || return 0
 
   local cur path name candidate

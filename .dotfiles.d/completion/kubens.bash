@@ -1,4 +1,4 @@
-_kube_namespaces()
+sc_helper_kube_namespaces_completion()
 {
   local curr_arg;
   curr_arg=${COMP_WORDS[COMP_CWORD]}

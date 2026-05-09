@@ -1,4 +1,4 @@
-_findnamespace(){
+sc_helper_kubetail_findnamespace(){
     local next="0"
     local namespace="$KUBETAIL_NAMESPACE";
     for wo in "${COMP_WORDS[@]}"
@@ -19,7 +19,7 @@ _findnamespace(){
     fi
 }
 
-_findcontext(){
+sc_helper_kubetail_findcontext(){
     local next="0"
     local context="";
     for wo in "${COMP_WORDS[@]}"
@@ -38,7 +38,7 @@ _findcontext(){
     fi
 }
 
-_kubetail()
+sc_helper_kubetail_completion()
 {
     local curr_arg;
     curr_arg=${COMP_WORDS[COMP_CWORD]}
@@ -49,10 +49,10 @@ _kubetail()
             COMPREPLY=( $(compgen -W "$(kubectl config get-contexts -o=name | awk '{print $1}')" -- $curr_arg ) );
         ;;
         -n|--namespace)
-            COMPREPLY=( $(compgen -W "$(kubectl $(_findcontext) get namespaces -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}' | awk '{print $1}')" -- $curr_arg ) );
+            COMPREPLY=( $(compgen -W "$(kubectl $(sc_helper_kubetail_findcontext) get namespaces -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}' | awk '{print $1}')" -- $curr_arg ) );
         ;;
         *)
-            COMPREPLY=( $(compgen -W "$(kubectl $(_findcontext) get pods $(_findnamespace) -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}' --no-headers | awk '{print $1}')" -- $curr_arg ) );
+            COMPREPLY=( $(compgen -W "$(kubectl $(sc_helper_kubetail_findcontext) get pods $(sc_helper_kubetail_findnamespace) -o=jsonpath='{range .items[*].metadata.name}{@}{"\n"}{end}' --no-headers | awk '{print $1}')" -- $curr_arg ) );
         ;;
     esac
 }

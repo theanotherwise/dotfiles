@@ -85,7 +85,7 @@ if [ -f "${HOME}/.dotfiles.d/completion/kubetail.bash" ]; then
   . "${HOME}/.dotfiles.d/completion/kubetail.bash"
 fi
 
-_sc_helper_kcontainers_completion() {
+sc_helper_kcontainers_completion() {
   local cur prev ns pods namespaces
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
@@ -94,8 +94,8 @@ _sc_helper_kcontainers_completion() {
   command -v kubectl >/dev/null 2>&1 || return 0
 
   if [[ "${prev}" == "-n" ]]; then
-    if declare -F _kube_namespaces >/dev/null 2>&1; then
-      _kube_namespaces
+    if declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1; then
+      sc_helper_kube_namespaces_completion
       return 0
     fi
 
@@ -132,14 +132,14 @@ _sc_helper_kcontainers_completion() {
 }
 
 declare -F __start_kubectl >/dev/null 2>&1 && complete -o nospace -F __start_kubectl k
-declare -F _kube_contexts >/dev/null 2>&1 && complete -o nospace -F _kube_contexts kubectx kctx
-declare -F _kube_namespaces >/dev/null 2>&1 && complete -o nospace -F _kube_namespaces kubens kns
+declare -F sc_helper_kube_contexts_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kube_contexts_completion kubectx kctx
+declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kube_namespaces_completion kubens kns
 declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
-declare -F _kubetail >/dev/null 2>&1 && complete -o nospace -F _kubetail kubetail kt
+declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kubetail_completion kubetail kt
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
 declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
 declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
-complete -o nospace -F _sc_helper_kcontainers_completion kcontainers
+complete -o nospace -F sc_helper_kcontainers_completion kcontainers
 declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan
 
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" terraform

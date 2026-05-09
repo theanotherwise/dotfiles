@@ -1,4 +1,4 @@
-_kube_contexts()
+sc_helper_kube_contexts_completion()
 {
   local curr_arg;
   curr_arg=${COMP_WORDS[COMP_CWORD]}

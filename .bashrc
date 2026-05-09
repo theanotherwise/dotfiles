@@ -33,27 +33,10 @@ if [ -f "${HOME}/.bash_adhoc_aliases" ]; then
   . "${HOME}/.bash_adhoc_aliases"
 fi
 
-akamai_staging() {
-  local host="${1:-www.reserved.com}"
-  nslookup "${host}.edgekey-staging.net" | awk '/^Address: / && $2 !~ /#/ { print $2; exit }'
-}
-
 export PS1="\[\e[1;34m\]\$(sc_helper_bashrc_kube)\[\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]\$(sc_helper_bashrc_cursor) \[\e[33m\]\$(sc_helper_bashrc_branch)\[\e[m\]"
 export HISTSIZE="10000"
 export HISTFILESIZE="10000"
 export HISTTIMEFORMAT="%Y-%m-%d %T "
 export EDITOR="vim"
 
-# No header on Enter; kube context shown on the right in PS1 as before
-
-if command -v zoxide >/dev/null 2>&1; then
-  _zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**"
-  case ":${_ZO_EXCLUDE_DIRS:-}:" in
-    *":${_zoxide_excludes}:"*) ;;
-    *) export _ZO_EXCLUDE_DIRS="${_ZO_EXCLUDE_DIRS:+${_ZO_EXCLUDE_DIRS}:}${_zoxide_excludes}" ;;
-  esac
-  unset _zoxide_excludes
-
-  eval "$(zoxide init bash)"
-  declare -F _sc_zoxide_z_completion >/dev/null 2>&1 && complete -F _sc_zoxide_z_completion -o filenames z
-fi
+sc_helper_zoxide_init
