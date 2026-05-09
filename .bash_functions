@@ -1075,61 +1075,14 @@ sc_helper_dotversions_print_row() {
   printf "%s\t%s\t%s\t%s\t%s\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
 }
 
-sc_helper_dotversions_wrap_text() {
-  local width="$1"
-  local text="$2"
-
-  if [ -z "${text}" ]; then
-    printf "\n"
-    return 0
-  fi
-
-  awk -v width="${width}" -v text="${text}" '
-    BEGIN {
-      n = split(text, words, /[[:space:]]+/)
-      line = ""
-
-      for (i = 1; i <= n; i++) {
-        word = words[i]
-        if (word == "") {
-          continue
-        }
-
-        if (line == "") {
-          line = word
-        } else if (length(line) + 1 + length(word) <= width) {
-          line = line " " word
-        } else {
-          print line
-          line = word
-        }
-      }
-
-      if (line != "") {
-        print line
-      }
-    }
-  '
-}
-
 sc_helper_dotversions_print_table_row() {
   local category="$1"
   local tool="$2"
   local version="$3"
   local description="$4"
   local example="$5"
-  local description_line first
 
-  first=1
-
-  while IFS= read -r description_line; do
-    if [ "${first}" -eq 1 ]; then
-      printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "${category}" "${tool}" "${version}" "${description_line}" "${example}"
-      first=0
-    else
-      printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "" "" "" "${description_line}" ""
-    fi
-  done < <(sc_helper_dotversions_wrap_text 32 "${description}")
+  printf "| %-20s | %-24s | %-20s | %-48s | %-40s |\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
 }
 
 sc_helper_dotversions_print_grouped_rows() {
@@ -1286,8 +1239,8 @@ sc_helper_dotversions() {
   )
   status=$?
 
-  printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "CATEGORY" "TOOL" "VERSION" "DESCRIPTION" "EXAMPLE"
-  printf "| %-20s | %-24s | %-20s | %-32s | %-40s |\n" "--------------------" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
+  printf "| %-20s | %-24s | %-20s | %-48s | %-40s |\n" "CATEGORY" "TOOL" "VERSION" "DESCRIPTION" "EXAMPLE"
+  printf "| %-20s | %-24s | %-20s | %-48s | %-40s |\n" "--------------------" "------------------------" "--------------------" "------------------------------------------------" "----------------------------------------"
 
   sc_helper_dotversions_print_grouped_rows "${tmp_dir}"
 
