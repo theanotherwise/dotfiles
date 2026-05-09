@@ -635,3 +635,162 @@ sc_helper_versions() {
     "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
   printf "\n"
 }
+
+sc_helper_dotversions_binary() {
+  local package="$1"
+  local bin_dir="${HOME}/binaries/${package}/latest/bin"
+  local candidate path name
+
+  [ -d "${bin_dir}" ] || return 1
+
+  case "${package}" in
+    helm-unittest)
+      candidate="untt"
+      ;;
+    kube-popeye)
+      candidate="popeye"
+      ;;
+    okd)
+      path="$(find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'oc*' 2>/dev/null | sort | tail -1)"
+      [ -n "${path}" ] && printf "%s\n" "${path}"
+      return 0
+      ;;
+    opentofu|tofu)
+      candidate="tofu"
+      ;;
+    ripgrep)
+      candidate="rg"
+      ;;
+    *)
+      candidate="${package}"
+      ;;
+  esac
+
+  if [ -x "${bin_dir}/${candidate}" ] && [ ! -d "${bin_dir}/${candidate}" ]; then
+    printf "%s\n" "${bin_dir}/${candidate}"
+    return 0
+  fi
+
+  while IFS= read -r path; do
+    name="${path##*/}"
+    case "${name}" in
+      .*|*.1|*.bat|*.cmd|*.ico|*.js|*.md|*.txt|*.yaml|*.yml|*_completion|CHANGELOG*|COPYING|LICENSE*|README*|UNLICENSE|m2.conf|plugin.yaml)
+        continue
+        ;;
+    esac
+
+    printf "%s\n" "${path}"
+    return 0
+  done < <(find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 2>/dev/null | sort)
+
+  return 1
+}
+
+sc_helper_dotversions_exec() {
+  local timeout_cmd
+
+  if timeout_cmd="$(type -P timeout 2>/dev/null)"; then
+    "${timeout_cmd}" 5 "$@"
+  elif timeout_cmd="$(type -P gtimeout 2>/dev/null)"; then
+    "${timeout_cmd}" 5 "$@"
+  else
+    "$@"
+  fi
+}
+
+sc_helper_dotversions_version() {
+  local package="$1"
+  local binary="$2"
+  local variants variant output status version
+
+  case "${package}" in
+    docker-compose)
+      variants="version
+--version"
+      ;;
+    go|opentofu|terraform|tofu)
+      variants="version
+--version"
+      ;;
+    groovy)
+      variants="--version
+-version"
+      ;;
+    helm)
+      variants="version --short
+version
+--version"
+      ;;
+    kubectl|okd)
+      variants="version --client --short
+version --client
+version
+--version"
+      ;;
+    kustomize)
+      variants="version --short
+version
+--version"
+      ;;
+    terragrunt)
+      variants="--version
+version"
+      ;;
+    *)
+      variants="--version
+version
+-v
+-version
+-V"
+      ;;
+  esac
+
+  while IFS= read -r variant; do
+    [ -n "${variant}" ] || continue
+    # Intentionally split simple version-flag variants into separate arguments.
+    output="$(sc_helper_dotversions_exec "${binary}" ${variant} 2>&1)"
+    status=$?
+    [ "${status}" -eq 0 ] || continue
+    output="$(printf "%s\n" "${output}" | sed '/^[[:space:]]*$/d' | sed -n '1,20p')"
+    [ -n "${output}" ] || continue
+
+    if [ "${package}" = "go" ]; then
+      version="$(printf "%s\n" "${output}" | grep -oE 'go[0-9]+([.][0-9A-Za-z_-]+)+' | head -1 | sed 's/^go//')"
+    else
+      version="$(printf "%s\n" "${output}" | grep -oE 'v?[0-9]+([.][0-9A-Za-z_-]+)+' | head -1 | sed 's/^v//')"
+    fi
+
+    if [ -n "${version}" ]; then
+      printf "%s\n" "${version}"
+      return 0
+    fi
+  done <<< "${variants}"
+
+  printf "%s\n" "-"
+}
+
+sc_helper_dotversions() {
+  local binaries_dir="${1:-${HOME}/binaries}"
+  local package_dir package binary version
+
+  if [ ! -d "${binaries_dir}" ]; then
+    printf "Missing binaries directory: %s\n" "${binaries_dir}" >&2
+    return 1
+  fi
+
+  printf "| %-24s | %-20s |\n" "TOOL" "VERSION"
+  printf "| %-24s | %-20s |\n" "------------------------" "--------------------"
+
+  while IFS= read -r package_dir; do
+    package="${package_dir##*/}"
+    binary="$(sc_helper_dotversions_binary "${package}")"
+
+    if [ -n "${binary}" ]; then
+      version="$(sc_helper_dotversions_version "${package}" "${binary}")"
+    else
+      version="-"
+    fi
+
+    printf "| %-24s | %-20s |\n" "${package}" "${version}"
+  done < <(find -L "${binaries_dir}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
+}
