@@ -325,6 +325,26 @@ sc_helper_context_get() {
   sc_helper_context_info
 }
 
+zseed() {
+  if ! command -v zoxide >/dev/null 2>&1; then
+    echo "zoxide not found" 1>&2
+    return 127
+  fi
+
+  local root="${1:-${HOME}/projects}"
+  if [ ! -d "${root}" ]; then
+    echo "Directory not found: ${root}" 1>&2
+    return 1
+  fi
+
+  find "${root}" \
+    \( -name .git -o -name node_modules -o -name .terraform -o -name .terragrunt-cache -o -name .venv -o -name __pycache__ \) -prune \
+    -o -type d -print0 \
+    | while IFS= read -r -d '' dir; do
+        zoxide add "${dir}"
+      done
+}
+
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
@@ -422,4 +442,3 @@ sc_helper_versions() {
     "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
   printf "\n"
 }
-
