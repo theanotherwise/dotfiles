@@ -495,6 +495,186 @@ binaries:
   #
   #
   ###########################################################################
+  #    Additional CLI tools
+  ###########################################################################
+  #
+  #
+  #
+  - name: shellcheck
+    url: https://github.com/koalaman/shellcheck/releases/download/v{version}/shellcheck-v{version}.darwin.aarch64.tar.xz
+    type: tar.xz
+    override: False
+    strip: True
+    inBin: False
+    latest: 0.11.0
+    versions:
+      - version: 0.11.0
+  - name: shfmt
+    url: https://github.com/mvdan/sh/releases/download/v{version}/shfmt_v{version}_darwin_arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 3.13.1
+    versions:
+      - version: 3.13.1
+  - name: kubeconform
+    url: https://github.com/yannh/kubeconform/releases/download/v{version}/kubeconform-darwin-arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.7.0
+    versions:
+      - version: 0.7.0
+  - name: stern
+    url: https://github.com/stern/stern/releases/download/v{version}/stern_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.34.0
+    versions:
+      - version: 1.34.0
+  - name: kubectl-neat
+    url: https://github.com/itaysk/kubectl-neat/releases/download/v{version}/kubectl-neat_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 2.0.4
+    versions:
+      - version: 2.0.4
+  - name: trivy
+    url: https://github.com/aquasecurity/trivy/releases/download/v{version}/trivy_{version}_macOS-ARM64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.70.0
+    versions:
+      - version: 0.70.0
+  - name: gh
+    url: https://github.com/cli/cli/releases/download/v{version}/gh_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: True
+    inBin: True
+    latest: 2.92.0
+    versions:
+      - version: 2.92.0
+  - name: actionlint
+    url: https://github.com/rhysd/actionlint/releases/download/v{version}/actionlint_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.7.12
+    versions:
+      - version: 1.7.12
+  - name: fzf
+    url: https://github.com/junegunn/fzf/releases/download/v{version}/fzf-{version}-darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.72.0
+    versions:
+      - version: 0.72.0
+  - name: fd
+    url: https://github.com/sharkdp/fd/releases/download/v{version}/fd-v{version}-aarch64-apple-darwin.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 10.4.2
+    versions:
+      - version: 10.4.2
+  - name: bat
+    url: https://github.com/sharkdp/bat/releases/download/v{version}/bat-v{version}-aarch64-apple-darwin.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 0.26.1
+    versions:
+      - version: 0.26.1
+  - name: delta
+    url: https://github.com/dandavison/delta/releases/download/{version}/delta-{version}-aarch64-apple-darwin.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 0.19.2
+    versions:
+      - version: 0.19.2
+  - name: zoxide
+    url: https://github.com/ajeetdsouza/zoxide/releases/download/v{version}/zoxide-{version}-aarch64-apple-darwin.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.9.9
+    versions:
+      - version: 0.9.9
+  - name: sops
+    url: https://github.com/getsops/sops/releases/download/v{version}/sops-v{version}.darwin.arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 3.13.0
+    versions:
+      - version: 3.13.0
+  - name: age
+    url: https://github.com/FiloSottile/age/releases/download/v{version}/age-v{version}-darwin-arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 1.3.1
+    versions:
+      - version: 1.3.1
+  - name: conftest
+    url: https://github.com/open-policy-agent/conftest/releases/download/v{version}/conftest_{version}_Darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.68.2
+    versions:
+      - version: 0.68.2
+  - name: syft
+    url: https://github.com/anchore/syft/releases/download/v{version}/syft_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.44.0
+    versions:
+      - version: 1.44.0
+  - name: grype
+    url: https://github.com/anchore/grype/releases/download/v{version}/grype_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 0.112.0
+    versions:
+      - version: 0.112.0
+  - name: cosign
+    url: https://github.com/sigstore/cosign/releases/download/v{version}/cosign-darwin-arm64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 3.0.6
+    versions:
+      - version: 3.0.6
+  #
+  #
+  #
+  ###########################################################################
   #    _    _       _
   #   | |  | |     | |
   #   | |  | | ___ | |  ___  ___  ___

@@ -4,9 +4,11 @@ fi
 
 for tool in go groovy node yarn pnpm mvn yq jq docker-compose subfinder \
             kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
-            kubectl kubectx kubens kubetail kustomize tofu terraform \
-            terragrunt terrascan helm helmify helmfile rtfmt tfsec pike helm-unittest \
-            okd upx ripgrep oras k6 github-mcp-server; do
+            kubectl kubectx kubens kubetail kustomize kubeconform stern kubectl-neat \
+            tofu terraform terragrunt terrascan helm helmify helmfile rtfmt tfsec pike \
+            helm-unittest okd upx ripgrep oras k6 github-mcp-server shellcheck shfmt \
+            trivy gh actionlint fzf fd bat delta zoxide sops age conftest syft grype \
+            cosign; do
   PATH="${HOME}/binaries/${tool}/latest/bin:${PATH}"
 done
 
