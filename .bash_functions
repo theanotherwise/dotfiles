@@ -190,8 +190,28 @@ sc_helper_gitconfig() {
       git config --file "${identity_file}" user.name "Mateusz Katana"
       git config --file "${identity_file}" user.email "mateusz.katana@silkycoders.com"
       ;;
+    irgit)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz.katana@irgit.pl"
+      ;;
+    stonex)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz.katana@stonex.com"
+      ;;
+    citi)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz.katana@citi.com"
+      ;;
+    sc)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz.katana@seems.cloud"
+      ;;
+    psem)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz.katana@presemantic.com"
+      ;;
     *)
-      echo "Usage: gitconfig {priv|silky}" >&2
+      echo "Usage: gitconfig {priv|silky|irgit|stonex|citi|sc|psem}" >&2
       return 2
       ;;
   esac
