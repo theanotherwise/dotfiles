@@ -45,3 +45,7 @@ export HISTTIMEFORMAT="%Y-%m-%d %T "
 export EDITOR="vim"
 
 # No header on Enter; kube context shown on the right in PS1 as before
+
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init bash)"
+fi
