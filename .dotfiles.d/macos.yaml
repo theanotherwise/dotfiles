@@ -169,6 +169,105 @@ binaries:
     latest: 2.14.0
     versions:
       - version: 2.14.0
+  - name: httpx
+    url: https://github.com/projectdiscovery/httpx/releases/download/v{version}/httpx_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.9.0
+    versions:
+      - version: 1.9.0
+  - name: dnsx
+    url: https://github.com/projectdiscovery/dnsx/releases/download/v{version}/dnsx_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.2.3
+    versions:
+      - version: 1.2.3
+  - name: naabu
+    url: https://github.com/projectdiscovery/naabu/releases/download/v{version}/naabu_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 2.6.1
+    versions:
+      - version: 2.6.1
+  - name: katana
+    url: https://github.com/projectdiscovery/katana/releases/download/v{version}/katana_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.6.1
+    versions:
+      - version: 1.6.1
+  - name: gau
+    url: https://github.com/lc/gau/releases/download/v{version}/gau_{version}_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 2.2.4
+    versions:
+      - version: 2.2.4
+  - name: asnmap
+    url: https://github.com/projectdiscovery/asnmap/releases/download/v{version}/asnmap_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.1.1
+    versions:
+      - version: 1.1.1
+  - name: mapcidr
+    url: https://github.com/projectdiscovery/mapcidr/releases/download/v{version}/mapcidr_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.1.97
+    versions:
+      - version: 1.1.97
+  - name: tlsx
+    url: https://github.com/projectdiscovery/tlsx/releases/download/v{version}/tlsx_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 1.2.2
+    versions:
+      - version: 1.2.2
+  - name: nuclei
+    url: https://github.com/projectdiscovery/nuclei/releases/download/v{version}/nuclei_{version}_macOS_arm64.zip
+    type: zip
+    override: False
+    strip: False
+    inBin: False
+    latest: 3.8.0
+    versions:
+      - version: 3.8.0
+  - name: amass
+    url: https://github.com/owasp-amass/amass/releases/download/v{version}/amass_darwin_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 5.1.1
+    versions:
+      - version: 5.1.1
+  - name: ffuf
+    url: https://github.com/ffuf/ffuf/releases/download/v{version}/ffuf_{version}_macOS_arm64.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    latest: 2.1.0
+    versions:
+      - version: 2.1.0
   #
   #
   #
