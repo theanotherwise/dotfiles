@@ -210,8 +210,12 @@ sc_helper_gitconfig() {
       git config --file "${identity_file}" user.name "Mateusz Katana"
       git config --file "${identity_file}" user.email "mateusz.katana@presemantic.com"
       ;;
+    tvn)
+      git config --file "${identity_file}" user.name "Mateusz Katana"
+      git config --file "${identity_file}" user.email "mateusz_katana@tvn.pl"
+      ;;
     *)
-      echo "Usage: gitconfig {priv|silky|irgit|stonex|citi|sc|psem}" >&2
+      echo "Usage: gitconfig {priv|silky|irgit|stonex|citi|sc|psem|tvn}" >&2
       return 2
       ;;
   esac
