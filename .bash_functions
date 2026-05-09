@@ -664,6 +664,15 @@ sc_helper_helm_unittest() {
     return 127
   fi
 
+  if [ "$#" -eq 1 ]; then
+    case "${1}" in
+      --version|version)
+        sc_helper_dotversions_version helm-unittest "${binary}"
+        return 0
+        ;;
+    esac
+  fi
+
   "${binary}" "$@"
 }
 
@@ -759,10 +768,49 @@ sc_helper_dotversions_exec() {
   fi
 }
 
+sc_helper_dotversions_embedded_version() {
+  local binary="$1"
+  local version
+
+  command -v strings >/dev/null 2>&1 || return 1
+
+  version="$(
+    strings "${binary}" 2>/dev/null \
+      | sed -nE 's/.*build[.]version=([0-9][0-9A-Za-z_.-]*).*/\1/p' \
+      | head -1
+  )"
+  if printf "%s\n" "${version}" | grep -Eq '^[0-9]+([.][0-9A-Za-z_-]+)*$'; then
+    printf "%s\n" "${version}"
+    return 0
+  fi
+
+  version="$(
+    strings "${binary}" 2>/dev/null \
+      | grep -E '^[0-9]+([.][0-9A-Za-z_-]+)+$' \
+      | head -1
+  )"
+  if [ -n "${version}" ]; then
+    printf "%s\n" "${version}"
+    return 0
+  fi
+
+  return 1
+}
+
 sc_helper_dotversions_version() {
   local package="$1"
   local binary="$2"
   local variants variant output status version name
+
+  if [ "${package}" = "helm-unittest" ]; then
+    version="$(sc_helper_dotversions_embedded_version "${binary}")"
+    if [ -n "${version}" ]; then
+      printf "%s\n" "${version}"
+    else
+      printf "%s\n" "-"
+    fi
+    return 0
+  fi
 
   case "${package}" in
     docker-compose)
@@ -781,9 +829,6 @@ sc_helper_dotversions_version() {
       variants="version --short
 version
 --version"
-      ;;
-    helm-unittest)
-      variants="--version"
       ;;
     kubectl|okd)
       variants="version --client --short
