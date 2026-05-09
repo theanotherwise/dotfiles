@@ -936,6 +936,57 @@ sc_helper_dotversions_description() {
   esac
 }
 
+sc_helper_dotversions_category() {
+  local tool="$1"
+
+  case "${tool}" in
+    containerd|docker\ client|docker\ compose|docker\ engine|docker-init|k3d|oras|runc)
+      printf "%s\n" "Kontenery"
+      ;;
+    argocd|helm|helm-unittest|helmfile|helmify|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl|kubectl-neat|kubectx|kubens|kubent|kubespy|kubetail|kustomize|oc[0-9]*|okd|stern)
+      printf "%s\n" "Kubernetes"
+      ;;
+    opentofu|pike|terraform|terragrunt|terrascan|tflint|tfsec|tofu)
+      printf "%s\n" "IaC"
+      ;;
+    age|conftest|cosign|grype|sops|syft|trivy)
+      printf "%s\n" "Bezpieczenstwo"
+      ;;
+    actionlint|gh|github-mcp-server)
+      printf "%s\n" "GitHub"
+      ;;
+    go|groovy|mvn|node|pnpm|uv|yarn)
+      printf "%s\n" "Jezyki i build"
+      ;;
+    bat|delta|fd|fzf|jq|ripgrep|rg|shellcheck|shfmt|yq|zoxide)
+      printf "%s\n" "Shell i terminal"
+      ;;
+    k6)
+      printf "%s\n" "Testy i obciazenie"
+      ;;
+    subfinder)
+      printf "%s\n" "Siec i recon"
+      ;;
+    *)
+      printf "%s\n" "Inne"
+      ;;
+  esac
+}
+
+sc_helper_dotversions_category_order() {
+  printf "%s\n" \
+    "Kontenery" \
+    "Kubernetes" \
+    "IaC" \
+    "Bezpieczenstwo" \
+    "GitHub" \
+    "Jezyki i build" \
+    "Shell i terminal" \
+    "Testy i obciazenie" \
+    "Siec i recon" \
+    "Inne"
+}
+
 sc_helper_dotversions_example() {
   local tool="$1"
 
@@ -1012,15 +1063,48 @@ sc_helper_dotversions_example() {
 sc_helper_dotversions_print_row() {
   local tool="$1"
   local version="$2"
-  local description example
+  local category description example
 
   [ -n "${version}" ] || version="-"
   version="${version#v}"
 
+  category="$(sc_helper_dotversions_category "${tool}")"
   description="$(sc_helper_dotversions_description "${tool}")"
   example="$(sc_helper_dotversions_example "${tool}")"
 
-  printf "| %-24s | %-20s | %-32s | %-40s |\n" "${tool}" "${version}" "${description}" "${example}"
+  printf "%s\t%s\t%s\t%s\t%s\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
+}
+
+sc_helper_dotversions_print_table_row() {
+  local category="$1"
+  local tool="$2"
+  local version="$3"
+  local description="$4"
+  local example="$5"
+
+  printf "| %-18s | %-24s | %-20s | %-32s | %-40s |\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
+}
+
+sc_helper_dotversions_print_grouped_rows() {
+  local rows_dir="$1"
+  local category row_category tool version description example display_category last_category
+
+  last_category=""
+
+  while IFS= read -r category; do
+    while IFS="$(printf "\t")" read -r row_category tool version description example; do
+      [ -n "${row_category}" ] || continue
+      [ "${row_category}" = "${category}" ] || continue
+
+      display_category="${row_category}"
+      if [ "${row_category}" = "${last_category}" ]; then
+        display_category=""
+      fi
+
+      sc_helper_dotversions_print_table_row "${display_category}" "${tool}" "${version}" "${description}" "${example}"
+      last_category="${row_category}"
+    done < <(cat "${rows_dir}"/*.row 2>/dev/null)
+  done < <(sc_helper_dotversions_category_order)
 }
 
 sc_helper_dotversions_docker_rows() {
@@ -1124,15 +1208,11 @@ sc_helper_dotversions() {
     return 1
   fi
 
-  printf "| %-24s | %-20s | %-32s | %-40s |\n" "TOOL" "VERSION" "OPIS" "PRZYKLAD"
-  printf "| %-24s | %-20s | %-32s | %-40s |\n" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
-
-  sc_helper_dotversions_docker_rows
-
   tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotversions.XXXXXX")" || return 1
+  sc_helper_dotversions_docker_rows >"${tmp_dir}/00000.docker.row"
 
   (
-    index=0
+    index=1
     pids=""
     status=0
 
@@ -1159,10 +1239,10 @@ sc_helper_dotversions() {
   )
   status=$?
 
-  for row_file in "${tmp_dir}"/*.row; do
-    [ -f "${row_file}" ] || continue
-    cat "${row_file}"
-  done
+  printf "| %-18s | %-24s | %-20s | %-32s | %-40s |\n" "KATEGORIA" "TOOL" "VERSION" "OPIS" "PRZYKLAD"
+  printf "| %-18s | %-24s | %-20s | %-32s | %-40s |\n" "------------------" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
+
+  sc_helper_dotversions_print_grouped_rows "${tmp_dir}"
 
   command rm -rf "${tmp_dir}"
   return "${status}"
