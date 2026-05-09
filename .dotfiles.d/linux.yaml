@@ -233,6 +233,15 @@ binaries:
     latest: 1.36.0
     versions:
       - version: 1.36.0
+  - name: argocd
+    url: https://github.com/argoproj/argo-cd/releases/download/v{version}/argocd-linux-amd64
+    type: binary
+    override: False
+    strip: None
+    inBin: False
+    latest: 3.4.1
+    versions:
+      - version: 3.4.1
   - name: github-mcp-server
     url: https://github.com/github/github-mcp-server/releases/download/v{version}/github-mcp-server_Linux_x86_64.tar.gz
     type: tar.gz

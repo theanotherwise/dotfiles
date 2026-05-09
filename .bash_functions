@@ -799,6 +799,11 @@ sc_helper_dotversions_version() {
       variants="version
 --version"
       ;;
+    argocd)
+      variants="version --client --short
+version --client
+--version"
+      ;;
     groovy)
       variants="--version
 -version"
@@ -869,15 +874,153 @@ version
   printf "%s\n" "-"
 }
 
+sc_helper_dotversions_description() {
+  local tool="$1"
+
+  case "${tool}" in
+    actionlint) printf "%s\n" "GitHub Actions linter" ;;
+    age) printf "%s\n" "File encryption" ;;
+    argocd) printf "%s\n" "Argo CD CLI" ;;
+    bat) printf "%s\n" "Better cat viewer" ;;
+    conftest) printf "%s\n" "OPA policy tests" ;;
+    cosign) printf "%s\n" "Container signing" ;;
+    delta) printf "%s\n" "Better git diff" ;;
+    docker-compose) printf "%s\n" "Docker Compose CLI" ;;
+    fd) printf "%s\n" "Fast file finder" ;;
+    fzf) printf "%s\n" "Fuzzy finder" ;;
+    gh) printf "%s\n" "GitHub CLI" ;;
+    github-mcp-server) printf "%s\n" "GitHub MCP server" ;;
+    go) printf "%s\n" "Go toolchain" ;;
+    groovy) printf "%s\n" "Groovy runtime" ;;
+    grype) printf "%s\n" "Vulnerability scanner" ;;
+    helm) printf "%s\n" "Helm package manager" ;;
+    helm-unittest) printf "%s\n" "Helm chart tests" ;;
+    helmfile) printf "%s\n" "Helm release orchestration" ;;
+    helmify) printf "%s\n" "Kubernetes to Helm" ;;
+    jq) printf "%s\n" "JSON processor" ;;
+    k3d) printf "%s\n" "Local k3s clusters" ;;
+    k6) printf "%s\n" "Load testing" ;;
+    k9s) printf "%s\n" "Kubernetes TUI" ;;
+    kube-capacity) printf "%s\n" "Cluster resource capacity" ;;
+    kube-linter) printf "%s\n" "Kubernetes manifest lint" ;;
+    kube-popeye|popeye) printf "%s\n" "Kubernetes hygiene scan" ;;
+    kubeconform) printf "%s\n" "Kubernetes schema validation" ;;
+    kubectl) printf "%s\n" "Kubernetes CLI" ;;
+    kubectl-neat) printf "%s\n" "Clean kubectl output" ;;
+    kubectx) printf "%s\n" "Switch kube contexts" ;;
+    kubens) printf "%s\n" "Switch namespaces" ;;
+    kubent) printf "%s\n" "Deprecated API scan" ;;
+    kubespy) printf "%s\n" "Kubernetes rollout watch" ;;
+    kubetail) printf "%s\n" "Tail pod logs" ;;
+    kustomize) printf "%s\n" "Kubernetes overlays" ;;
+    mvn) printf "%s\n" "Maven build tool" ;;
+    node) printf "%s\n" "Node.js runtime" ;;
+    oc[0-9]*) printf "%s\n" "OKD OpenShift CLI" ;;
+    okd) printf "%s\n" "OKD CLI bundle" ;;
+    oras) printf "%s\n" "OCI artifact CLI" ;;
+    pike) printf "%s\n" "Terraform permissions" ;;
+    pnpm) printf "%s\n" "Node package manager" ;;
+    ripgrep|rg) printf "%s\n" "Fast text search" ;;
+    shellcheck) printf "%s\n" "Shell script linter" ;;
+    shfmt) printf "%s\n" "Shell formatter" ;;
+    sops) printf "%s\n" "Encrypted config files" ;;
+    stern) printf "%s\n" "Multi-pod logs" ;;
+    subfinder) printf "%s\n" "Subdomain discovery" ;;
+    syft) printf "%s\n" "SBOM generator" ;;
+    terraform) printf "%s\n" "Infrastructure as code" ;;
+    terragrunt) printf "%s\n" "Terraform wrapper" ;;
+    terrascan) printf "%s\n" "IaC security scan" ;;
+    tflint) printf "%s\n" "Terraform linter" ;;
+    tfsec) printf "%s\n" "Terraform security scan" ;;
+    tofu|opentofu) printf "%s\n" "OpenTofu CLI" ;;
+    trivy) printf "%s\n" "Security scanner" ;;
+    uv) printf "%s\n" "Python package tool" ;;
+    yarn) printf "%s\n" "Node package manager" ;;
+    yq) printf "%s\n" "YAML processor" ;;
+    zoxide) printf "%s\n" "Smart directory jump" ;;
+    *) printf "%s\n" "Local CLI tool" ;;
+  esac
+}
+
+sc_helper_dotversions_example() {
+  local tool="$1"
+
+  case "${tool}" in
+    actionlint) printf "%s\n" "actionlint .github/workflows" ;;
+    age) printf "%s\n" "age -e file.txt" ;;
+    argocd) printf "%s\n" "argocd app list" ;;
+    bat) printf "%s\n" "bat file.txt" ;;
+    conftest) printf "%s\n" "conftest test policy.yaml" ;;
+    cosign) printf "%s\n" "cosign verify image" ;;
+    delta) printf "%s\n" "delta diff.patch" ;;
+    docker-compose) printf "%s\n" "docker-compose up" ;;
+    fd) printf "%s\n" "fd pattern" ;;
+    fzf) printf "%s\n" "fzf" ;;
+    gh) printf "%s\n" "gh repo view" ;;
+    github-mcp-server) printf "%s\n" "github-mcp-server stdio" ;;
+    go) printf "%s\n" "go test ./..." ;;
+    groovy) printf "%s\n" "groovy script.groovy" ;;
+    grype) printf "%s\n" "grype nginx:latest" ;;
+    helm) printf "%s\n" "helm list -A" ;;
+    helm-unittest) printf "%s\n" "helm-unittest charts/app" ;;
+    helmfile) printf "%s\n" "helmfile list" ;;
+    helmify) printf "%s\n" "helmify k8s.yaml" ;;
+    jq) printf "%s\n" "jq . file.json" ;;
+    k3d) printf "%s\n" "k3d cluster list" ;;
+    k6) printf "%s\n" "k6 run test.js" ;;
+    k9s) printf "%s\n" "k9s" ;;
+    kube-capacity) printf "%s\n" "kube-capacity" ;;
+    kube-linter) printf "%s\n" "kube-linter lint manifests" ;;
+    kube-popeye|popeye) printf "%s\n" "popeye" ;;
+    kubeconform) printf "%s\n" "kubeconform manifests" ;;
+    kubectl) printf "%s\n" "kubectl get pods" ;;
+    kubectl-neat) printf "%s\n" "kubectl-neat pod.yaml" ;;
+    kubectx) printf "%s\n" "kubectx prod" ;;
+    kubens) printf "%s\n" "kubens default" ;;
+    kubent) printf "%s\n" "kubent" ;;
+    kubespy) printf "%s\n" "kubespy trace deploy/app" ;;
+    kubetail) printf "%s\n" "kubetail app" ;;
+    kustomize) printf "%s\n" "kustomize build ." ;;
+    mvn) printf "%s\n" "mvn test" ;;
+    node) printf "%s\n" "node app.js" ;;
+    oc[0-9]*) printf "%s\n" "${tool} get pods" ;;
+    okd) printf "%s\n" "oc4.11 get pods" ;;
+    oras) printf "%s\n" "oras repo tags registry/repo" ;;
+    pike) printf "%s\n" "pike scan" ;;
+    pnpm) printf "%s\n" "pnpm test" ;;
+    ripgrep|rg) printf "%s\n" "rg pattern" ;;
+    shellcheck) printf "%s\n" "shellcheck script.sh" ;;
+    shfmt) printf "%s\n" "shfmt -w script.sh" ;;
+    sops) printf "%s\n" "sops file.yaml" ;;
+    stern) printf "%s\n" "stern app -n ns" ;;
+    subfinder) printf "%s\n" "subfinder -d example.com" ;;
+    syft) printf "%s\n" "syft nginx:latest" ;;
+    terraform) printf "%s\n" "terraform plan" ;;
+    terragrunt) printf "%s\n" "terragrunt run plan" ;;
+    terrascan) printf "%s\n" "terrascan scan" ;;
+    tflint) printf "%s\n" "tflint" ;;
+    tfsec) printf "%s\n" "tfsec ." ;;
+    tofu|opentofu) printf "%s\n" "tofu plan" ;;
+    trivy) printf "%s\n" "trivy image nginx:latest" ;;
+    uv) printf "%s\n" "uv run pytest" ;;
+    yarn) printf "%s\n" "yarn test" ;;
+    yq) printf "%s\n" "yq . file.yaml" ;;
+    zoxide) printf "%s\n" "z project" ;;
+    *) printf "%s\n" "${tool} --help" ;;
+  esac
+}
+
 sc_helper_dotversions_row() {
   local package="$1"
-  local binary name version
+  local binary name version description example
 
   if [ "${package}" = "okd" ]; then
     while IFS= read -r binary; do
       name="${binary##*/}"
       version="${name#oc}"
-      printf "| %-24s | %-20s |\n" "${name}" "${version}"
+      description="$(sc_helper_dotversions_description "${name}")"
+      example="$(sc_helper_dotversions_example "${name}")"
+      printf "| %-24s | %-20s | %-32s | %-40s |\n" "${name}" "${version}" "${description}" "${example}"
     done < <(sc_helper_okd_binaries)
     return 0
   fi
@@ -890,7 +1033,10 @@ sc_helper_dotversions_row() {
     version="-"
   fi
 
-  printf "| %-24s | %-20s |\n" "${package}" "${version}"
+  description="$(sc_helper_dotversions_description "${package}")"
+  example="$(sc_helper_dotversions_example "${package}")"
+
+  printf "| %-24s | %-20s | %-32s | %-40s |\n" "${package}" "${version}" "${description}" "${example}"
 }
 
 sc_helper_dotversions() {
@@ -902,8 +1048,8 @@ sc_helper_dotversions() {
     return 1
   fi
 
-  printf "| %-24s | %-20s |\n" "TOOL" "VERSION"
-  printf "| %-24s | %-20s |\n" "------------------------" "--------------------"
+  printf "| %-24s | %-20s | %-32s | %-40s |\n" "TOOL" "VERSION" "OPIS" "PRZYKLAD"
+  printf "| %-24s | %-20s | %-32s | %-40s |\n" "------------------------" "--------------------" "--------------------------------" "----------------------------------------"
 
   tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotversions.XXXXXX")" || return 1
 
