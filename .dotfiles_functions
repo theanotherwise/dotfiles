@@ -369,6 +369,77 @@ ${rows}
 EOF
 }
 
+sc_helper_kube_error_log_sorted_try() {
+  local log_ns="$1"
+  local log_pod="$2"
+  local log_container="$3"
+  local log_mode="$4"
+  local log_tail="$5"
+  local log_type="$6"
+  local log_line log_output log_status log_ts log_msg
+
+  if [ "${log_mode}" = "previous" ]; then
+    if [ -n "${log_tail}" ]; then
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --previous --timestamps --tail="${log_tail}" 2>&1)"
+    else
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --previous --timestamps 2>&1)"
+    fi
+  else
+    if [ -n "${log_tail}" ]; then
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --timestamps --tail="${log_tail}" 2>&1)"
+    else
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --timestamps 2>&1)"
+    fi
+  fi
+  log_status=$?
+
+  [ "${log_status}" -eq 0 ] || return 1
+  case "${log_output}" in
+    "Error from server"*|error:*|*"unable to retrieve container logs"*|*"previous terminated container"*|*"is waiting to start"*)
+      return 1
+      ;;
+  esac
+  [ -n "${log_output}" ] || return 1
+
+  while IFS= read -r log_line; do
+    [ -n "${log_line}" ] || continue
+    log_ts="${log_line%% *}"
+    log_msg="${log_line#* }"
+    [ "${log_msg}" != "${log_line}" ] || log_msg=""
+    log_msg="${log_msg//$'\t'/ }"
+    printf "%s\t%s\t%s\t%s\t%s\n" "${log_ts}" "${log_pod}" "${log_container}" "${log_type}" "${log_msg}"
+  done <<EOF
+${log_output}
+EOF
+}
+
+sc_helper_kube_error_logs_sorted() {
+  local rows="$1"
+  local log_tail="$2"
+  local log_mode="${3:-current}"
+  local log_ns log_pod log_container log_type log_state log_reason log_restarts
+  local log_rows
+
+  log_rows="$(
+    while IFS=$'\t' read -r log_ns log_pod log_container log_type log_state log_reason log_restarts; do
+      [ -n "${log_pod}" ] || continue
+      sc_helper_kube_error_log_sorted_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_type}" || true
+    done <<EOF
+${rows}
+EOF
+  )"
+
+  if [ -z "${log_rows}" ]; then
+    echo "No logs found for failing containers"
+    return 0
+  fi
+
+  {
+    printf "TIME\tPOD\tCONTAINER\tTYPE\tLOG\n"
+    printf "%s\n" "${log_rows}" | LC_ALL=C sort
+  } | sc_helper_tsv_table
+}
+
 sc_helper_kube_errors() {
   if ! command -v kubectl >/dev/null 2>&1; then
     echo "kubectl not found" 1>&2
@@ -379,7 +450,7 @@ sc_helper_kube_errors() {
     return 127
   fi
 
-  local all=0 ns="" pod="" pods_json rows scope show_logs=0 log_tail="" log_mode="current"
+  local all=0 ns="" pod="" pods_json rows scope show_logs=0 log_tail="" log_mode="current" log_sort=0
 
   while [ "$#" -gt 0 ]; do
     case "${1}" in
@@ -403,10 +474,14 @@ sc_helper_kube_errors() {
         log_mode="previous"
         shift
         ;;
+      --sort)
+        log_sort=1
+        shift
+        ;;
       --tail)
         log_tail="${2:-}"
         if ! [[ "${log_tail}" =~ ^[0-9]+$ ]]; then
-          echo "Usage: kerrors [-A] [-n namespace] [--logs] [-p|--previous] [--tail lines] [pod]" 1>&2
+          echo "Usage: kerrors [-A] [-n namespace] [--logs] [--sort] [-p|--previous] [--tail lines] [pod]" 1>&2
           return 2
         fi
         shift 2
@@ -414,17 +489,17 @@ sc_helper_kube_errors() {
       --tail=*)
         log_tail="${1#--tail=}"
         if ! [[ "${log_tail}" =~ ^[0-9]+$ ]]; then
-          echo "Usage: kerrors [-A] [-n namespace] [--logs] [-p|--previous] [--tail lines] [pod]" 1>&2
+          echo "Usage: kerrors [-A] [-n namespace] [--logs] [--sort] [-p|--previous] [--tail lines] [pod]" 1>&2
           return 2
         fi
         shift
         ;;
       -h|--help)
-        echo "Usage: kerrors [-A] [-n namespace] [--logs] [-p|--previous] [--tail lines] [pod]"
+        echo "Usage: kerrors [-A] [-n namespace] [--logs] [--sort] [-p|--previous] [--tail lines] [pod]"
         return 0
         ;;
       -*)
-        echo "Usage: kerrors [-A] [-n namespace] [--logs] [-p|--previous] [--tail lines] [pod]" 1>&2
+        echo "Usage: kerrors [-A] [-n namespace] [--logs] [--sort] [-p|--previous] [--tail lines] [pod]" 1>&2
         return 2
         ;;
       *)
@@ -432,7 +507,7 @@ sc_helper_kube_errors() {
           pod="${1}"
           shift
         else
-          echo "Usage: kerrors [-A] [-n namespace] [--logs] [-p|--previous] [--tail lines] [pod]" 1>&2
+          echo "Usage: kerrors [-A] [-n namespace] [--logs] [--sort] [-p|--previous] [--tail lines] [pod]" 1>&2
           return 2
         fi
         ;;
@@ -510,7 +585,11 @@ sc_helper_kube_errors() {
   fi
 
   if [ "${show_logs}" -eq 1 ]; then
-    sc_helper_kube_error_logs "${rows}" "${log_tail}" "${log_mode}"
+    if [ "${log_sort}" -eq 1 ]; then
+      sc_helper_kube_error_logs_sorted "${rows}" "${log_tail}" "${log_mode}"
+    else
+      sc_helper_kube_error_logs "${rows}" "${log_tail}" "${log_mode}"
+    fi
   elif [ "${all}" -eq 1 ]; then
     {
       printf "NAMESPACE\tPOD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"

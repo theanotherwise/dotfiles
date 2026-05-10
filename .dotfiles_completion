@@ -368,7 +368,7 @@ sc_helper_kerrors_completion() {
         ;;
       --tail=*)
         ;;
-      -l|--logs|-p|--previous|-h|--help)
+      -l|--logs|--sort|-p|--previous|-h|--help)
         ;;
       -n|--namespace)
         expect_namespace=1
@@ -389,9 +389,9 @@ sc_helper_kerrors_completion() {
 
   if [[ "${cur}" == -* ]]; then
     if [[ "${has_all}" == "1" ]]; then
-      COMPREPLY=( $(compgen -W "-l --logs -p --previous --tail -h --help" -- "${cur}") )
+      COMPREPLY=( $(compgen -W "-l --logs --sort -p --previous --tail -h --help" -- "${cur}") )
     else
-      COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -l --logs -p --previous --tail -h --help" -- "${cur}") )
+      COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -l --logs --sort -p --previous --tail -h --help" -- "${cur}") )
     fi
     return 0
   fi
