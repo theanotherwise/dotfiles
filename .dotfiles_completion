@@ -285,8 +285,22 @@ sc_helper_atuin_a_completion() {
   COMP_CWORD="${original_cword}"
 }
 
+sc_helper_gitconfig_completion_redraw() {
+  local prompt line
+
+  line="${COMP_LINE:-}"
+  if ((BASH_VERSINFO[0] >= 5 || BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4)); then
+    prompt=${PS1@P}
+    prompt=${prompt//[$'\001\002']}
+  else
+    prompt='$ '
+  fi
+
+  printf "%s%s" "${prompt}" "${line}" >&2
+}
+
 sc_helper_gitconfig_completion() {
-  local cur profiles
+  local cur key name email printed
 
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
@@ -295,13 +309,30 @@ sc_helper_gitconfig_completion() {
     return 0
   fi
 
-  if declare -F sc_helper_gitconfig_profiles >/dev/null 2>&1; then
-    profiles="$(sc_helper_gitconfig_profiles | awk -F '\t' '{print $1}')"
-  else
-    profiles="priv silky irgit stonex citi sc psem tvn"
-  fi
+  declare -F sc_helper_gitconfig_profiles >/dev/null 2>&1 || return 0
 
-  COMPREPLY=( $(compgen -W "${profiles} list" -- "${cur}") )
+  printf "\n" >&2
+  printed=0
+  while IFS=$'\t' read -r key name email; do
+    case "${key}" in
+      "${cur}"*)
+        printf "%-8s (%s) %s\n" "${key}" "${email}" "${name}" >&2
+        printed=1
+        ;;
+    esac
+  done < <(sc_helper_gitconfig_profiles)
+
+  case "list" in
+    "${cur}"*)
+      printf "%-8s %s\n" "list" "show all git identity profiles" >&2
+      printed=1
+      ;;
+  esac
+
+  if [ "${printed}" -eq 0 ]; then
+    printf "No gitconfig profiles match: %s\n" "${cur}" >&2
+  fi
+  sc_helper_gitconfig_completion_redraw
 }
 
 declare -F __start_kubectl >/dev/null 2>&1 && complete -o nospace -F __start_kubectl k
