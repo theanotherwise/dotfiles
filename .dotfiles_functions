@@ -162,38 +162,85 @@ sc_helper_kube_containers() {
     echo "kubectl not found" 1>&2
     return 127
   fi
-
-  local ns pod
-  if [[ "$1" == "-n" ]]; then
-    ns="$2"
-    pod="$3"
-  else
-    pod="$1"
-    ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
-    [ -n "${ns}" ] || ns=default
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq not found" 1>&2
+    return 127
   fi
+
+  local ns pod pod_json rows
+
+  case "${1:-}" in
+    -n|--namespace)
+      ns="${2:-}"
+      pod="${3:-}"
+      ;;
+    -h|--help|"")
+      echo "Usage: kcontainers [-n namespace] <pod>"
+      return 0
+      ;;
+    *)
+      pod="${1}"
+      ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+      [ -n "${ns}" ] || ns=default
+      ;;
+  esac
 
   if [ -z "${pod}" ] || [ -z "${ns}" ]; then
     echo "Usage: kcontainers [-n namespace] <pod>" 1>&2
     return 2
   fi
 
-  local containers init_containers
-  containers="$(kubectl get pod "${pod}" -n "${ns}" -o jsonpath='{range .spec.containers[*]}{.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')"
-  init_containers="$(kubectl get pod "${pod}" -n "${ns}" -o jsonpath='{range .spec.initContainers[*]}{.name}{" "}{end}' 2>/dev/null | sed -E 's/[[:space:]]+$//')"
+  pod_json="$(kubectl get pod "${pod}" -n "${ns}" -o json 2>/dev/null)" || {
+    echo "Pod '${pod}' not found in namespace '${ns}'" 1>&2
+    return 1
+  }
 
-  if [ -z "${containers}" ] && [ -z "${init_containers}" ]; then
-    if ! kubectl get pod "${pod}" -n "${ns}" >/dev/null 2>&1; then
-      echo "Pod '${pod}' not found in namespace '${ns}'" 1>&2
-      return 1
-    fi
+  rows="$(
+    printf "%s" "${pod_json}" | jq -r '
+      def state_row:
+        if .state.running then
+          ["running", "-"]
+        elif .state.waiting then
+          ["waiting", (.state.waiting.reason // "-")]
+        elif .state.terminated then
+          ["terminated", (.state.terminated.reason // ("exit " + ((.state.terminated.exitCode // 0) | tostring)))]
+        else
+          ["-", "-"]
+        end;
+      . as $pod
+      | (
+          (($pod.status.initContainerStatuses // [])[] | ["init", .]),
+          (($pod.status.containerStatuses // [])[] | ["container", .])
+        )
+      | .[0] as $type
+      | .[1] as $container
+      | ($container | state_row) as $state
+      | [
+          ($pod.metadata.name // "-"),
+          ($container.name // "-"),
+          $type,
+          $state[0],
+          $state[1],
+          (($container.restartCount // 0) | tostring)
+        ]
+      | @tsv
+    '
+  )"
+
+  if [ -z "${rows}" ]; then
+    echo "No containers found for pod '${pod}' in namespace '${ns}'"
+    return 0
   fi
 
-  [ -n "${containers}" ] || containers="-"
-  [ -n "${init_containers}" ] || init_containers="-"
-
-  echo "containers: ${containers}"
-  echo "initContainers: ${init_containers}"
+  {
+    printf "POD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
+    printf "%s\n" "${rows}"
+  } | awk -F '\t' 'BEGIN {
+      fmt="%-36s %-24s %-10s %-11s %-28s %s\n"
+    }
+    {
+      printf fmt, $1, $2, $3, $4, $5, $6
+    }'
 }
 
 sc_helper_kube_errors() {
