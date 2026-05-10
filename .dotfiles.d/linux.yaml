@@ -254,7 +254,7 @@ binaries:
     url: https://github.com/owasp-amass/amass/releases/download/v{version}/amass_linux_amd64.tar.gz
     type: tar.gz
     override: False
-    strip: False
+    strip: True
     inBin: False
     latest: 5.1.1
     versions:
