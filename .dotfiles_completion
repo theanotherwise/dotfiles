@@ -216,6 +216,50 @@ if [ -f "${HOME}/.dotfiles.d/completion/kubetail.bash" ]; then
   . "${HOME}/.dotfiles.d/completion/kubetail.bash"
 fi
 
+sc_helper_ksecret_completion() {
+  local cur prev ns secrets namespaces
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  command -v kubectl >/dev/null 2>&1 || return 0
+
+  if [[ "${prev}" == "-n" || "${prev}" == "--namespace" ]]; then
+    if declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1; then
+      sc_helper_kube_namespaces_completion
+      return 0
+    fi
+
+    namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+    COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
+    return 0
+  fi
+
+  if [[ "${COMP_WORDS[1]}" == "-n" || "${COMP_WORDS[1]}" == "--namespace" ]]; then
+    ns="${COMP_WORDS[2]}"
+    [ -n "${ns}" ] || return 0
+
+    if [[ "${COMP_CWORD}" -lt 3 || "${COMP_CWORD}" -gt 3 ]]; then
+      return 0
+    fi
+  else
+    ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+    [ -n "${ns}" ] || ns=default
+
+    if [[ "${COMP_CWORD}" -gt 1 ]]; then
+      return 0
+    fi
+  fi
+
+  if [[ "${cur}" == -* ]]; then
+    COMPREPLY=( $(compgen -W "-n --namespace -h --help" -- "${cur}") )
+    return 0
+  fi
+
+  secrets="$(kubectl get secrets -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+  COMPREPLY=( $(compgen -W "${secrets}" -- "${cur}") )
+}
+
 sc_helper_kcontainers_completion() {
   local cur prev ns pods namespaces
   COMPREPLY=()
@@ -459,6 +503,7 @@ declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace 
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
 declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
 declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
+complete -F sc_helper_ksecret_completion ksecret
 complete -o nospace -F sc_helper_kcontainers_completion kcontainers
 complete -F sc_helper_kerrors_completion kerrors
 declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan

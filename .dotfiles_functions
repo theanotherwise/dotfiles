@@ -122,15 +122,38 @@ sc_helper_akamai_staging() {
 }
 
 sc_helper_kube_secret() {
-  if [[ "$1" == "-n" ]]; then
-    ns=$2
-    shift 2
-  else
-    ns=$(kubectl config view --minify -o jsonpath='{..namespace}')
-    [[ -z "$ns" ]] && ns=default
+  if ! command -v kubectl >/dev/null 2>&1; then
+    echo "kubectl not found" 1>&2
+    return 127
   fi
-  secret=$1
-  kubectl get secret "$secret" -n "$ns" -o json \
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq not found" 1>&2
+    return 127
+  fi
+
+  local ns secret
+  case "${1:-}" in
+    -n|--namespace)
+      ns="${2:-}"
+      secret="${3:-}"
+      ;;
+    -h|--help|"")
+      echo "Usage: ksecret [-n namespace] <secret>"
+      return 0
+      ;;
+    *)
+      secret="${1}"
+      ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+      [ -n "${ns}" ] || ns=default
+      ;;
+  esac
+
+  if [ -z "${ns}" ] || [ -z "${secret}" ]; then
+    echo "Usage: ksecret [-n namespace] <secret>" 1>&2
+    return 2
+  fi
+
+  kubectl get secret "${secret}" -n "${ns}" -o json \
     | jq -r '.data | to_entries[] | "\(.key): \(.value | @base64d)"'
 }
 
