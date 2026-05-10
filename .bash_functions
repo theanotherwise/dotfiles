@@ -298,17 +298,26 @@ sc_helper_dotflush() {
 }
 
 sc_helper_dotcache() {
-  local cache_dir
+  local cache_dir pid
 
   cache_dir="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
   printf "[%s] cache flush    dir=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${cache_dir}"
   sc_helper_dotflush
 
   if [ -f "${HOME}/.bash_completion" ]; then
-    unset SC_BASH_COMPLETION_LOADED_PID
-    unset SC_BASH_COMPLETION_LOADED
-    printf "[%s] cache rebuild  mode=async dir=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${cache_dir}"
-    SC_BASH_COMPLETION_CACHE_VERBOSE=1 SC_BASH_COMPLETION_CACHE_ASYNC=1 . "${HOME}/.bash_completion"
+    command mkdir -p "${cache_dir}" 2>/dev/null || true
+    (
+      unset SC_BASH_COMPLETION_LOADED_PID
+      unset SC_BASH_COMPLETION_LOADED
+      SC_BASH_COMPLETION_CACHE_DIR="${cache_dir}" \
+        SC_BASH_COMPLETION_CACHE_VERBOSE=1 \
+        SC_BASH_COMPLETION_CACHE_ASYNC=1 \
+        SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-100}" \
+        . "${HOME}/.bash_completion"
+    ) &
+    pid=$!
+    disown "${pid}" 2>/dev/null || true
+    printf "[%s] cache rebuild  mode=background pid=%s dir=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${pid}" "${cache_dir}"
   fi
 }
 
