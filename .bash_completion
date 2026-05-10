@@ -74,6 +74,8 @@ sc_helper_source_cached_completion() {
     return 0
   fi
 
+  [ -z "${SC_BASH_COMPLETION_CACHE_VERBOSE:-}" ] || printf "cache: %s\n" "${cmd}"
+
   tmp_file="${cache_file}.tmp.$$"
   restore_monitor=0
   case "$-" in

@@ -303,7 +303,7 @@ sc_helper_dotcache() {
   if [ -f "${HOME}/.bash_completion" ]; then
     unset SC_BASH_COMPLETION_LOADED_PID
     unset SC_BASH_COMPLETION_LOADED
-    . "${HOME}/.bash_completion"
+    SC_BASH_COMPLETION_CACHE_VERBOSE=1 . "${HOME}/.bash_completion"
   fi
 }
 
