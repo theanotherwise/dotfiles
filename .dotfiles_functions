@@ -564,6 +564,8 @@ sc_helper_kube_errors() {
       def recovered_bad:
         ((.restartCount // 0) > 0)
         and ((.state.terminated.exitCode? // 1) == 0);
+      def pod_ready:
+        ((.status.conditions // []) | any(.type == "Ready" and .status == "True"));
       def state_row:
         if current_bad then
           if .state.waiting then
@@ -583,13 +585,14 @@ sc_helper_kube_errors() {
       .items[]
       | select($pod == "" or .metadata.name == $pod)
       | . as $pod
+      | ($pod | pod_ready) as $pod_ready
       | (
           (($pod.status.initContainerStatuses // [])[] | ["init", .]),
           (($pod.status.containerStatuses // [])[] | ["container", .])
         )
       | .[0] as $type
       | .[1] as $container
-      | select($container | (current_bad or previous_bad or recovered_bad))
+      | select($container | (current_bad or (($pod_ready | not) and (previous_bad or recovered_bad))))
       | ($container | state_row) as $state
       | [
           ($pod.metadata.namespace // "-"),
