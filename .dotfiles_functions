@@ -300,13 +300,29 @@ sc_helper_kube_error_log_try() {
   local log_container="$3"
   local log_mode="$4"
   local log_tail="$5"
+  local log_prefix="${6:-}"
   local log_output
   local log_status
+  local log_label
+
+  if [ -n "${log_tail}" ]; then
+    log_label="${log_mode}, tail=${log_tail}"
+  else
+    log_label="${log_mode}"
+  fi
 
   if [ "${log_mode}" = "previous" ]; then
-    log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --previous --tail="${log_tail}" 2>&1)"
+    if [ -n "${log_tail}" ]; then
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --previous --tail="${log_tail}" 2>&1)"
+    else
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --previous 2>&1)"
+    fi
   else
-    log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --tail="${log_tail}" 2>&1)"
+    if [ -n "${log_tail}" ]; then
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" --tail="${log_tail}" 2>&1)"
+    else
+      log_output="$(kubectl logs -n "${log_ns}" "${log_pod}" -c "${log_container}" 2>&1)"
+    fi
   fi
   log_status=$?
 
@@ -317,7 +333,7 @@ sc_helper_kube_error_log_try() {
       ;;
   esac
 
-  printf "\n--- logs: %s/%s/%s (%s, tail=%s)\n" "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}"
+  printf "%s--- logs: %s/%s/%s (%s)\n" "${log_prefix}" "${log_ns}" "${log_pod}" "${log_container}" "${log_label}"
   if [ -n "${log_output}" ]; then
     printf "%s\n" "${log_output}"
   else
@@ -330,21 +346,31 @@ sc_helper_kube_error_logs() {
   local rows="$1"
   local log_tail="$2"
   local log_ns log_pod log_container log_state log_reason log_restarts
+  local log_prefix=""
 
-  printf "\n"
   while IFS=$'\t' read -r log_ns log_pod log_container log_state log_reason log_restarts; do
     [ -n "${log_pod}" ] || continue
 
     case "${log_state}" in
       waiting|last-terminated|recovered)
-        sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" previous "${log_tail}" \
-          || sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" current "${log_tail}" \
-          || printf "\n--- logs: %s/%s/%s unavailable\n" "${log_ns}" "${log_pod}" "${log_container}"
+        if sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" previous "${log_tail}" "${log_prefix}"; then
+          log_prefix=$'\n'
+        elif sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" current "${log_tail}" "${log_prefix}"; then
+          log_prefix=$'\n'
+        else
+          printf "%s--- logs: %s/%s/%s unavailable\n" "${log_prefix}" "${log_ns}" "${log_pod}" "${log_container}"
+          log_prefix=$'\n'
+        fi
         ;;
       *)
-        sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" current "${log_tail}" \
-          || { [ "${log_restarts:-0}" -gt 0 ] 2>/dev/null && sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" previous "${log_tail}"; } \
-          || printf "\n--- logs: %s/%s/%s unavailable\n" "${log_ns}" "${log_pod}" "${log_container}"
+        if sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" current "${log_tail}" "${log_prefix}"; then
+          log_prefix=$'\n'
+        elif [ "${log_restarts:-0}" -gt 0 ] 2>/dev/null && sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" previous "${log_tail}" "${log_prefix}"; then
+          log_prefix=$'\n'
+        else
+          printf "%s--- logs: %s/%s/%s unavailable\n" "${log_prefix}" "${log_ns}" "${log_pod}" "${log_container}"
+          log_prefix=$'\n'
+        fi
         ;;
     esac
   done <<EOF
@@ -362,7 +388,7 @@ sc_helper_kube_errors() {
     return 127
   fi
 
-  local all=0 ns="" pod="" pods_json rows scope show_logs=0 log_tail=80
+  local all=0 ns="" pod="" pods_json rows scope show_logs=0 log_tail=""
 
   while [ "$#" -gt 0 ]; do
     case "${1}" in
