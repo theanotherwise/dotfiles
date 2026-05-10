@@ -131,6 +131,41 @@ sc_helper_kubectl() {
   command kubectl "$@"
 }
 
+sc_helper_tsv_table() {
+  if command -v column >/dev/null 2>&1; then
+    column -t -s "$(printf '\t')"
+    return
+  fi
+
+  awk -F '\t' '
+    {
+      rows[NR] = $0
+      if (NF > max_fields) {
+        max_fields = NF
+      }
+      for (i = 1; i <= NF; i++) {
+        cells[NR, i] = $i
+        if (length($i) > widths[i]) {
+          widths[i] = length($i)
+        }
+      }
+    }
+    END {
+      for (row = 1; row <= NR; row++) {
+        for (i = 1; i <= max_fields; i++) {
+          if (i == max_fields) {
+            printf "%s", cells[row, i]
+          } else {
+            fmt = "%-" (widths[i] + 2) "s"
+            printf fmt, cells[row, i]
+          }
+        }
+        printf "\n"
+      }
+    }
+  '
+}
+
 sc_helper_kube_secret() {
   if ! command -v kubectl >/dev/null 2>&1; then
     echo "kubectl not found" 1>&2
@@ -256,12 +291,7 @@ sc_helper_kube_containers() {
   {
     printf "POD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
     printf "%s\n" "${rows}"
-  } | awk -F '\t' 'BEGIN {
-      fmt="%-36s %-24s %-10s %-11s %-28s %s\n"
-    }
-    {
-      printf fmt, $1, $2, $3, $4, $5, $6
-    }'
+  } | sc_helper_tsv_table
 }
 
 sc_helper_kube_errors() {
@@ -366,26 +396,12 @@ sc_helper_kube_errors() {
     {
       printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}"
-    } | awk -F '\t' 'BEGIN {
-        fmt="%-16s %-36s %-24s %-11s %-28s %s\n"
-      }
-      {
-        printf fmt, $1, $2, $3, $4, $5, $6
-      }'
+    } | sc_helper_tsv_table
   else
     {
       printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
-      printf "%s\n" "${rows}"
-    } | awk -F '\t' 'BEGIN {
-        fmt="%-36s %-24s %-11s %-28s %s\n"
-      }
-      NR == 1 {
-        printf fmt, $1, $2, $3, $4, $5
-        next
-      }
-      {
-        printf fmt, $2, $3, $4, $5, $6
-      }'
+      printf "%s\n" "${rows}" | cut -f2-
+    } | sc_helper_tsv_table
   fi
 }
 
