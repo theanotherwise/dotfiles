@@ -173,6 +173,25 @@ sc_helper_kube_containers() {
   echo "initContainers: ${init_containers}"
 }
 
+sc_helper_nuclei() {
+  local arg has_update_template_dir
+
+  has_update_template_dir=0
+  for arg in "$@"; do
+    case "${arg}" in
+      -ud|--update-template-dir|--update-template-dir=*)
+        has_update_template_dir=1
+        ;;
+    esac
+  done
+
+  if [ "${has_update_template_dir}" -eq 1 ]; then
+    command nuclei "$@"
+  else
+    command nuclei -ud "${HOME}/.nuclei-templates" "$@"
+  fi
+}
+
 sc_helper_git_tag_push() {
   T=$(date -u +"%Y-%m-%d.%H-%M-%S").$(git rev-parse --short HEAD)
   git tag "$T"

@@ -92,6 +92,11 @@ alias po='sc_helper_po'
 alias ver='sc_helper_versions'
 
 #
+#    Recon
+#
+alias nuclei='sc_helper_nuclei'
+
+#
 #    Git Commit
 #
 alias git-commitpush-feat='git add . && git commit -am "feat: new features implemented" && git push'
