@@ -286,7 +286,7 @@ sc_helper_atuin_a_completion() {
 }
 
 sc_helper_gitconfig_completion() {
-  local cur key name email
+  local cur profiles
 
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
@@ -296,21 +296,12 @@ sc_helper_gitconfig_completion() {
   fi
 
   if declare -F sc_helper_gitconfig_profiles >/dev/null 2>&1; then
-    printf "\n" >&2
-    while IFS=$'\t' read -r key name email; do
-      case "${key}" in
-        "${cur}"*)
-          printf "  %-8s (%s) %s\n" "${key}" "${email}" "${name}" >&2
-          ;;
-      esac
-    done < <(sc_helper_gitconfig_profiles)
-    case "list" in
-      "${cur}"*) printf "  %-8s %s\n" "list" "show all git identity profiles" >&2 ;;
-    esac
-    printf "\n" >&2
+    profiles="$(sc_helper_gitconfig_profiles | awk -F '\t' '{print $1}')"
+  else
+    profiles="priv silky irgit stonex citi sc psem tvn"
   fi
 
-  COMPREPLY=()
+  COMPREPLY=( $(compgen -W "${profiles} list" -- "${cur}") )
 }
 
 declare -F __start_kubectl >/dev/null 2>&1 && complete -o nospace -F __start_kubectl k

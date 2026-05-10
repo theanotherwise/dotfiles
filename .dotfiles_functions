@@ -216,9 +216,8 @@ sc_helper_gitconfig_profiles() {
 sc_helper_gitconfig_list() {
   local key name email
 
-  printf "Usage: gitconfig <profile>\n"
   while IFS=$'\t' read -r key name email; do
-    printf "  %-8s (%s) %s\n" "${key}" "${email}" "${name}"
+    printf "%-8s (%s) %s\n" "${key}" "${email}" "${name}"
   done < <(sc_helper_gitconfig_profiles)
 }
 
@@ -244,10 +243,6 @@ sc_helper_gitconfig() {
 
   sc_helper_gitconfig_list >&2
   return 2
-}
-
-sc_helper_dotreload() {
-  source "${HOME}/.bash_profile"
 }
 
 sc_helper_dotsetup() {
