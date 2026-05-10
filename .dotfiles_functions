@@ -300,6 +300,8 @@ sc_helper_kube_error_log_try() {
   local log_container="$3"
   local log_mode="$4"
   local log_tail="$5"
+  local log_pod_width="$6"
+  local log_container_width="$7"
   local log_line
   local log_output
   local log_status
@@ -328,12 +330,12 @@ sc_helper_kube_error_log_try() {
 
   if [ -n "${log_output}" ]; then
     while IFS= read -r log_line; do
-      printf "%s %s -> %s\n" "${log_pod}" "${log_container}" "${log_line}"
+      printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container}" "${log_line}"
     done <<EOF
 ${log_output}
 EOF
   else
-    printf "%s %s -> (no logs)\n" "${log_pod}" "${log_container}"
+    printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container}" "(no logs)"
   fi
   return 0
 }
@@ -343,12 +345,22 @@ sc_helper_kube_error_logs() {
   local log_tail="$2"
   local log_mode="${3:-current}"
   local log_ns log_pod log_container log_state log_reason log_restarts
+  local log_pod_width=3 log_container_width=9
 
   while IFS=$'\t' read -r log_ns log_pod log_container log_state log_reason log_restarts; do
     [ -n "${log_pod}" ] || continue
+    [ "${#log_pod}" -le "${log_pod_width}" ] || log_pod_width="${#log_pod}"
+    [ "${#log_container}" -le "${log_container_width}" ] || log_container_width="${#log_container}"
+  done <<EOF
+${rows}
+EOF
 
-    sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" \
-      || printf "%s %s -> logs unavailable\n" "${log_pod}" "${log_container}"
+  printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "POD" "CONTAINER" "LOG"
+  while IFS=$'\t' read -r log_ns log_pod log_container log_state log_reason log_restarts; do
+    [ -n "${log_pod}" ] || continue
+
+    sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_pod_width}" "${log_container_width}" \
+      || printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container}" "logs unavailable"
   done <<EOF
 ${rows}
 EOF
