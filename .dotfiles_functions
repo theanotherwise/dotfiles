@@ -483,7 +483,9 @@ sc_helper_kube_errors() {
     return 0
   fi
 
-  if [ "${all}" -eq 1 ]; then
+  if [ "${show_logs}" -eq 1 ]; then
+    sc_helper_kube_error_logs "${rows}" "${log_tail}"
+  elif [ "${all}" -eq 1 ]; then
     {
       printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}"
@@ -493,10 +495,6 @@ sc_helper_kube_errors() {
       printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}" | cut -f2-
     } | sc_helper_tsv_table
-  fi
-
-  if [ "${show_logs}" -eq 1 ]; then
-    sc_helper_kube_error_logs "${rows}" "${log_tail}"
   fi
 }
 
