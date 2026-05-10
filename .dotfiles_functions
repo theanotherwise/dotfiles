@@ -267,10 +267,10 @@ sc_helper_kube_containers() {
       | .[0] as $type
       | .[1] as $container
       | ($container | state_row) as $state
+      | (if $type == "init" then "i" else "c" end) as $type_suffix
       | [
           ($pod.metadata.name // "-"),
-          ($container.name // "-"),
-          $type,
+          (($container.name // "-") + "(" + $type_suffix + ")"),
           $state[0],
           $state[1],
           (($container.restartCount // 0) | tostring)
@@ -289,7 +289,7 @@ sc_helper_kube_containers() {
   fi
 
   {
-    printf "POD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
+    printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
     printf "%s\n" "${rows}"
   } | sc_helper_tsv_table
 }
@@ -303,8 +303,7 @@ sc_helper_kube_error_log_try() {
   local log_since="$6"
   local log_pod_width="$7"
   local log_container_width="$8"
-  local log_type="$9"
-  local log_type_width="${10}"
+  local log_container_label="$9"
   local log_line
   local log_output
   local log_status
@@ -329,12 +328,12 @@ sc_helper_kube_error_log_try() {
 
   if [ -n "${log_output}" ]; then
     while IFS= read -r log_line; do
-      printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "${log_pod}" "${log_container}" "${log_type}" "${log_line}"
+      printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container_label}" "${log_line}"
     done <<EOF
 ${log_output}
 EOF
   else
-    printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "${log_pod}" "${log_container}" "${log_type}" "(no logs)"
+    printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container_label}" "(no logs)"
   fi
   return 0
 }
@@ -344,24 +343,33 @@ sc_helper_kube_error_logs() {
   local log_tail="$2"
   local log_mode="${3:-current}"
   local log_since="$4"
-  local log_ns log_pod log_container log_type log_state log_reason log_restarts
-  local log_pod_width=3 log_container_width=9 log_type_width=4
+  local log_ns log_pod log_container log_type log_state log_reason log_restarts log_container_label
+  local log_pod_width=3 log_container_width=9
 
   while IFS=$'\t' read -r log_ns log_pod log_container log_type log_state log_reason log_restarts; do
     [ -n "${log_pod}" ] || continue
+    if [ "${log_type}" = "init" ]; then
+      log_container_label="${log_container}(i)"
+    else
+      log_container_label="${log_container}(c)"
+    fi
     [ "${#log_pod}" -le "${log_pod_width}" ] || log_pod_width="${#log_pod}"
-    [ "${#log_container}" -le "${log_container_width}" ] || log_container_width="${#log_container}"
-    [ "${#log_type}" -le "${log_type_width}" ] || log_type_width="${#log_type}"
+    [ "${#log_container_label}" -le "${log_container_width}" ] || log_container_width="${#log_container_label}"
   done <<EOF
 ${rows}
 EOF
 
-  printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "POD" "CONTAINER" "TYPE" "LOG"
+  printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "POD" "CONTAINER" "LOG"
   while IFS=$'\t' read -r log_ns log_pod log_container log_type log_state log_reason log_restarts; do
     [ -n "${log_pod}" ] || continue
+    if [ "${log_type}" = "init" ]; then
+      log_container_label="${log_container}(i)"
+    else
+      log_container_label="${log_container}(c)"
+    fi
 
-    sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_since}" "${log_pod_width}" "${log_container_width}" "${log_type}" "${log_type_width}" \
-      || printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "${log_pod}" "${log_container}" "${log_type}" "logs unavailable"
+    sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_since}" "${log_pod_width}" "${log_container_width}" "${log_container_label}" \
+      || printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container_label}" "logs unavailable"
   done <<EOF
 ${rows}
 EOF
@@ -374,7 +382,7 @@ sc_helper_kube_error_log_sorted_try() {
   local log_mode="$4"
   local log_tail="$5"
   local log_since="$6"
-  local log_type="$7"
+  local log_container_label="$7"
   local log_line log_output log_status log_ts log_msg
   local -a log_args
 
@@ -402,7 +410,7 @@ sc_helper_kube_error_log_sorted_try() {
     log_msg="${log_line#* }"
     [ "${log_msg}" != "${log_line}" ] || log_msg=""
     log_msg="${log_msg//$'\t'/ }"
-    printf "%s\t%s\t%s\t%s\t%s\n" "${log_ts}" "${log_pod}" "${log_container}" "${log_type}" "${log_msg}"
+    printf "%s\t%s\t%s\t%s\n" "${log_ts}" "${log_pod}" "${log_container_label}" "${log_msg}"
   done <<EOF
 ${log_output}
 EOF
@@ -413,13 +421,18 @@ sc_helper_kube_error_logs_sorted() {
   local log_tail="$2"
   local log_mode="${3:-current}"
   local log_since="$4"
-  local log_ns log_pod log_container log_type log_state log_reason log_restarts
+  local log_ns log_pod log_container log_type log_state log_reason log_restarts log_container_label
   local log_rows
 
   log_rows="$(
     while IFS=$'\t' read -r log_ns log_pod log_container log_type log_state log_reason log_restarts; do
       [ -n "${log_pod}" ] || continue
-      sc_helper_kube_error_log_sorted_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_since}" "${log_type}" || true
+      if [ "${log_type}" = "init" ]; then
+        log_container_label="${log_container}(i)"
+      else
+        log_container_label="${log_container}(c)"
+      fi
+      sc_helper_kube_error_log_sorted_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_since}" "${log_container_label}" || true
     done <<EOF
 ${rows}
 EOF
@@ -431,7 +444,7 @@ EOF
   fi
 
   {
-    printf "TIME\tPOD\tCONTAINER\tTYPE\tLOG\n"
+    printf "TIME\tPOD\tCONTAINER\tLOG\n"
     printf "%s\n" "${log_rows}" | LC_ALL=C sort
   } | sc_helper_tsv_table
 }
@@ -604,13 +617,19 @@ sc_helper_kube_errors() {
     fi
   elif [ "${all}" -eq 1 ]; then
     {
-      printf "NAMESPACE\tPOD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
-      printf "%s\n" "${rows}"
+      printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
+      printf "%s\n" "${rows}" | awk -F '\t' 'BEGIN { OFS="\t" } {
+        suffix = ($4 == "init" ? "(i)" : "(c)")
+        print $1, $2, $3 suffix, $5, $6, $7
+      }'
     } | sc_helper_tsv_table
   else
     {
-      printf "POD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
-      printf "%s\n" "${rows}" | cut -f2-
+      printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
+      printf "%s\n" "${rows}" | awk -F '\t' 'BEGIN { OFS="\t" } {
+        suffix = ($4 == "init" ? "(i)" : "(c)")
+        print $2, $3 suffix, $5, $6, $7
+      }'
     } | sc_helper_tsv_table
   fi
 }
