@@ -275,11 +275,6 @@ sc_helper_kcontainers_completion() {
   arg_pos=$((COMP_CWORD - arg_start))
 
   if [[ "${prev}" == "-n" || "${prev}" == "--namespace" ]]; then
-    if declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1; then
-      sc_helper_kube_namespaces_completion
-      return 0
-    fi
-
     namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
     COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
     return 0
