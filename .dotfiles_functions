@@ -194,18 +194,27 @@ sc_helper_kube_errors() {
       -n|--namespace)
         ns="${2:-}"
         if [ -z "${ns}" ]; then
-          echo "Usage: kerrors [-A] [-n namespace]" 1>&2
+          echo "Usage: kerrors [-A] [-n namespace] [namespace]" 1>&2
           return 2
         fi
         shift 2
         ;;
       -h|--help)
-        echo "Usage: kerrors [-A] [-n namespace]"
+        echo "Usage: kerrors [-A] [-n namespace] [namespace]"
         return 0
         ;;
-      *)
-        echo "Usage: kerrors [-A] [-n namespace]" 1>&2
+      -*)
+        echo "Usage: kerrors [-A] [-n namespace] [namespace]" 1>&2
         return 2
+        ;;
+      *)
+        if [ -z "${ns}" ] && [ "${all}" -eq 0 ]; then
+          ns="${1}"
+          shift
+        else
+          echo "Usage: kerrors [-A] [-n namespace] [namespace]" 1>&2
+          return 2
+        fi
         ;;
     esac
   done

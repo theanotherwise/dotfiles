@@ -263,10 +263,22 @@ sc_helper_kcontainers_completion() {
 }
 
 sc_helper_kerrors_completion() {
-  local cur prev namespaces
+  local cur prev word namespaces has_namespace has_all
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  for word in "${COMP_WORDS[@]:1:COMP_CWORD-1}"; do
+    case "${word}" in
+      -A|--all-namespaces)
+        has_all=1
+        ;;
+    esac
+  done
+
+  if [[ "${has_all}" == "1" ]]; then
+    return 0
+  fi
 
   if [[ "${prev}" == "-n" || "${prev}" == "--namespace" ]]; then
     if declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1; then
@@ -279,7 +291,32 @@ sc_helper_kerrors_completion() {
     return 0
   fi
 
-  COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -h --help" -- "${cur}") )
+  for word in "${COMP_WORDS[@]:1:COMP_CWORD-1}"; do
+    case "${word}" in
+      -n|--namespace)
+        has_namespace=next
+        ;;
+      *)
+        if [[ "${has_namespace}" == "next" ]]; then
+          has_namespace=1
+        elif [[ "${word}" != -* ]]; then
+          has_namespace=1
+        fi
+        ;;
+    esac
+  done
+
+  if [[ "${has_namespace}" == "1" ]]; then
+    return 0
+  fi
+
+  if [[ "${cur}" == -* ]]; then
+    COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -h --help" -- "${cur}") )
+    return 0
+  fi
+
+  namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+  COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
 }
 
 sc_helper_atuin_a_completion() {
