@@ -311,6 +311,11 @@ sc_helper_kube_error_log_try() {
   log_status=$?
 
   [ "${log_status}" -eq 0 ] || return 1
+  case "${log_output}" in
+    "Error from server"*|error:*|*"unable to retrieve container logs"*|*"previous terminated container"*|*"is waiting to start"*)
+      return 1
+      ;;
+  esac
 
   printf "\n--- logs: %s/%s/%s (%s, tail=%s)\n" "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}"
   if [ -n "${log_output}" ]; then
