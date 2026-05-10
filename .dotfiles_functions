@@ -121,6 +121,16 @@ sc_helper_akamai_staging() {
   nslookup "${host}.edgekey-staging.net" | awk '/^Address: / && $2 !~ /#/ { print $2; exit }'
 }
 
+sc_helper_kubectl() {
+  if [ "${1:-}" = "get" ] && { [ "${2:-}" = "containers" ] || [ "${2:-}" = "container" ]; }; then
+    shift 2
+    sc_helper_kube_containers "$@"
+    return
+  fi
+
+  command kubectl "$@"
+}
+
 sc_helper_kube_secret() {
   if ! command -v kubectl >/dev/null 2>&1; then
     echo "kubectl not found" 1>&2
@@ -167,36 +177,43 @@ sc_helper_kube_containers() {
     return 127
   fi
 
-  local ns pod pod_json rows
+  local ns pod pods_json rows
 
   case "${1:-}" in
     -n|--namespace)
       ns="${2:-}"
       pod="${3:-}"
       ;;
-    -h|--help|"")
-      echo "Usage: kcontainers [-n namespace] <pod>"
+    -h|--help)
+      echo "Usage: k get containers [-n namespace] [pod]"
       return 0
       ;;
     *)
-      pod="${1}"
+      pod="${1:-}"
       ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
       [ -n "${ns}" ] || ns=default
       ;;
   esac
 
-  if [ -z "${pod}" ] || [ -z "${ns}" ]; then
-    echo "Usage: kcontainers [-n namespace] <pod>" 1>&2
+  if [ -z "${ns}" ]; then
+    echo "Usage: k get containers [-n namespace] [pod]" 1>&2
     return 2
   fi
 
-  pod_json="$(kubectl get pod "${pod}" -n "${ns}" -o json 2>/dev/null)" || {
-    echo "Pod '${pod}' not found in namespace '${ns}'" 1>&2
-    return 1
-  }
+  if [ -n "${pod}" ]; then
+    pods_json="$(kubectl get pod "${pod}" -n "${ns}" -o json 2>/dev/null)" || {
+      echo "Pod '${pod}' not found in namespace '${ns}'" 1>&2
+      return 1
+    }
+  else
+    pods_json="$(kubectl get pods -n "${ns}" -o json 2>/dev/null)" || {
+      echo "Could not list pods in namespace '${ns}'" 1>&2
+      return 1
+    }
+  fi
 
   rows="$(
-    printf "%s" "${pod_json}" | jq -r '
+    printf "%s" "${pods_json}" | jq -r '
       def state_row:
         if .state.running then
           ["running", "-"]
@@ -207,7 +224,7 @@ sc_helper_kube_containers() {
         else
           ["-", "-"]
         end;
-      . as $pod
+      (if has("items") then .items[] else . end) as $pod
       | (
           (($pod.status.initContainerStatuses // [])[] | ["init", .]),
           (($pod.status.containerStatuses // [])[] | ["container", .])
@@ -228,7 +245,11 @@ sc_helper_kube_containers() {
   )"
 
   if [ -z "${rows}" ]; then
-    echo "No containers found for pod '${pod}' in namespace '${ns}'"
+    if [ -n "${pod}" ]; then
+      echo "No containers found for pod '${pod}' in namespace '${ns}'"
+    else
+      echo "No containers found in namespace '${ns}'"
+    fi
     return 0
   fi
 
