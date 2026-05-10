@@ -362,6 +362,9 @@ sc_helper_kube_errors() {
         or ((.state.terminated.exitCode? // 0) != 0);
       def previous_bad:
         ((.lastState.terminated.exitCode? // 0) != 0);
+      def recovered_bad:
+        ((.restartCount // 0) > 0)
+        and ((.state.terminated.exitCode? // 1) == 0);
       def state_row:
         if current_bad then
           if .state.waiting then
@@ -373,6 +376,8 @@ sc_helper_kube_errors() {
           end
         elif previous_bad then
           ["last-terminated", ((.lastState.terminated.reason // ("exit " + ((.lastState.terminated.exitCode // 0) | tostring))))]
+        elif recovered_bad then
+          ["recovered", "CompletedAfterRestart"]
         else
           empty
         end;
@@ -381,7 +386,7 @@ sc_helper_kube_errors() {
       | . as $pod
       | (($pod.status.initContainerStatuses // []) + ($pod.status.containerStatuses // []))[]
       | . as $container
-      | select(current_bad or previous_bad)
+      | select(current_bad or previous_bad or recovered_bad)
       | state_row as $state
       | [
           ($pod.metadata.namespace // "-"),
