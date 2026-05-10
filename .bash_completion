@@ -59,7 +59,7 @@ sc_helper_strip_completion_file_fallback() {
 
 sc_helper_source_cached_completion() {
   local cmd="$1"
-  local cmd_path cache_file tmp_file pid ticks
+  local cmd_path cache_file tmp_file pid ticks restore_monitor
   shift || return 0
 
   [ -n "${cmd}" ] || return 0
@@ -75,7 +75,15 @@ sc_helper_source_cached_completion() {
   fi
 
   tmp_file="${cache_file}.tmp.$$"
-  (set +m; "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null) &
+  restore_monitor=0
+  case "$-" in
+    *m*)
+      restore_monitor=1
+      set +m
+      ;;
+  esac
+
+  "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null &
   pid=$!
   ticks=0
 
@@ -85,6 +93,7 @@ sc_helper_source_cached_completion() {
     if [ "${ticks}" -ge "${SC_BASH_COMPLETION_TIMEOUT_TENTHS}" ]; then
       kill "${pid}" >/dev/null 2>&1 || true
       wait "${pid}" 2>/dev/null || true
+      [ "${restore_monitor}" -eq 0 ] || set -m
       command rm -f "${tmp_file}"
       return 0
     fi
@@ -92,9 +101,12 @@ sc_helper_source_cached_completion() {
   done
 
   if ! wait "${pid}" 2>/dev/null; then
+    [ "${restore_monitor}" -eq 0 ] || set -m
     command rm -f "${tmp_file}"
     return 0
   fi
+
+  [ "${restore_monitor}" -eq 0 ] || set -m
 
   if [ -s "${tmp_file}" ]; then
     command mv "${tmp_file}" "${cache_file}"
