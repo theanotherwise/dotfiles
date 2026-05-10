@@ -279,14 +279,7 @@ sc_helper_k_get_containers_completion() {
     return 0
   fi
 
-  if [[ "${COMP_WORDS[1]}" == "-n" ]]; then
-    ns="${COMP_WORDS[2]}"
-    [ -n "${ns}" ] || return 0
-
-    if [[ "${COMP_CWORD}" -lt 3 || "${COMP_CWORD}" -gt 3 ]]; then
-      return 0
-    fi
-  elif [[ "${COMP_WORDS[3]}" == "-n" ]]; then
+  if [[ "${COMP_WORDS[3]}" == "-n" ]]; then
     ns="${COMP_WORDS[4]}"
     [ -n "${ns}" ] || return 0
 
@@ -304,7 +297,7 @@ sc_helper_k_get_containers_completion() {
 
   pods="$(kubectl get pods -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
 
-  if [[ "${COMP_CWORD}" -eq 1 || "${COMP_CWORD}" -eq 3 ]]; then
+  if [[ "${COMP_CWORD}" -eq 3 ]]; then
     if [[ "${cur}" == -* ]]; then
       COMPREPLY=( $(compgen -W "-n" -- "${cur}") )
     else
