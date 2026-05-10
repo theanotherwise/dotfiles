@@ -262,6 +262,26 @@ sc_helper_kcontainers_completion() {
   fi
 }
 
+sc_helper_kerrors_completion() {
+  local cur prev namespaces
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [[ "${prev}" == "-n" || "${prev}" == "--namespace" ]]; then
+    if declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1; then
+      sc_helper_kube_namespaces_completion
+      return 0
+    fi
+
+    namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+    COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
+    return 0
+  fi
+
+  COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -h --help" -- "${cur}") )
+}
+
 sc_helper_atuin_a_completion() {
   declare -F _atuin >/dev/null 2>&1 || return 0
 
@@ -389,6 +409,7 @@ declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start
 declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
 declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
 complete -o nospace -F sc_helper_kcontainers_completion kcontainers
+complete -F sc_helper_kerrors_completion kerrors
 declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan
 
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" terraform

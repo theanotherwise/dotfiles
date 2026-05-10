@@ -173,6 +173,109 @@ sc_helper_kube_containers() {
   echo "initContainers: ${init_containers}"
 }
 
+sc_helper_kube_errors() {
+  if ! command -v kubectl >/dev/null 2>&1; then
+    echo "kubectl not found" 1>&2
+    return 127
+  fi
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq not found" 1>&2
+    return 127
+  fi
+
+  local all=0 ns="" pods_json rows scope
+
+  while [ "$#" -gt 0 ]; do
+    case "${1}" in
+      -A|--all-namespaces)
+        all=1
+        shift
+        ;;
+      -n|--namespace)
+        ns="${2:-}"
+        if [ -z "${ns}" ]; then
+          echo "Usage: kerrors [-A] [-n namespace]" 1>&2
+          return 2
+        fi
+        shift 2
+        ;;
+      -h|--help)
+        echo "Usage: kerrors [-A] [-n namespace]"
+        return 0
+        ;;
+      *)
+        echo "Usage: kerrors [-A] [-n namespace]" 1>&2
+        return 2
+        ;;
+    esac
+  done
+
+  if [ "${all}" -eq 1 ]; then
+    scope="all namespaces"
+    pods_json="$(kubectl get pods -A -o json 2>/dev/null)" || return 1
+  else
+    if [ -z "${ns}" ]; then
+      ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+      [ -n "${ns}" ] || ns=default
+    fi
+    scope="namespace ${ns}"
+    pods_json="$(kubectl get pods -n "${ns}" -o json 2>/dev/null)" || return 1
+  fi
+
+  rows="$(
+    printf "%s" "${pods_json}" | jq -r '
+      def bad_reason:
+        "CrashLoopBackOff|ImagePullBackOff|ErrImagePull|CreateContainerConfigError|CreateContainerError|InvalidImageName|RunContainerError|Error";
+      def state_row:
+        if .state.waiting then
+          ["waiting", (.state.waiting.reason // "-"), (.state.waiting.message // "-")]
+        elif .state.terminated then
+          ["terminated", ((.state.terminated.reason // ("exit " + ((.state.terminated.exitCode // 0) | tostring)))), (.state.terminated.message // "-")]
+        else
+          empty
+        end;
+      .items[]
+      | . as $pod
+      | (($pod.status.initContainerStatuses // []) + ($pod.status.containerStatuses // []))[]
+      | . as $container
+      | select(
+          ((.state.waiting.reason? // "") | test(bad_reason))
+          or ((.state.terminated.exitCode? // 0) != 0)
+        )
+      | state_row as $state
+      | [
+          ($pod.metadata.namespace // "-"),
+          ($pod.metadata.name // "-"),
+          ($container.name // "-"),
+          $state[0],
+          $state[1],
+          (($container.restartCount // 0) | tostring),
+          $state[2]
+        ]
+      | @tsv
+    '
+  )"
+
+  if [ -z "${rows}" ]; then
+    echo "No failing pods found in ${scope}"
+    return 0
+  fi
+
+  {
+    printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\tMESSAGE\n"
+    printf "%s\n" "${rows}"
+  } | awk -F '\t' 'BEGIN {
+      fmt="%-16s %-36s %-24s %-11s %-28s %-8s %s\n"
+    }
+    NR == 1 {
+      printf fmt, $1, $2, $3, $4, $5, $6, $7
+      next
+    }
+    {
+      printf fmt, $1, $2, $3, $4, $5, $6, $7
+    }'
+}
+
 sc_helper_nuclei() {
   local arg has_update_template_dir
 

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kerrors-demo
+  labels:
+    app: kerrors-demo
+spec:
+  restartPolicy: Always
+  containers:
+    - name: api-ok
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - -c
+        - while true; do echo "api-ok running"; sleep 300; done
+    - name: worker-ok
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - -c
+        - while true; do echo "worker-ok running"; sleep 300; done
+    - name: crash-exit
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - -c
+        - echo "crash-exit fails intentionally"; exit 1
+    - name: crash-command
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - -c
+        - echo "crash-command fails intentionally"; /missing-command

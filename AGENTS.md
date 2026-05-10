@@ -16,6 +16,7 @@ This project contains personal shell and tool configuration intended to be check
 - [`.dotfiles_completion`](./.dotfiles_completion) loads Bash completions and completion cache helpers.
 - [`.gitconfig`](./.gitconfig) includes the local, untracked `~/.gitconfig.identity` file used for the active Git identity.
 - [`.dotfiles`](./.dotfiles) delegates binary setup to [`.dotfiles.d/dotfiles.py`](./.dotfiles.d/dotfiles.py), which prints structured setup logs and installs pending tools concurrently by package while keeping each package's versions sequential.
+- [`pod.yaml`](./pod.yaml) is a local Kubernetes demo manifest used to exercise Pod/container error inspection helpers.
 
 ## Placement Rules
 
@@ -47,3 +48,5 @@ Verification for binary changes must be read-only unless the user explicitly ask
 Use `bash` for shell checks. Do not run [`.dotfiles`](./.dotfiles) or [`.dotfiles.d/dotfiles.py`](./.dotfiles.d/dotfiles.py) unless explicitly requested, because they download and install local binaries. When inspecting installer behavior, use syntax checks or isolated function-level tests instead of running the real installer.
 
 When changing shell files, prefer focused syntax checks such as `bash -n` on the edited file. Do not run commands that mutate the user's real home Git config during verification; use inspection or an isolated temporary home if behavior must be exercised.
+
+Do not apply [`pod.yaml`](./pod.yaml) to a Kubernetes cluster unless the user explicitly asks for that mutating action. Validation with client-side dry-run is acceptable.
