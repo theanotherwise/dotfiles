@@ -1107,7 +1107,7 @@ sc_helper_dotversions_example() {
     docker-init) printf "%s\n" "docker version" ;;
     dnsx) printf "%s\n" "dnsx -l hosts.txt -a -resp" ;;
     fd) printf "%s\n" "fd pattern" ;;
-    ffuf) printf "%s\n" "ffuf -u https://example.com/FUZZ -w words.txt" ;;
+    ffuf) printf "%s\n" "ffuf -u https://host/FUZZ -w words.txt" ;;
     fzf) printf "%s\n" "fzf" ;;
     gau) printf "%s\n" "gau example.com" ;;
     gh) printf "%s\n" "gh repo view" ;;
@@ -1193,7 +1193,7 @@ sc_helper_dotversions_print_table_row() {
   local description="$4"
   local example="$5"
 
-  printf "| %-20s | %-24s | %-20s | %-48s | %-40s |\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
+  printf "| %-26s | %-24s | %-20s | %-48s | %-40s |\n" "${category}" "${tool}" "${version}" "${description}" "${example}"
 }
 
 sc_helper_dotversions_print_grouped_rows() {
@@ -1350,8 +1350,8 @@ sc_helper_dotversions() {
   )
   status=$?
 
-  printf "| %-20s | %-24s | %-20s | %-48s | %-40s |\n" "CATEGORY" "TOOL" "VERSION" "DESCRIPTION" "EXAMPLE"
-  printf "| %-20s | %-24s | %-20s | %-48s | %-40s |\n" "--------------------" "------------------------" "--------------------" "------------------------------------------------" "----------------------------------------"
+  printf "| %-26s | %-24s | %-20s | %-48s | %-40s |\n" "CATEGORY" "TOOL" "VERSION" "DESCRIPTION" "EXAMPLE"
+  printf "| %-26s | %-24s | %-20s | %-48s | %-40s |\n" "--------------------------" "------------------------" "--------------------" "------------------------------------------------" "----------------------------------------"
 
   sc_helper_dotversions_print_grouped_rows "${tmp_dir}"
 
