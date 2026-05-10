@@ -544,6 +544,11 @@ sc_helper_fzf_init() {
   fi
 }
 
+sc_helper_bash_hooks_init() {
+  [ -f "${HOME}/.bash_hooks" ] || return 0
+  . "${HOME}/.bash_hooks"
+}
+
 sc_helper_atuin_init() {
   command -v atuin >/dev/null 2>&1 || return 0
 
@@ -553,6 +558,7 @@ sc_helper_atuin_init() {
   esac
 
   eval "$(atuin init bash)"
+  sc_helper_bash_hooks_init
 }
 
 sc_helper_zoxide_z_completion() {

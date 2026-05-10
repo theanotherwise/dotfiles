@@ -1,0 +1,109 @@
+if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
+  echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
+fi
+
+case "$-" in
+  *i*) ;;
+  *) return 0 ;;
+esac
+
+if [[ "${__sc_bash_hooks_loaded:-}" == "1" ]]; then
+  return 0
+fi
+__sc_bash_hooks_loaded=1
+
+declare -a precmd_functions
+declare -a preexec_functions
+
+# Compatibility flag for CLIs that look for bash-preexec-style hook support.
+bash_preexec_imported=sc-bash-hooks
+
+__sc_bash_hooks_last_status=0
+__sc_bash_hooks_ready=0
+__sc_bash_hooks_in_prompt=0
+
+__sc_bash_hooks_set_ret_value() {
+  return "${1:-0}"
+}
+
+__sc_bash_hooks_command_from_history() {
+  local command
+
+  command=$(
+    HISTTIMEFORMAT='' builtin history 1 2>/dev/null \
+      | sed '1 s/^ *[0-9][0-9]*[* ] //'
+  )
+
+  if [[ -n "${command}" ]]; then
+    printf '%s\n' "${command}"
+  else
+    printf '%s\n' "${BASH_COMMAND}"
+  fi
+}
+
+__sc_bash_hooks_run_preexec() {
+  local status=$?
+  local command fn
+
+  case "${BASH_COMMAND}" in
+    __sc_bash_hooks_run_precmd*)
+      __sc_bash_hooks_last_status="${status}"
+      return "${status}"
+      ;;
+  esac
+
+  [[ "${__sc_bash_hooks_ready}" == "1" ]] || return "${status}"
+  [[ "${__sc_bash_hooks_in_prompt}" == "0" ]] || return "${status}"
+
+  case "${BASH_COMMAND}" in
+    __sc_bash_hooks_*|__atuin_history*|__atuin_widget_run*|__atuin_bash42_dispatch*)
+      return "${status}"
+      ;;
+  esac
+
+  __sc_bash_hooks_ready=0
+  command="$(__sc_bash_hooks_command_from_history)"
+
+  [[ -n "${command}" ]] || return "${status}"
+  for fn in "${preexec_functions[@]:-}"; do
+    if declare -F "${fn}" >/dev/null 2>&1; then
+      "${fn}" "${command}"
+    fi
+  done
+
+  return "${status}"
+}
+
+__sc_bash_hooks_run_precmd() {
+  local status fn
+
+  status="${__sc_bash_hooks_last_status}"
+  __sc_bash_hooks_in_prompt=1
+
+  for fn in "${precmd_functions[@]:-}"; do
+    if declare -F "${fn}" >/dev/null 2>&1; then
+      __sc_bash_hooks_set_ret_value "${status}"
+      "${fn}"
+    fi
+  done
+
+  __sc_bash_hooks_in_prompt=0
+  __sc_bash_hooks_ready=1
+  return "${status}"
+}
+
+__sc_bash_hooks_install_prompt_command() {
+  case ";${PROMPT_COMMAND:-};" in
+    *__sc_bash_hooks_run_precmd*) ;;
+    *)
+      if [[ -n "${PROMPT_COMMAND:-}" ]]; then
+        PROMPT_COMMAND="__sc_bash_hooks_run_precmd; ${PROMPT_COMMAND}"
+      else
+        PROMPT_COMMAND="__sc_bash_hooks_run_precmd"
+      fi
+      ;;
+  esac
+}
+
+__sc_bash_hooks_install_prompt_command
+trap '__sc_bash_hooks_run_preexec' DEBUG

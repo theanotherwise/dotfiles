@@ -12,5 +12,6 @@
 !.dotfiles_completion
 !.dotfiles_functions
 !.dotfiles_init
+!.bash_hooks
 !.bash_profile
 !.bashrc
