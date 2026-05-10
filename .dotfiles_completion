@@ -256,7 +256,11 @@ sc_helper_kcontainers_completion() {
   pods="$(kubectl get pods -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
 
   if [[ "${COMP_CWORD}" -eq 1 ]]; then
-    COMPREPLY=( $(compgen -W "-n ${pods}" -- "${cur}") )
+    if [[ "${cur}" == -* ]]; then
+      COMPREPLY=( $(compgen -W "-n" -- "${cur}") )
+    else
+      COMPREPLY=( $(compgen -W "${pods}" -- "${cur}") )
+    fi
   else
     COMPREPLY=( $(compgen -W "${pods}" -- "${cur}") )
   fi
