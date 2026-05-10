@@ -544,6 +544,17 @@ sc_helper_fzf_init() {
   fi
 }
 
+sc_helper_atuin_init() {
+  command -v atuin >/dev/null 2>&1 || return 0
+
+  case "$-" in
+    *i*) ;;
+    *) return 0 ;;
+  esac
+
+  eval "$(atuin init bash)"
+}
+
 sc_helper_zoxide_z_completion() {
   command -v zoxide >/dev/null 2>&1 || return 0
 
@@ -937,6 +948,7 @@ sc_helper_dotversions_description() {
     argocd) printf "%s\n" "Manages Argo CD apps and syncs" ;;
     amass) printf "%s\n" "Maps external attack surface assets" ;;
     asnmap) printf "%s\n" "Maps organizations and ASNs to CIDRs" ;;
+    atuin) printf "%s\n" "Searches shell history with context" ;;
     bat) printf "%s\n" "cat with syntax highlighting and paging" ;;
     conftest) printf "%s\n" "Tests config files with OPA/Rego policies" ;;
     containerd) printf "%s\n" "Low-level container runtime used by Docker" ;;
@@ -1046,7 +1058,7 @@ sc_helper_dotversions_category() {
     bat|delta|shellcheck|shfmt)
       printf "%s\n" "Shell Utilities"
       ;;
-    fd|fzf|ripgrep|rg|zoxide)
+    atuin|fd|fzf|ripgrep|rg|zoxide)
       printf "%s\n" "Search and Navigation"
       ;;
     jq|yq)
@@ -1092,6 +1104,7 @@ sc_helper_dotversions_example() {
     argocd) printf "%s\n" "argocd app list" ;;
     amass) printf "%s\n" "amass enum -d example.com" ;;
     asnmap) printf "%s\n" "asnmap -org GOOGLE -silent" ;;
+    atuin) printf "%s\n" "atuin search kubectl" ;;
     bat) printf "%s\n" "bat file.txt" ;;
     conftest) printf "%s\n" "conftest test policy.yaml" ;;
     containerd) printf "%s\n" "docker version" ;;

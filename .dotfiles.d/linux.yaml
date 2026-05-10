@@ -670,6 +670,15 @@ binaries:
     latest: 0.72.0
     versions:
       - version: 0.72.0
+  - name: atuin
+    url: https://github.com/atuinsh/atuin/releases/download/v{version}/atuin-x86_64-unknown-linux-gnu.tar.gz
+    type: tar.gz
+    override: False
+    strip: True
+    inBin: False
+    latest: 18.16.0
+    versions:
+      - version: 18.16.0
   - name: fd
     url: https://github.com/sharkdp/fd/releases/download/v{version}/fd-v{version}-x86_64-unknown-linux-gnu.tar.gz
     type: tar.gz

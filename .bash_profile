@@ -8,7 +8,7 @@ for tool in go groovy node yarn pnpm mvn yq jq ripgrep uv \
             kubectl argocd kubectx kubens kubetail kustomize kubeconform stern kubectl-neat \
             tofu terraform terragrunt terrascan tflint helm helmify helmfile rtfmt tfsec pike \
             helm-unittest okd upx oras k6 github-mcp-server shellcheck shfmt \
-            trivy gh actionlint fzf fd bat delta zoxide sops age conftest syft grype \
+            trivy gh actionlint fzf atuin fd bat delta zoxide sops age conftest syft grype \
             cosign; do
   PATH="${HOME}/binaries/${tool}/latest/bin:${PATH}"
 done

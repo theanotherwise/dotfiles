@@ -4,3 +4,4 @@ fi
 
 sc_helper_zoxide_init
 sc_helper_fzf_init
+sc_helper_atuin_init
