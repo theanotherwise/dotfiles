@@ -261,9 +261,9 @@ sc_helper_kube_errors() {
         "CrashLoopBackOff|ImagePullBackOff|ErrImagePull|CreateContainerConfigError|CreateContainerError|InvalidImageName|RunContainerError|Error";
       def state_row:
         if .state.waiting then
-          ["waiting", (.state.waiting.reason // "-"), (.state.waiting.message // "-")]
+          ["waiting", (.state.waiting.reason // "-")]
         elif .state.terminated then
-          ["terminated", ((.state.terminated.reason // ("exit " + ((.state.terminated.exitCode // 0) | tostring)))), (.state.terminated.message // "-")]
+          ["terminated", ((.state.terminated.reason // ("exit " + ((.state.terminated.exitCode // 0) | tostring))))]
         else
           empty
         end;
@@ -283,8 +283,7 @@ sc_helper_kube_errors() {
           ($container.name // "-"),
           $state[0],
           $state[1],
-          (($container.restartCount // 0) | tostring),
-          $state[2]
+          (($container.restartCount // 0) | tostring)
         ]
       | @tsv
     '
@@ -297,27 +296,27 @@ sc_helper_kube_errors() {
 
   if [ "${all}" -eq 1 ]; then
     {
-      printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\tMESSAGE\n"
+      printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}"
     } | awk -F '\t' 'BEGIN {
-        fmt="%-16s %-36s %-24s %-11s %-28s %-8s %s\n"
+        fmt="%-16s %-36s %-24s %-11s %-28s %s\n"
       }
       {
-        printf fmt, $1, $2, $3, $4, $5, $6, $7
+        printf fmt, $1, $2, $3, $4, $5, $6
       }'
   else
     {
-      printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\tMESSAGE\n"
+      printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}"
     } | awk -F '\t' 'BEGIN {
-        fmt="%-36s %-24s %-11s %-28s %-8s %s\n"
+        fmt="%-36s %-24s %-11s %-28s %s\n"
       }
       NR == 1 {
-        printf fmt, $1, $2, $3, $4, $5, $6
+        printf fmt, $1, $2, $3, $4, $5
         next
       }
       {
-        printf fmt, $2, $3, $4, $5, $6, $7
+        printf fmt, $2, $3, $4, $5, $6
       }'
   fi
 }
