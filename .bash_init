@@ -3,3 +3,4 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
 fi
 
 sc_helper_zoxide_init
+sc_helper_fzf_init
