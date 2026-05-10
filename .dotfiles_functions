@@ -183,7 +183,7 @@ sc_helper_kube_errors() {
     return 127
   fi
 
-  local all=0 ns="" pods_json rows scope
+  local all=0 ns="" pod="" pods_json rows scope
 
   while [ "$#" -gt 0 ]; do
     case "${1}" in
@@ -194,25 +194,25 @@ sc_helper_kube_errors() {
       -n|--namespace)
         ns="${2:-}"
         if [ -z "${ns}" ]; then
-          echo "Usage: kerrors [-A] [-n namespace] [namespace]" 1>&2
+          echo "Usage: kerrors [-A] [-n namespace] [pod]" 1>&2
           return 2
         fi
         shift 2
         ;;
       -h|--help)
-        echo "Usage: kerrors [-A] [-n namespace] [namespace]"
+        echo "Usage: kerrors [-A] [-n namespace] [pod]"
         return 0
         ;;
       -*)
-        echo "Usage: kerrors [-A] [-n namespace] [namespace]" 1>&2
+        echo "Usage: kerrors [-A] [-n namespace] [pod]" 1>&2
         return 2
         ;;
       *)
-        if [ -z "${ns}" ] && [ "${all}" -eq 0 ]; then
-          ns="${1}"
+        if [ -z "${pod}" ]; then
+          pod="${1}"
           shift
         else
-          echo "Usage: kerrors [-A] [-n namespace] [namespace]" 1>&2
+          echo "Usage: kerrors [-A] [-n namespace] [pod]" 1>&2
           return 2
         fi
         ;;
@@ -230,9 +230,10 @@ sc_helper_kube_errors() {
     scope="namespace ${ns}"
     pods_json="$(kubectl get pods -n "${ns}" -o json 2>/dev/null)" || return 1
   fi
+  [ -z "${pod}" ] || scope="${scope}, pod ${pod}"
 
   rows="$(
-    printf "%s" "${pods_json}" | jq -r '
+    printf "%s" "${pods_json}" | jq -r --arg pod "${pod}" '
       def bad_reason:
         "CrashLoopBackOff|ImagePullBackOff|ErrImagePull|CreateContainerConfigError|CreateContainerError|InvalidImageName|RunContainerError|Error";
       def state_row:
@@ -244,6 +245,7 @@ sc_helper_kube_errors() {
           empty
         end;
       .items[]
+      | select($pod == "" or .metadata.name == $pod)
       | . as $pod
       | (($pod.status.initContainerStatuses // []) + ($pod.status.containerStatuses // []))[]
       | . as $container

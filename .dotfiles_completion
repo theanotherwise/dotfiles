@@ -263,7 +263,7 @@ sc_helper_kcontainers_completion() {
 }
 
 sc_helper_kerrors_completion() {
-  local cur prev word namespaces has_namespace has_all
+  local cur prev word namespaces pods ns has_namespace_value has_pod has_all expect_namespace
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
@@ -277,6 +277,9 @@ sc_helper_kerrors_completion() {
   done
 
   if [[ "${has_all}" == "1" ]]; then
+    if [[ "${cur}" == -* ]]; then
+      COMPREPLY=( $(compgen -W "-h --help" -- "${cur}") )
+    fi
     return 0
   fi
 
@@ -294,19 +297,21 @@ sc_helper_kerrors_completion() {
   for word in "${COMP_WORDS[@]:1:COMP_CWORD-1}"; do
     case "${word}" in
       -n|--namespace)
-        has_namespace=next
+        expect_namespace=1
         ;;
       *)
-        if [[ "${has_namespace}" == "next" ]]; then
-          has_namespace=1
+        if [[ "${expect_namespace}" == "1" ]]; then
+          ns="${word}"
+          has_namespace_value=1
+          expect_namespace=0
         elif [[ "${word}" != -* ]]; then
-          has_namespace=1
+          has_pod=1
         fi
         ;;
     esac
   done
 
-  if [[ "${has_namespace}" == "1" ]]; then
+  if [[ "${has_pod}" == "1" ]]; then
     return 0
   fi
 
@@ -315,8 +320,13 @@ sc_helper_kerrors_completion() {
     return 0
   fi
 
-  namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
-  COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
+  if [[ "${has_namespace_value}" != "1" ]]; then
+    ns="$(kubectl config view --minify -o jsonpath='{..namespace}' 2>/dev/null)"
+    [ -n "${ns}" ] || ns=default
+  fi
+
+  pods="$(kubectl get pods -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+  COMPREPLY=( $(compgen -W "${pods}" -- "${cur}") )
 }
 
 sc_helper_atuin_a_completion() {
