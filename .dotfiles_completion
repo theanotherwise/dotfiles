@@ -225,13 +225,14 @@ sc_helper_ksecret_completion() {
   command -v kubectl >/dev/null 2>&1 || return 0
 
   if [[ "${prev}" == "-n" || "${prev}" == "--namespace" ]]; then
-    if declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1; then
-      sc_helper_kube_namespaces_completion
-      return 0
-    fi
-
     namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
     COMPREPLY=( $(compgen -W "${namespaces}" -- "${cur}") )
+    return 0
+  fi
+
+  if [[ "${cur}" == --namespace=* ]]; then
+    namespaces="$(kubectl get namespaces -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}' 2>/dev/null)"
+    COMPREPLY=( $(compgen -P "--namespace=" -W "${namespaces}" -- "${cur#--namespace=}") )
     return 0
   fi
 
@@ -542,7 +543,7 @@ declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace 
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
 declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
 declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
-complete -F sc_helper_ksecret_completion ksecret
+complete -F sc_helper_ksecret_completion ksecret ksecrets
 complete -o nospace -F sc_helper_kcontainers_completion kcontainers
 complete -F sc_helper_kerrors_completion kerrors
 declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan
