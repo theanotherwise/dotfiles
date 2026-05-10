@@ -262,7 +262,37 @@ sc_helper_kcontainers_completion() {
   fi
 }
 
+sc_helper_atuin_a_completion() {
+  declare -F _atuin >/dev/null 2>&1 || return 0
+
+  local original_cword cur prev
+  local -a original_words
+
+  original_cword="${COMP_CWORD}"
+  original_words=("${COMP_WORDS[@]}")
+
+  COMP_WORDS=(atuin search -i "${original_words[@]:1}")
+  COMP_CWORD=$((original_cword + 2))
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  if [ "${COMP_CWORD}" -gt 0 ]; then
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+  else
+    prev=""
+  fi
+  _atuin atuin "${cur}" "${prev}"
+
+  COMP_WORDS=("${original_words[@]}")
+  COMP_CWORD="${original_cword}"
+}
+
 declare -F __start_kubectl >/dev/null 2>&1 && complete -o nospace -F __start_kubectl k
+if declare -F _atuin >/dev/null 2>&1; then
+  if [[ "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -ge 4 || "${BASH_VERSINFO[0]}" -gt 4 ]]; then
+    complete -o nosort -o bashdefault -o default -F sc_helper_atuin_a_completion a
+  else
+    complete -o bashdefault -o default -F sc_helper_atuin_a_completion a
+  fi
+fi
 declare -F sc_helper_kube_contexts_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kube_contexts_completion kubectx kctx
 declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kube_namespaces_completion kubens kns
 declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
