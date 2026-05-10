@@ -10,31 +10,31 @@ if [[ $- != *i* ]]; then
 fi
 
 # Keep interactive non-login shells (`bash`) consistent with login shell startup.
-if [ -f "${HOME}/.bash_functions" ]; then
-  . "${HOME}/.bash_functions"
+if [ -f "${HOME}/.dotfiles_functions" ]; then
+  . "${HOME}/.dotfiles_functions"
 fi
 
-if [ -f "${HOME}/.bash_adhoc_functions" ]; then
-  . "${HOME}/.bash_adhoc_functions"
+if [ -f "${HOME}/.dotfiles_adhoc_functions" ]; then
+  . "${HOME}/.dotfiles_adhoc_functions"
 fi
 
 if command -v sw_vers >/dev/null 2>&1 && [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
   . /opt/homebrew/etc/profile.d/bash_completion.sh
 fi
-if [ -f "${HOME}/.bash_completion" ]; then
-  . "${HOME}/.bash_completion"
+if [ -f "${HOME}/.dotfiles_completion" ]; then
+  . "${HOME}/.dotfiles_completion"
 fi
 
-if [ -f "${HOME}/.bash_aliases" ]; then
-  . "${HOME}/.bash_aliases"
+if [ -f "${HOME}/.dotfiles_aliases" ]; then
+  . "${HOME}/.dotfiles_aliases"
 fi
 
-if [ -f "${HOME}/.bash_adhoc_aliases" ]; then
-  . "${HOME}/.bash_adhoc_aliases"
+if [ -f "${HOME}/.dotfiles_adhoc_aliases" ]; then
+  . "${HOME}/.dotfiles_adhoc_aliases"
 fi
 
-if [ -f "${HOME}/.bash_init" ]; then
-  . "${HOME}/.bash_init"
+if [ -f "${HOME}/.dotfiles_init" ]; then
+  . "${HOME}/.dotfiles_init"
 fi
 
 export PS1="\[\e[1;34m\]\$(sc_helper_bashrc_kube)\[\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\e[1;34m\]\h\[\e[m\]][\[\e[1;36m\]\W\[\e[m\]]\$(sc_helper_bashrc_cursor) \[\e[33m\]\$(sc_helper_bashrc_branch)\[\e[m\]"

@@ -315,7 +315,7 @@ sc_helper_dotcache() {
   printf "[%s] cache flush    dir=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${cache_dir}"
   sc_helper_dotflush
 
-  if [ -f "${HOME}/.bash_completion" ]; then
+  if [ -f "${HOME}/.dotfiles_completion" ]; then
     command mkdir -p "${cache_dir}" 2>/dev/null || true
     (
       unset SC_BASH_COMPLETION_LOADED_PID
@@ -324,7 +324,7 @@ sc_helper_dotcache() {
         SC_BASH_COMPLETION_CACHE_VERBOSE=1 \
         SC_BASH_COMPLETION_CACHE_ASYNC=1 \
         SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-100}" \
-        . "${HOME}/.bash_completion"
+        . "${HOME}/.dotfiles_completion"
     ) &
     pid=$!
     disown "${pid}" 2>/dev/null || true

@@ -8,9 +8,9 @@
 !.dotfiles
 !.dotfiles.d/
 .dotfiles.cache/
-!.bash_aliases
-!.bash_completion
-!.bash_functions
-!.bash_init
+!.dotfiles_aliases
+!.dotfiles_completion
+!.dotfiles_functions
+!.dotfiles_init
 !.bash_profile
 !.bashrc
