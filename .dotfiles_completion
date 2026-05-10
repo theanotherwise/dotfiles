@@ -333,7 +333,7 @@ sc_helper_k_completion() {
 }
 
 sc_helper_kerrors_completion() {
-  local cur prev word namespaces pods ns has_namespace_value has_pod has_all expect_namespace expect_tail
+  local cur prev word namespaces pods ns has_namespace_value has_pod has_all expect_namespace expect_tail expect_since
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
@@ -346,7 +346,7 @@ sc_helper_kerrors_completion() {
 	    esac
   done
 
-  if [[ "${prev}" == "--tail" ]]; then
+  if [[ "${prev}" == "--tail" || "${prev}" == "-s" || "${prev}" == "--since" ]]; then
     return 0
   fi
 
@@ -368,6 +368,11 @@ sc_helper_kerrors_completion() {
         ;;
       --tail=*)
         ;;
+      -s|--since)
+        expect_since=1
+        ;;
+      --since=*)
+        ;;
       -l|--logs|--sort|-p|--previous|-h|--help)
         ;;
       -n|--namespace)
@@ -380,6 +385,8 @@ sc_helper_kerrors_completion() {
           expect_namespace=0
         elif [[ "${expect_tail}" == "1" ]]; then
           expect_tail=0
+        elif [[ "${expect_since}" == "1" ]]; then
+          expect_since=0
         elif [[ "${word}" != -* ]]; then
           has_pod=1
         fi
@@ -389,9 +396,9 @@ sc_helper_kerrors_completion() {
 
   if [[ "${cur}" == -* ]]; then
     if [[ "${has_all}" == "1" ]]; then
-      COMPREPLY=( $(compgen -W "-l --logs --sort -p --previous --tail -h --help" -- "${cur}") )
+      COMPREPLY=( $(compgen -W "-l --logs --sort -p --previous -s --since --tail -h --help" -- "${cur}") )
     else
-      COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -l --logs --sort -p --previous --tail -h --help" -- "${cur}") )
+      COMPREPLY=( $(compgen -W "-A --all-namespaces -n --namespace -l --logs --sort -p --previous -s --since --tail -h --help" -- "${cur}") )
     fi
     return 0
   fi
