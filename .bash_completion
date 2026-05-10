@@ -117,6 +117,7 @@ declare -F __start_server >/dev/null 2>&1 && complete -o nospace -F __start_serv
 complete -r server 2>/dev/null || true
 sc_helper_source_cached_completion pnpm
 sc_helper_source_cached_completion node --completion-bash
+sc_helper_strip_completion_file_fallback node_g
 sc_helper_source_cached_completion rg --generate=complete-bash
 sc_helper_source_cached_completion delta --generate-completion bash
 sc_helper_source_cached_completion bat --completion bash
