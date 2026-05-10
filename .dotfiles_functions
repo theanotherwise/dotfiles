@@ -202,49 +202,48 @@ sc_helper_git_tag_push() {
   fi
 }
 
+sc_helper_gitconfig_profiles() {
+  printf "%s\t%s\t%s\n" "priv" "Mateusz Adam Katana" "mateusz.adam.katana@gmail.com"
+  printf "%s\t%s\t%s\n" "silky" "Mateusz Katana" "mateusz.katana@silkycoders.com"
+  printf "%s\t%s\t%s\n" "irgit" "Mateusz Katana" "mateusz.katana@irgit.pl"
+  printf "%s\t%s\t%s\n" "stonex" "Mateusz Katana" "mateusz.katana@stonex.com"
+  printf "%s\t%s\t%s\n" "citi" "Mateusz Katana" "mateusz.katana@citi.com"
+  printf "%s\t%s\t%s\n" "sc" "Mateusz Katana" "mateusz.katana@seems.cloud"
+  printf "%s\t%s\t%s\n" "psem" "Mateusz Katana" "mateusz.katana@presemantic.com"
+  printf "%s\t%s\t%s\n" "tvn" "Mateusz Katana" "mateusz_katana@tvn.pl"
+}
+
+sc_helper_gitconfig_list() {
+  local key name email
+
+  printf "Usage: gitconfig <profile>\n"
+  while IFS=$'\t' read -r key name email; do
+    printf "  %-8s (%s) %s\n" "${key}" "${email}" "${name}"
+  done < <(sc_helper_gitconfig_profiles)
+}
+
 sc_helper_gitconfig() {
   local identity_file="${HOME}/.gitconfig.identity"
+  local profile="${1:-}" key name email
 
-  case "${1:-}" in
-    priv)
-      git config --file "${identity_file}" user.name "Mateusz Adam Katana"
-      git config --file "${identity_file}" user.email "mateusz.adam.katana@gmail.com"
-      ;;
-    silky)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz.katana@silkycoders.com"
-      ;;
-    irgit)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz.katana@irgit.pl"
-      ;;
-    stonex)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz.katana@stonex.com"
-      ;;
-    citi)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz.katana@citi.com"
-      ;;
-    sc)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz.katana@seems.cloud"
-      ;;
-    psem)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz.katana@presemantic.com"
-      ;;
-    tvn)
-      git config --file "${identity_file}" user.name "Mateusz Katana"
-      git config --file "${identity_file}" user.email "mateusz_katana@tvn.pl"
-      ;;
-    *)
-      echo "Usage: gitconfig {priv|silky|irgit|stonex|citi|sc|psem|tvn}" >&2
-      return 2
+  case "${profile}" in
+    ""|list|-l|--list)
+      sc_helper_gitconfig_list
+      return 0
       ;;
   esac
 
-  git config --file "${identity_file}" --get-regexp '^user\.(name|email)$'
+  while IFS=$'\t' read -r key name email; do
+    if [ "${profile}" = "${key}" ]; then
+      git config --file "${identity_file}" user.name "${name}"
+      git config --file "${identity_file}" user.email "${email}"
+      git config --file "${identity_file}" --get-regexp '^user\.(name|email)$'
+      return 0
+    fi
+  done < <(sc_helper_gitconfig_profiles)
+
+  sc_helper_gitconfig_list >&2
+  return 2
 }
 
 sc_helper_dotreload() {
