@@ -75,7 +75,7 @@ sc_helper_source_cached_completion() {
   fi
 
   tmp_file="${cache_file}.tmp.$$"
-  "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null &
+  (set +m; "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null) &
   pid=$!
   ticks=0
 
