@@ -302,6 +302,8 @@ sc_helper_kube_error_log_try() {
   local log_tail="$5"
   local log_pod_width="$6"
   local log_container_width="$7"
+  local log_type="$8"
+  local log_type_width="$9"
   local log_line
   local log_output
   local log_status
@@ -330,12 +332,12 @@ sc_helper_kube_error_log_try() {
 
   if [ -n "${log_output}" ]; then
     while IFS= read -r log_line; do
-      printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container}" "${log_line}"
+      printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "${log_pod}" "${log_container}" "${log_type}" "${log_line}"
     done <<EOF
 ${log_output}
 EOF
   else
-    printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container}" "(no logs)"
+    printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "${log_pod}" "${log_container}" "${log_type}" "(no logs)"
   fi
   return 0
 }
@@ -344,23 +346,24 @@ sc_helper_kube_error_logs() {
   local rows="$1"
   local log_tail="$2"
   local log_mode="${3:-current}"
-  local log_ns log_pod log_container log_state log_reason log_restarts
-  local log_pod_width=3 log_container_width=9
+  local log_ns log_pod log_container log_type log_state log_reason log_restarts
+  local log_pod_width=3 log_container_width=9 log_type_width=4
 
-  while IFS=$'\t' read -r log_ns log_pod log_container log_state log_reason log_restarts; do
+  while IFS=$'\t' read -r log_ns log_pod log_container log_type log_state log_reason log_restarts; do
     [ -n "${log_pod}" ] || continue
     [ "${#log_pod}" -le "${log_pod_width}" ] || log_pod_width="${#log_pod}"
     [ "${#log_container}" -le "${log_container_width}" ] || log_container_width="${#log_container}"
+    [ "${#log_type}" -le "${log_type_width}" ] || log_type_width="${#log_type}"
   done <<EOF
 ${rows}
 EOF
 
-  printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "POD" "CONTAINER" "LOG"
-  while IFS=$'\t' read -r log_ns log_pod log_container log_state log_reason log_restarts; do
+  printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "POD" "CONTAINER" "TYPE" "LOG"
+  while IFS=$'\t' read -r log_ns log_pod log_container log_type log_state log_reason log_restarts; do
     [ -n "${log_pod}" ] || continue
 
-    sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_pod_width}" "${log_container_width}" \
-      || printf "%-${log_pod_width}s  %-${log_container_width}s  %s\n" "${log_pod}" "${log_container}" "logs unavailable"
+    sc_helper_kube_error_log_try "${log_ns}" "${log_pod}" "${log_container}" "${log_mode}" "${log_tail}" "${log_pod_width}" "${log_container_width}" "${log_type}" "${log_type_width}" \
+      || printf "%-${log_pod_width}s  %-${log_container_width}s  %-${log_type_width}s  %s\n" "${log_pod}" "${log_container}" "${log_type}" "logs unavailable"
   done <<EOF
 ${rows}
 EOF
@@ -480,14 +483,19 @@ sc_helper_kube_errors() {
       .items[]
       | select($pod == "" or .metadata.name == $pod)
       | . as $pod
-      | (($pod.status.initContainerStatuses // []) + ($pod.status.containerStatuses // []))[]
-      | . as $container
+      | (
+          (($pod.status.initContainerStatuses // [])[] | ["init", .]),
+          (($pod.status.containerStatuses // [])[] | ["container", .])
+        )
+      | .[0] as $type
+      | .[1] as $container
       | select(current_bad or previous_bad or recovered_bad)
       | state_row as $state
       | [
           ($pod.metadata.namespace // "-"),
           ($pod.metadata.name // "-"),
           ($container.name // "-"),
+          $type,
           $state[0],
           $state[1],
           (($container.restartCount // 0) | tostring)
@@ -505,12 +513,12 @@ sc_helper_kube_errors() {
     sc_helper_kube_error_logs "${rows}" "${log_tail}" "${log_mode}"
   elif [ "${all}" -eq 1 ]; then
     {
-      printf "NAMESPACE\tPOD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
+      printf "NAMESPACE\tPOD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}"
     } | sc_helper_tsv_table
   else
     {
-      printf "POD\tCONTAINER\tSTATE\tREASON\tRESTARTS\n"
+      printf "POD\tCONTAINER\tTYPE\tSTATE\tREASON\tRESTARTS\n"
       printf "%s\n" "${rows}" | cut -f2-
     } | sc_helper_tsv_table
   fi
