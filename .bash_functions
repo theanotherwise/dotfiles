@@ -487,7 +487,7 @@ sc_helper_fzf_init() {
   fd_excludes="--exclude '.*' --exclude .git --exclude .hg --exclude .svn --exclude .pyenv --exclude __pycache__ --exclude node_modules --exclude .venv --exclude venv --exclude env --exclude .tox --exclude .nox --exclude .pytest_cache --exclude .mypy_cache --exclude .ruff_cache --exclude .cache --exclude .terraform --exclude .terragrunt-cache --exclude .next --exclude .nuxt --exclude .turbo --exclude .parcel-cache --exclude .pnpm-store --exclude .yarn --exclude dist --exclude build --exclude target --exclude coverage --exclude vendor"
   fd_base="fd --color=never --strip-cwd-prefix ${fd_excludes}"
 
-  export FZF_DEFAULT_COMMAND="${fd_base} --type f"
+  export FZF_DEFAULT_COMMAND="${fd_base} --type f --type d"
   export FZF_CTRL_T_COMMAND="${fd_base} --type f --type d"
   export FZF_ALT_C_COMMAND="${fd_base} --type d"
 
