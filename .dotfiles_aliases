@@ -185,6 +185,7 @@ alias git-tag-by-date='sc_helper_git_tag_push'
 alias git-reset-soft='git reset --soft HEAD^'
 alias git-reset-hard='git reset --hard'
 alias git-reset-hard-commited="git reset --hard @{u}"
+alias gp='git-pull'
 alias git-pull='git pull -vvv'
 alias git-pull-main='git pull origin main -vvv'
 alias git-pull-master='git pull origin master -vvv'
