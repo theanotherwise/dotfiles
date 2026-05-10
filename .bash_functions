@@ -1037,14 +1037,11 @@ sc_helper_dotversions_category() {
     actionlint|gh|github-mcp-server)
       printf "%s\n" "GitHub and Git"
       ;;
-    go|groovy|node|uv)
+    go|groovy|node)
       printf "%s\n" "Languages"
       ;;
-    mvn)
-      printf "%s\n" "Build Tools"
-      ;;
-    pnpm|yarn)
-      printf "%s\n" "JavaScript Tooling"
+    mvn|pnpm|uv|yarn)
+      printf "%s\n" "Package Managers"
       ;;
     bat|delta|shellcheck|shfmt)
       printf "%s\n" "Shell Utilities"
@@ -1078,8 +1075,7 @@ sc_helper_dotversions_category_order() {
     "Recon" \
     "GitHub and Git" \
     "Languages" \
-    "Build Tools" \
-    "JavaScript Tooling" \
+    "Package Managers" \
     "Shell Utilities" \
     "Search and Navigation" \
     "Data Formats" \
