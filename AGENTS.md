@@ -13,7 +13,7 @@ This project contains personal shell and tool configuration intended to be check
 - [`.bash_aliases`](./.bash_aliases) contains aliases only; non-trivial shell logic belongs in [`.bash_functions`](./.bash_functions).
 - [`.bash_functions`](./.bash_functions) contains reusable shell helper functions, including helpers that back aliases. Repository-owned shell function names must use the `sc_helper_` prefix, with public command names exposed through aliases in [`.bash_aliases`](./.bash_aliases).
 - [`.gitconfig`](./.gitconfig) includes the local, untracked `~/.gitconfig.identity` file used for the active Git identity.
-- [`.dotfiles`](./.dotfiles) delegates binary setup to [`.dotfiles.d/dotfiles.py`](./.dotfiles.d/dotfiles.py).
+- [`.dotfiles`](./.dotfiles) delegates binary setup to [`.dotfiles.d/dotfiles.py`](./.dotfiles.d/dotfiles.py), which prints structured setup logs and installs pending tools concurrently by package while keeping each package's versions sequential.
 
 ## Placement Rules
 
@@ -29,6 +29,6 @@ This project contains personal shell and tool configuration intended to be check
 
 ## Execution Constraints
 
-Use `bash` for shell checks. Do not run [`.dotfiles`](./.dotfiles) or [`.dotfiles.d/dotfiles.py`](./.dotfiles.d/dotfiles.py) unless explicitly requested, because they download and install local binaries.
+Use `bash` for shell checks. Do not run [`.dotfiles`](./.dotfiles) or [`.dotfiles.d/dotfiles.py`](./.dotfiles.d/dotfiles.py) unless explicitly requested, because they download and install local binaries. When inspecting installer behavior, use syntax checks or isolated function-level tests instead of running the real installer.
 
 When changing shell files, prefer focused syntax checks such as `bash -n` on the edited file. Do not run commands that mutate the user's real home Git config during verification; use inspection or an isolated temporary home if behavior must be exercised.

@@ -12,6 +12,15 @@ SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-20}"
 SC_BASH_COMPLETION_CACHE_DIR="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
 command mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
 
+sc_helper_completion_cache_log() {
+  local status="$1"
+  local cmd="$2"
+  local cache_file="$3"
+
+  [ -n "${SC_BASH_COMPLETION_CACHE_VERBOSE:-}" ] || return 0
+  printf "[%s] cache %-8s tool=%-24s file=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${cmd}" "${cache_file}"
+}
+
 sc_helper_strip_completion_file_fallback() {
   local target="$1"
   local spec opt next i last_index
@@ -74,9 +83,38 @@ sc_helper_source_cached_completion() {
     return 0
   fi
 
-  [ -z "${SC_BASH_COMPLETION_CACHE_VERBOSE:-}" ] || printf "cache: %s\n" "${cmd}"
-
   tmp_file="${cache_file}.tmp.$$"
+
+  if [ -n "${SC_BASH_COMPLETION_CACHE_ASYNC:-}" ]; then
+    sc_helper_completion_cache_log "queued" "${cmd}" "${cache_file}"
+    (
+      "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null &
+      pid=$!
+      ticks=0
+
+      while kill -0 "${pid}" 2>/dev/null; do
+        ticks=$((ticks + 1))
+        if [ "${ticks}" -ge "${SC_BASH_COMPLETION_TIMEOUT_TENTHS}" ]; then
+          kill "${pid}" >/dev/null 2>&1 || true
+          wait "${pid}" 2>/dev/null || true
+          command rm -f "${tmp_file}"
+          exit 0
+        fi
+        sleep 0.1
+      done
+
+      if wait "${pid}" 2>/dev/null && [ -s "${tmp_file}" ]; then
+        command mv "${tmp_file}" "${cache_file}"
+      else
+        command rm -f "${tmp_file}"
+      fi
+    ) &
+    disown "$!" 2>/dev/null || true
+    return 0
+  fi
+
+  sc_helper_completion_cache_log "generate" "${cmd}" "${cache_file}"
+
   restore_monitor=0
   case "$-" in
     *m*)
