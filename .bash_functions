@@ -484,15 +484,15 @@ sc_helper_fzf_init() {
   command -v fd >/dev/null 2>&1 || return 0
 
   local fd_excludes fd_base walker_skip
-  fd_excludes="--exclude '.*' --exclude .git --exclude .hg --exclude .svn --exclude .pyenv --exclude __pycache__ --exclude node_modules --exclude .venv --exclude venv --exclude env --exclude .tox --exclude .nox --exclude .pytest_cache --exclude .mypy_cache --exclude .ruff_cache --exclude .cache --exclude .terraform --exclude .terragrunt-cache --exclude .next --exclude .nuxt --exclude .turbo --exclude .parcel-cache --exclude .pnpm-store --exclude .yarn --exclude dist --exclude build --exclude target --exclude coverage --exclude vendor"
-  fd_base="fd --color=never --strip-cwd-prefix ${fd_excludes}"
+  fd_excludes="--exclude '.*' --exclude .git --exclude .hg --exclude .svn --exclude .pyenv --exclude __pycache__ --exclude node_modules --exclude Library --exclude .venv --exclude venv --exclude env --exclude .tox --exclude .nox --exclude .pytest_cache --exclude .mypy_cache --exclude .ruff_cache --exclude .cache --exclude .terraform --exclude .terragrunt-cache --exclude .next --exclude .nuxt --exclude .turbo --exclude .parcel-cache --exclude .pnpm-store --exclude .yarn --exclude dist --exclude build --exclude target --exclude coverage --exclude vendor"
+  fd_base="fd --color=never --strip-cwd-prefix --no-ignore-vcs ${fd_excludes}"
 
   export FZF_DEFAULT_COMMAND="${fd_base} --type f --type d"
   export FZF_CTRL_T_COMMAND="${fd_base} --type f --type d"
   export FZF_ALT_C_COMMAND="${fd_base} --type d"
 
   if fzf --help 2>/dev/null | grep -q -- '--walker-skip'; then
-    walker_skip=".git,.hg,.svn,.pyenv,__pycache__,node_modules,.venv,venv,env,.tox,.nox,.pytest_cache,.mypy_cache,.ruff_cache,.cache,.terraform,.terragrunt-cache,.next,.nuxt,.turbo,.parcel-cache,.pnpm-store,.yarn,dist,build,target,coverage,vendor"
+    walker_skip=".git,.hg,.svn,.pyenv,__pycache__,node_modules,Library,.venv,venv,env,.tox,.nox,.pytest_cache,.mypy_cache,.ruff_cache,.cache,.terraform,.terragrunt-cache,.next,.nuxt,.turbo,.parcel-cache,.pnpm-store,.yarn,dist,build,target,coverage,vendor"
     case " ${FZF_DEFAULT_OPTS:-} " in
       *" --walker-skip=${walker_skip} "*) ;;
       *) export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:+${FZF_DEFAULT_OPTS} }--walker-skip=${walker_skip}" ;;
