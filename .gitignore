@@ -15,4 +15,5 @@
 !.bash_hooks
 !.bash_profile
 !.bashrc
+!init.yaml
 !pod.yaml

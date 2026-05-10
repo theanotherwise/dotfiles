@@ -357,11 +357,22 @@ sc_helper_kube_errors() {
     printf "%s" "${pods_json}" | jq -r --arg pod "${pod}" '
       def bad_reason:
         "CrashLoopBackOff|ImagePullBackOff|ErrImagePull|CreateContainerConfigError|CreateContainerError|InvalidImageName|RunContainerError|Error";
+      def current_bad:
+        ((.state.waiting.reason? // "") | test(bad_reason))
+        or ((.state.terminated.exitCode? // 0) != 0);
+      def previous_bad:
+        ((.lastState.terminated.exitCode? // 0) != 0);
       def state_row:
-        if .state.waiting then
-          ["waiting", (.state.waiting.reason // "-")]
-        elif .state.terminated then
-          ["terminated", ((.state.terminated.reason // ("exit " + ((.state.terminated.exitCode // 0) | tostring))))]
+        if current_bad then
+          if .state.waiting then
+            ["waiting", (.state.waiting.reason // "-")]
+          elif .state.terminated then
+            ["terminated", ((.state.terminated.reason // ("exit " + ((.state.terminated.exitCode // 0) | tostring))))]
+          else
+            empty
+          end
+        elif previous_bad then
+          ["last-terminated", ((.lastState.terminated.reason // ("exit " + ((.lastState.terminated.exitCode // 0) | tostring))))]
         else
           empty
         end;
@@ -370,10 +381,7 @@ sc_helper_kube_errors() {
       | . as $pod
       | (($pod.status.initContainerStatuses // []) + ($pod.status.containerStatuses // []))[]
       | . as $container
-      | select(
-          ((.state.waiting.reason? // "") | test(bad_reason))
-          or ((.state.terminated.exitCode? // 0) != 0)
-        )
+      | select(current_bad or previous_bad)
       | state_row as $state
       | [
           ($pod.metadata.namespace // "-"),
