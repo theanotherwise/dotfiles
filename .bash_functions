@@ -252,7 +252,18 @@ sc_helper_dotreload() {
 }
 
 sc_helper_dotsetup() {
-  bash "${HOME}/.dotfiles"
+  local setup_file pid
+
+  setup_file="${HOME}/.dotfiles"
+  if [ ! -f "${setup_file}" ]; then
+    printf "[%s] setup missing  file=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${setup_file}" >&2
+    return 1
+  fi
+
+  bash "${setup_file}" &
+  pid=$!
+  disown "${pid}" 2>/dev/null || true
+  printf "[%s] setup start    mode=background pid=%s file=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${pid}" "${setup_file}"
 }
 
 sc_helper_dotfiles_remove_tree_file_by_file() {
@@ -1005,26 +1016,44 @@ sc_helper_dotversions_category() {
   local tool="$1"
 
   case "${tool}" in
-    containerd|docker\ client|docker\ compose|docker\ engine|docker-init|k3d|oras|runc)
+    containerd|docker\ client|docker\ compose|docker\ engine|docker-init|runc)
       printf "%s\n" "Containers"
       ;;
-    argocd|helm|helm-unittest|helmfile|helmify|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl|kubectl-neat|kubectx|kubens|kubent|kubespy|kubetail|kustomize|oc[0-9]*|okd|stern)
-      printf "%s\n" "Kubernetes"
+    kubectl|oc[0-9]*|okd)
+      printf "%s\n" "Kubernetes Core"
+      ;;
+    argocd|k3d|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl-neat|kubectx|kubens|kubent|kubespy|kubetail|kustomize|stern)
+      printf "%s\n" "Kubernetes Tools"
+      ;;
+    helm|helm-unittest|helmfile|helmify)
+      printf "%s\n" "Helm"
       ;;
     opentofu|pike|terraform|terragrunt|terrascan|tflint|tfsec|tofu)
-      printf "%s\n" "IaC"
+      printf "%s\n" "Infrastructure as Code"
       ;;
-    age|conftest|cosign|grype|sops|syft|trivy)
-      printf "%s\n" "Security"
+    age|conftest|cosign|grype|sops|syft|trivy|oras)
+      printf "%s\n" "Security and Supply Chain"
       ;;
     actionlint|gh|github-mcp-server)
-      printf "%s\n" "GitHub"
+      printf "%s\n" "GitHub and Git"
       ;;
-    go|groovy|mvn|node|pnpm|uv|yarn)
-      printf "%s\n" "Languages and Build"
+    go|groovy|node|uv)
+      printf "%s\n" "Languages"
       ;;
-    bat|delta|fd|fzf|jq|ripgrep|rg|shellcheck|shfmt|yq|zoxide)
-      printf "%s\n" "Shell and Terminal"
+    mvn)
+      printf "%s\n" "Build Tools"
+      ;;
+    pnpm|yarn)
+      printf "%s\n" "JavaScript Tooling"
+      ;;
+    bat|delta|shellcheck|shfmt)
+      printf "%s\n" "Shell Utilities"
+      ;;
+    fd|fzf|ripgrep|rg|zoxide)
+      printf "%s\n" "Search and Navigation"
+      ;;
+    jq|yq)
+      printf "%s\n" "Data Formats"
       ;;
     k6)
       printf "%s\n" "Testing and Load"
@@ -1041,14 +1070,20 @@ sc_helper_dotversions_category() {
 sc_helper_dotversions_category_order() {
   printf "%s\n" \
     "Containers" \
-    "Kubernetes" \
-    "IaC" \
-    "Security" \
-    "GitHub" \
-    "Languages and Build" \
-    "Shell and Terminal" \
-    "Testing and Load" \
+    "Kubernetes Core" \
+    "Kubernetes Tools" \
+    "Helm" \
+    "Infrastructure as Code" \
+    "Security and Supply Chain" \
     "Recon" \
+    "GitHub and Git" \
+    "Languages" \
+    "Build Tools" \
+    "JavaScript Tooling" \
+    "Shell Utilities" \
+    "Search and Navigation" \
+    "Data Formats" \
+    "Testing and Load" \
     "Other"
 }
 
