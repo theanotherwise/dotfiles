@@ -489,8 +489,8 @@ sc_helper_kube_errors() {
         )
       | .[0] as $type
       | .[1] as $container
-      | select(current_bad or previous_bad or recovered_bad)
-      | state_row as $state
+      | select($container | (current_bad or previous_bad or recovered_bad))
+      | ($container | state_row) as $state
       | [
           ($pod.metadata.namespace // "-"),
           ($pod.metadata.name // "-"),
