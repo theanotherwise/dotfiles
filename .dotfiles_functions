@@ -941,7 +941,7 @@ sc_helper_zoxide_ignored_path() {
   local dir="/${1%/}/"
 
   case "${dir}" in
-    */.git/*|*/.hg/*|*/.svn/*|*/.pyenv/*|*/__pycache__/*|*/node_modules/*|*/.cache/*|*/.npm/*|*/.yarn/*|*/.pnpm-store/*|*/.venv/*|*/venv/*|*/env/*|*/.tox/*|*/.nox/*|*/.pytest_cache/*|*/.mypy_cache/*|*/.ruff_cache/*|*/.terraform/*|*/.terragrunt-cache/*|*/.next/*|*/.nuxt/*|*/.turbo/*|*/.parcel-cache/*|*/dist/*|*/build/*|*/target/*|*/coverage/*|*/vendor/*)
+    */.git/*|*/.hg/*|*/.svn/*|*/.pyenv/*|*/__pycache__/*|*/node_modules/*|*/npm-*/*|*/.cache/*|*/.npm/*|*/.yarn/*|*/.pnpm-store/*|*/.venv/*|*/venv/*|*/env/*|*/.tox/*|*/.nox/*|*/.pytest_cache/*|*/.mypy_cache/*|*/.ruff_cache/*|*/.terraform/*|*/.terragrunt-cache/*|*/.next/*|*/.nuxt/*|*/.turbo/*|*/.parcel-cache/*|*/dist/*|*/build/*|*/target/*|*/coverage/*|*/vendor/*)
       return 0
       ;;
   esac
@@ -969,7 +969,7 @@ sc_helper_zseed() {
       done
 
   find "${root}" \
-    \( -name .git -o -name .hg -o -name .svn -o -name .pyenv -o -name __pycache__ -o -name node_modules -o -name .cache -o -name .npm -o -name .yarn -o -name .pnpm-store -o -name .venv -o -name venv -o -name env -o -name .tox -o -name .nox -o -name .pytest_cache -o -name .mypy_cache -o -name .ruff_cache -o -name .terraform -o -name .terragrunt-cache -o -name .next -o -name .nuxt -o -name .turbo -o -name .parcel-cache -o -name dist -o -name build -o -name target -o -name coverage -o -name vendor \) -prune \
+    \( -name .git -o -name .hg -o -name .svn -o -name .pyenv -o -name __pycache__ -o -name node_modules -o -name 'npm-*' -o -name .cache -o -name .npm -o -name .yarn -o -name .pnpm-store -o -name .venv -o -name venv -o -name env -o -name .tox -o -name .nox -o -name .pytest_cache -o -name .mypy_cache -o -name .ruff_cache -o -name .terraform -o -name .terragrunt-cache -o -name .next -o -name .nuxt -o -name .turbo -o -name .parcel-cache -o -name dist -o -name build -o -name target -o -name coverage -o -name vendor \) -prune \
     -o -type d -print0 \
     | while IFS= read -r -d '' dir; do
         sc_helper_zoxide_ignored_path "${dir}" && continue
@@ -981,7 +981,7 @@ sc_helper_zoxide_init() {
   command -v zoxide >/dev/null 2>&1 || return 0
 
   local zoxide_excludes
-  zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/.hg:${HOME}/**/.hg/**:${HOME}/**/.svn:${HOME}/**/.svn/**:${HOME}/**/.pyenv:${HOME}/**/.pyenv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/.cache:${HOME}/**/.cache/**:${HOME}/**/.npm:${HOME}/**/.npm/**:${HOME}/**/.yarn:${HOME}/**/.yarn/**:${HOME}/**/.pnpm-store:${HOME}/**/.pnpm-store/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/venv:${HOME}/**/venv/**:${HOME}/**/env:${HOME}/**/env/**:${HOME}/**/.tox:${HOME}/**/.tox/**:${HOME}/**/.nox:${HOME}/**/.nox/**:${HOME}/**/.pytest_cache:${HOME}/**/.pytest_cache/**:${HOME}/**/.mypy_cache:${HOME}/**/.mypy_cache/**:${HOME}/**/.ruff_cache:${HOME}/**/.ruff_cache/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.next:${HOME}/**/.next/**:${HOME}/**/.nuxt:${HOME}/**/.nuxt/**:${HOME}/**/.turbo:${HOME}/**/.turbo/**:${HOME}/**/.parcel-cache:${HOME}/**/.parcel-cache/**:${HOME}/**/dist:${HOME}/**/dist/**:${HOME}/**/build:${HOME}/**/build/**:${HOME}/**/target:${HOME}/**/target/**:${HOME}/**/coverage:${HOME}/**/coverage/**:${HOME}/**/vendor:${HOME}/**/vendor/**"
+  zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/.hg:${HOME}/**/.hg/**:${HOME}/**/.svn:${HOME}/**/.svn/**:${HOME}/**/.pyenv:${HOME}/**/.pyenv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/npm-*:${HOME}/**/npm-*/**:${HOME}/**/.cache:${HOME}/**/.cache/**:${HOME}/**/.npm:${HOME}/**/.npm/**:${HOME}/**/.yarn:${HOME}/**/.yarn/**:${HOME}/**/.pnpm-store:${HOME}/**/.pnpm-store/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/venv:${HOME}/**/venv/**:${HOME}/**/env:${HOME}/**/env/**:${HOME}/**/.tox:${HOME}/**/.tox/**:${HOME}/**/.nox:${HOME}/**/.nox/**:${HOME}/**/.pytest_cache:${HOME}/**/.pytest_cache/**:${HOME}/**/.mypy_cache:${HOME}/**/.mypy_cache/**:${HOME}/**/.ruff_cache:${HOME}/**/.ruff_cache/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.next:${HOME}/**/.next/**:${HOME}/**/.nuxt:${HOME}/**/.nuxt/**:${HOME}/**/.turbo:${HOME}/**/.turbo/**:${HOME}/**/.parcel-cache:${HOME}/**/.parcel-cache/**:${HOME}/**/dist:${HOME}/**/dist/**:${HOME}/**/build:${HOME}/**/build/**:${HOME}/**/target:${HOME}/**/target/**:${HOME}/**/coverage:${HOME}/**/coverage/**:${HOME}/**/vendor:${HOME}/**/vendor/**"
 
   case ":${_ZO_EXCLUDE_DIRS:-}:" in
     *":${zoxide_excludes}:"*) ;;
