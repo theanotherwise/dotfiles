@@ -1194,7 +1194,6 @@ sc_helper_zoxide_z_completion() {
 
   while IFS= read -r path; do
     [ -d "${path}" ] || continue
-    sc_helper_zoxide_ignored_path "${path}" && continue
     name="${path##*/}"
     [ -n "${name}" ] || continue
     [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
@@ -1220,7 +1219,6 @@ sc_helper_zoxide_path_completion() {
 
   while IFS= read -r path; do
     [ -d "${path}" ] || continue
-    sc_helper_zoxide_ignored_path "${path}" && continue
     name="${path##*/}"
     [ -n "${name}" ] || continue
     [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
