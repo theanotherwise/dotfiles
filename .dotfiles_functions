@@ -1023,6 +1023,24 @@ sc_helper_zoxide_ignored_path() {
   return 1
 }
 
+sc_helper_zoxide_reinit() {
+  if ! command -v zoxide >/dev/null 2>&1; then
+    echo "zoxide not found" 1>&2
+    return 127
+  fi
+
+  local data_dir db_file
+  data_dir="${_ZO_DATA_DIR:-${XDG_DATA_HOME:-${HOME}/.local/share}/zoxide}"
+  db_file="${data_dir}/db.zo"
+
+  if [ -f "${db_file}" ]; then
+    rm -f "${db_file}"
+    echo "zoxide database removed: ${db_file}"
+  else
+    echo "zoxide database not found: ${db_file}"
+  fi
+}
+
 sc_helper_zseed() {
   if ! command -v zoxide >/dev/null 2>&1; then
     echo "zoxide not found" 1>&2
