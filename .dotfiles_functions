@@ -992,8 +992,14 @@ sc_helper_fd_exclude_args() {
   done < <(sc_helper_ignored_dir_patterns)
 }
 
+sc_helper_zoxide_extra_ignored_roots() {
+  printf "%s\n" \
+    "${HOME}/binaries" \
+    "${HOME}/temporary"
+}
+
 sc_helper_zoxide_exclude_dirs() {
-  local pattern sep=""
+  local pattern root sep=""
 
   while IFS= read -r pattern; do
     [ -n "${pattern}" ] || continue
@@ -1005,11 +1011,19 @@ sc_helper_zoxide_exclude_dirs() {
       "${HOME}" "${pattern}"
     sep=":"
   done < <(sc_helper_ignored_dir_patterns)
+
+  while IFS= read -r root; do
+    [ -n "${root}" ] || continue
+    root="${root%/}"
+    printf "%s%s:%s/**" "${sep}" "${root}" "${root}"
+    sep=":"
+  done < <(sc_helper_zoxide_extra_ignored_roots)
 }
 
 sc_helper_zoxide_ignored_path() {
   local dir="/${1%/}/"
   local pattern
+  local root
 
   while IFS= read -r pattern; do
     [ -n "${pattern}" ] || continue
@@ -1019,6 +1033,16 @@ sc_helper_zoxide_ignored_path() {
         ;;
     esac
   done < <(sc_helper_ignored_dir_patterns)
+
+  while IFS= read -r root; do
+    [ -n "${root}" ] || continue
+    root="${root%/}"
+    case "${1%/}/" in
+      "${root}/"|"$root"/*)
+        return 0
+        ;;
+    esac
+  done < <(sc_helper_zoxide_extra_ignored_roots)
 
   return 1
 }
@@ -1060,15 +1084,29 @@ sc_helper_zoxide_reinit() {
   fi
 }
 
+sc_helper_zoxide_add_batch() {
+  [ "$#" -gt 0 ] || return 0
+  command zoxide add -s 1 "$@"
+}
+
 sc_helper_zseed_root() {
   local root="$1"
-  local pattern
+  local pattern root_dir extra_root status=0
+  local batch_size="${SC_ZOXIDE_SEED_BATCH_SIZE:-500}"
   local -a find_prune_args
+  local -a batch=()
 
   if [ ! -d "${root}" ]; then
     echo "Directory not found: ${root}" 1>&2
     return 1
   fi
+
+  case "${batch_size}" in
+    ''|*[!0-9]*)
+      batch_size=500
+      ;;
+  esac
+  [ "${batch_size}" -gt 0 ] || batch_size=500
 
   while IFS= read -r pattern; do
     [ -n "${pattern}" ] || continue
@@ -1076,13 +1114,31 @@ sc_helper_zseed_root() {
     find_prune_args+=(-name "${pattern}")
   done < <(sc_helper_ignored_dir_patterns)
 
-  find "${root}" \
-    \( "${find_prune_args[@]}" \) -prune \
-    -o -type d -print0 \
-    | while IFS= read -r -d '' dir; do
-        sc_helper_zoxide_ignored_path "${dir}" && continue
-        command zoxide add "${dir}"
-      done
+  while IFS= read -r extra_root; do
+    [ -n "${extra_root}" ] || continue
+    extra_root="${extra_root%/}"
+    [ "${#find_prune_args[@]}" -eq 0 ] || find_prune_args+=(-o)
+    find_prune_args+=(-path "${extra_root}" -o -path "${extra_root}/*")
+  done < <(sc_helper_zoxide_extra_ignored_roots)
+
+  while IFS= read -r -d '' root_dir; do
+    batch+=("${root_dir}")
+    if [ "${#batch[@]}" -ge "${batch_size}" ]; then
+      sc_helper_zoxide_add_batch "${batch[@]}" || status=1
+      batch=()
+    fi
+  done < <(
+    find "${root}" \
+      \( "${find_prune_args[@]}" \) -prune \
+      -o -type d -print0 \
+      2>/dev/null
+  )
+
+  if [ "${#batch[@]}" -gt 0 ]; then
+    sc_helper_zoxide_add_batch "${batch[@]}" || status=1
+  fi
+
+  return "${status}"
 }
 
 sc_helper_zseed() {
