@@ -1029,16 +1029,29 @@ sc_helper_zoxide_reinit() {
     return 127
   fi
 
-  local data_dir db_file
-  data_dir="${_ZO_DATA_DIR:-${XDG_DATA_HOME:-${HOME}/.local/share}/zoxide}"
-  db_file="${data_dir}/db.zo"
+  local db_file removed=0
+  local -a db_files
 
-  if [ -f "${db_file}" ]; then
+  if [ -n "${_ZO_DATA_DIR:-}" ]; then
+    db_files+=("${_ZO_DATA_DIR}/db.zo")
+  fi
+  if [ -n "${XDG_DATA_HOME:-}" ]; then
+    db_files+=("${XDG_DATA_HOME}/zoxide/db.zo")
+  fi
+  db_files+=(
+    "${HOME}/.local/share/zoxide/db.zo"
+    "${HOME}/Library/Application Support/zoxide/db.zo"
+  )
+
+  for db_file in "${db_files[@]}"; do
+    [ -n "${db_file}" ] || continue
+    [ -f "${db_file}" ] || continue
     rm -f "${db_file}"
     echo "zoxide database removed: ${db_file}"
-  else
-    echo "zoxide database not found: ${db_file}"
-  fi
+    removed=1
+  done
+
+  [ "${removed}" -eq 1 ] || echo "zoxide database not found"
 }
 
 sc_helper_zseed() {
