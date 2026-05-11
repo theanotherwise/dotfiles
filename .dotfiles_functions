@@ -24,6 +24,83 @@ sc_helper_bashrc_cursor() {
   [[ "${UID}" == "0" ]] && echo '#' || echo '$'
 }
 
+sc_helper_shell_join() {
+  local arg quoted output=""
+
+  for arg in "$@"; do
+    printf -v quoted "%q" "${arg}"
+    output="${output}${output:+ }${quoted}"
+  done
+
+  printf "%s" "${output}"
+}
+
+sc_helper_watch() {
+  local interval="${1:-}"
+  local command_string opt script
+  local -a watch_args
+
+  if [ -z "${interval}" ]; then
+    echo "Usage: watch-N [watch-options] command..." 1>&2
+    return 2
+  fi
+  shift || true
+
+  command -v watch >/dev/null 2>&1 || {
+    echo "watch not found" 1>&2
+    return 127
+  }
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --)
+        shift
+        break
+        ;;
+      -b|-c|-C|-d|-e|-g|-p|-r|-t|-w|--beep|--color|--no-color|--differences|--errexit|--chgexit|--precise|--no-rerun|--no-title|--no-wrap)
+        watch_args+=("$1")
+        shift
+        ;;
+      -n|--interval|-q|--equexit)
+        opt="$1"
+        watch_args+=("${opt}")
+        shift
+        if [ "$#" -eq 0 ]; then
+          echo "Missing argument for watch option: ${opt}" 1>&2
+          return 2
+        fi
+        watch_args+=("$1")
+        shift
+        ;;
+      --interval=*|--equexit=*|--differences=*)
+        watch_args+=("$1")
+        shift
+        ;;
+      -*)
+        watch_args+=("$1")
+        shift
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [ "$#" -eq 0 ]; then
+    echo "Usage: watch-${interval} [watch-options] command..." 1>&2
+    return 2
+  fi
+
+  if [ "$#" -eq 1 ]; then
+    command_string="$1"
+  else
+    command_string="$(sc_helper_shell_join "$@")"
+  fi
+
+  script=$'shopt -s expand_aliases\neval "$SC_WATCH_COMMAND"'
+  SC_WATCH_COMMAND="${command_string}" command watch -n "${interval}" "${watch_args[@]}" -x bash -lc "${script}"
+}
+
 sc_helper_x509_decode (){
   if [ -z "${1}" ] ; then
     while IFS= read -r LINE; do

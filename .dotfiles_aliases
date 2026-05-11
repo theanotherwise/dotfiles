@@ -16,14 +16,14 @@ alias a="atuin search -i"
 #
 #    Watches
 #
-alias watch-0='watch -n 0 '
-alias watch-1='watch -n 1 '
-alias watch-2='watch -n 2 '
-alias watch-3='watch -n 3 '
-alias watch-5='watch -n 5 '
-alias watch-10='watch -n 10 '
-alias watch-15='watch -n 15 '
-alias watch-30='watch -n 30 '
+alias watch-0='sc_helper_watch 0'
+alias watch-1='sc_helper_watch 1'
+alias watch-2='sc_helper_watch 2'
+alias watch-3='sc_helper_watch 3'
+alias watch-5='sc_helper_watch 5'
+alias watch-10='sc_helper_watch 10'
+alias watch-15='sc_helper_watch 15'
+alias watch-30='sc_helper_watch 30'
 
 #
 #    Kubernetes Defaults
