@@ -978,6 +978,16 @@ sc_helper_zoxide_init() {
   esac
 
   eval "$(zoxide init bash)"
+  z() {
+    case "${1:-}" in
+      add|edit|import|init|query|remove)
+        command zoxide "$@"
+        ;;
+      *)
+        __zoxide_z "$@"
+        ;;
+    esac
+  }
   declare -F sc_helper_zoxide_z_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_z_completion -o filenames -o dirnames z
   declare -F sc_helper_zoxide_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_completion zoxide
 }
@@ -1025,7 +1035,8 @@ sc_helper_zoxide_z_completion() {
 
   local cur path name candidate
   local seen=$'\n'
-  local -a query_terms local_dirs matches
+  local zoxide_commands="add edit import init query remove"
+  local -a query_terms matches
 
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
@@ -1047,18 +1058,8 @@ sc_helper_zoxide_z_completion() {
     [ -n "${COMP_WORDS[i]}" ] && query_terms+=("${COMP_WORDS[i]}")
   done
 
-  while IFS= read -r candidate; do
-    local_dirs+=("${candidate}")
-  done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
-  for candidate in "${local_dirs[@]}"; do
-    candidate="${candidate%/}"
-    [ -n "${candidate}" ] || continue
-    matches+=("${candidate}")
-    seen+="${candidate}"$'\n'
-  done
-
   if [ -z "${cur}" ] && [ "${#query_terms[@]}" -eq 0 ]; then
-    COMPREPLY=("${matches[@]}")
+    COMPREPLY=( $(compgen -W "${zoxide_commands}" -- "${cur}") )
     return 0
   fi
 
