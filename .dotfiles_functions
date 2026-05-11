@@ -978,7 +978,7 @@ sc_helper_zoxide_init() {
   esac
 
   eval "$(zoxide init bash)"
-  declare -F sc_helper_zoxide_z_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_z_completion -o filenames z
+  declare -F sc_helper_zoxide_z_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_z_completion -o filenames -o dirnames z
 }
 
 sc_helper_fzf_init() {
