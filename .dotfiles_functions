@@ -979,6 +979,7 @@ sc_helper_zoxide_init() {
 
   eval "$(zoxide init bash)"
   declare -F sc_helper_zoxide_z_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_z_completion -o filenames -o dirnames z
+  declare -F sc_helper_zoxide_completion >/dev/null 2>&1 && complete -F sc_helper_zoxide_completion zoxide
 }
 
 sc_helper_fzf_init() {
@@ -1046,21 +1047,6 @@ sc_helper_zoxide_z_completion() {
     [ -n "${COMP_WORDS[i]}" ] && query_terms+=("${COMP_WORDS[i]}")
   done
 
-  while IFS= read -r candidate; do
-    local_dirs+=("${candidate}")
-  done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
-  for candidate in "${local_dirs[@]}"; do
-    candidate="${candidate%/}"
-    [ -n "${candidate}" ] || continue
-    matches+=("${candidate}")
-    seen+="${candidate}"$'\n'
-  done
-
-  if [ -z "${cur}" ] && [ "${#query_terms[@]}" -eq 0 ]; then
-    COMPREPLY=("${matches[@]}")
-    return 0
-  fi
-
   while IFS= read -r path; do
     name="${path##*/}"
     [ -n "${name}" ] || continue
@@ -1075,7 +1061,84 @@ sc_helper_zoxide_z_completion() {
     seen+="${name}"$'\n'
   done < <(zoxide query -l 2>/dev/null)
 
+  while IFS= read -r candidate; do
+    local_dirs+=("${candidate}")
+  done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
+  for candidate in "${local_dirs[@]}"; do
+    candidate="${candidate%/}"
+    [ -n "${candidate}" ] || continue
+    [[ "${seen}" == *$'\n'"${candidate}"$'\n'* ]] && continue
+    matches+=("${candidate}")
+    seen+="${candidate}"$'\n'
+  done
+
   COMPREPLY=("${matches[@]}")
+}
+
+sc_helper_zoxide_completion() {
+  command -v zoxide >/dev/null 2>&1 || return 0
+
+  local cur prev subcommand path name candidate
+  local commands="add edit import init query remove"
+  local options="-h --help -V --version"
+  local init_shells="bash elvish fish nushell posix powershell xonsh zsh"
+  local -a matches
+
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  if [ "${COMP_CWORD}" -eq 1 ]; then
+    if [[ "${cur}" == -* ]]; then
+      COMPREPLY=( $(compgen -W "${options}" -- "${cur}") )
+    else
+      COMPREPLY=( $(compgen -W "${commands}" -- "${cur}") )
+    fi
+    return 0
+  fi
+
+  subcommand="${COMP_WORDS[1]}"
+  case "${subcommand}" in
+    init)
+      case "${prev}" in
+        --cmd|--hook)
+          return 0
+          ;;
+      esac
+      if [[ "${cur}" == -* ]]; then
+        COMPREPLY=( $(compgen -W "--cmd --hook --no-cmd -h --help" -- "${cur}") )
+      else
+        COMPREPLY=( $(compgen -W "${init_shells}" -- "${cur}") )
+      fi
+      ;;
+    add)
+      if [[ "${cur}" == -* ]]; then
+        COMPREPLY=( $(compgen -W "-h --help" -- "${cur}") )
+      else
+        COMPREPLY=( $(compgen -A directory -- "${cur}" 2>/dev/null || true) )
+      fi
+      ;;
+    remove|query)
+      if [[ "${cur}" == -* ]]; then
+        if [ "${subcommand}" = "query" ]; then
+          COMPREPLY=( $(compgen -W "--all --exclude --interactive --list --score -h --help" -- "${cur}") )
+        else
+          COMPREPLY=( $(compgen -W "-h --help" -- "${cur}") )
+        fi
+        return 0
+      fi
+      while IFS= read -r path; do
+        name="${path##*/}"
+        [ -n "${name}" ] || continue
+        [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
+        matches+=("${name}")
+      done < <(zoxide query -l 2>/dev/null)
+      COMPREPLY=("${matches[@]}")
+      ;;
+    edit|import)
+      COMPREPLY=( $(compgen -W "-h --help" -- "${cur}") )
+      ;;
+  esac
 }
 
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
