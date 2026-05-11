@@ -937,6 +937,18 @@ sc_helper_context_get() {
   sc_helper_context_info
 }
 
+sc_helper_zoxide_ignored_path() {
+  local dir="/${1%/}/"
+
+  case "${dir}" in
+    */.git/*|*/.hg/*|*/.svn/*|*/.pyenv/*|*/__pycache__/*|*/node_modules/*|*/.cache/*|*/.npm/*|*/.yarn/*|*/.pnpm-store/*|*/.venv/*|*/venv/*|*/env/*|*/.tox/*|*/.nox/*|*/.pytest_cache/*|*/.mypy_cache/*|*/.ruff_cache/*|*/.terraform/*|*/.terragrunt-cache/*|*/.next/*|*/.nuxt/*|*/.turbo/*|*/.parcel-cache/*|*/dist/*|*/build/*|*/target/*|*/coverage/*|*/vendor/*)
+      return 0
+      ;;
+  esac
+
+  return 1
+}
+
 sc_helper_zseed() {
   if ! command -v zoxide >/dev/null 2>&1; then
     echo "zoxide not found" 1>&2
@@ -951,17 +963,16 @@ sc_helper_zseed() {
 
   zoxide query -l 2>/dev/null \
     | while IFS= read -r dir; do
-        case "${dir}" in
-          */.git|*/.git/*|*/node_modules|*/node_modules/*|*/.terraform|*/.terraform/*|*/.terragrunt-cache|*/.terragrunt-cache/*|*/.venv|*/.venv/*|*/__pycache__|*/__pycache__/*)
-            zoxide remove "${dir}"
-            ;;
-        esac
+        if [ ! -d "${dir}" ] || sc_helper_zoxide_ignored_path "${dir}"; then
+          zoxide remove "${dir}"
+        fi
       done
 
   find "${root}" \
-    \( -name .git -o -name node_modules -o -name .terraform -o -name .terragrunt-cache -o -name .venv -o -name __pycache__ \) -prune \
+    \( -name .git -o -name .hg -o -name .svn -o -name .pyenv -o -name __pycache__ -o -name node_modules -o -name .cache -o -name .npm -o -name .yarn -o -name .pnpm-store -o -name .venv -o -name venv -o -name env -o -name .tox -o -name .nox -o -name .pytest_cache -o -name .mypy_cache -o -name .ruff_cache -o -name .terraform -o -name .terragrunt-cache -o -name .next -o -name .nuxt -o -name .turbo -o -name .parcel-cache -o -name dist -o -name build -o -name target -o -name coverage -o -name vendor \) -prune \
     -o -type d -print0 \
     | while IFS= read -r -d '' dir; do
+        sc_helper_zoxide_ignored_path "${dir}" && continue
         zoxide add "${dir}"
       done
 }
@@ -970,7 +981,7 @@ sc_helper_zoxide_init() {
   command -v zoxide >/dev/null 2>&1 || return 0
 
   local zoxide_excludes
-  zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**"
+  zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/.hg:${HOME}/**/.hg/**:${HOME}/**/.svn:${HOME}/**/.svn/**:${HOME}/**/.pyenv:${HOME}/**/.pyenv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/.cache:${HOME}/**/.cache/**:${HOME}/**/.npm:${HOME}/**/.npm/**:${HOME}/**/.yarn:${HOME}/**/.yarn/**:${HOME}/**/.pnpm-store:${HOME}/**/.pnpm-store/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/venv:${HOME}/**/venv/**:${HOME}/**/env:${HOME}/**/env/**:${HOME}/**/.tox:${HOME}/**/.tox/**:${HOME}/**/.nox:${HOME}/**/.nox/**:${HOME}/**/.pytest_cache:${HOME}/**/.pytest_cache/**:${HOME}/**/.mypy_cache:${HOME}/**/.mypy_cache/**:${HOME}/**/.ruff_cache:${HOME}/**/.ruff_cache/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.next:${HOME}/**/.next/**:${HOME}/**/.nuxt:${HOME}/**/.nuxt/**:${HOME}/**/.turbo:${HOME}/**/.turbo/**:${HOME}/**/.parcel-cache:${HOME}/**/.parcel-cache/**:${HOME}/**/dist:${HOME}/**/dist/**:${HOME}/**/build:${HOME}/**/build/**:${HOME}/**/target:${HOME}/**/target/**:${HOME}/**/coverage:${HOME}/**/coverage/**:${HOME}/**/vendor:${HOME}/**/vendor/**"
 
   case ":${_ZO_EXCLUDE_DIRS:-}:" in
     *":${zoxide_excludes}:"*) ;;
@@ -978,6 +989,16 @@ sc_helper_zoxide_init() {
   esac
 
   eval "$(zoxide init bash)"
+  zoxide() {
+    case "${1:-}" in
+      ""|-*|add|edit|import|init|query|remove)
+        command zoxide "$@"
+        ;;
+      *)
+        command zoxide query "$@"
+        ;;
+    esac
+  }
   z() {
     case "${1:-}" in
       add|edit|import|init|query|remove)
@@ -1033,7 +1054,7 @@ sc_helper_atuin_init() {
 sc_helper_zoxide_z_completion() {
   command -v zoxide >/dev/null 2>&1 || return 0
 
-  local cur path name candidate
+  local cur path name candidate subcommand
   local seen=$'\n'
   local zoxide_commands="add edit import init query remove"
   local -a query_terms matches
@@ -1058,13 +1079,24 @@ sc_helper_zoxide_z_completion() {
     [ -n "${COMP_WORDS[i]}" ] && query_terms+=("${COMP_WORDS[i]}")
   done
 
-  if [ -z "${cur}" ] && [ "${#query_terms[@]}" -eq 0 ]; then
-    COMPREPLY=( $(compgen -W "${zoxide_commands}" -- "${cur}") )
-    return 0
+  if [ "${COMP_CWORD}" -eq 1 ]; then
+    if [ -z "${cur}" ]; then
+      COMPREPLY=( $(compgen -W "${zoxide_commands}" -- "${cur}") )
+      return 0
+    fi
+  else
+    subcommand="${COMP_WORDS[1]}"
+    case "${subcommand}" in
+      add|edit|import|init|query|remove)
+        sc_helper_zoxide_subcommand_completion "${subcommand}"
+        return 0
+        ;;
+    esac
   fi
 
   while IFS= read -r path; do
     [ -d "${path}" ] || continue
+    sc_helper_zoxide_ignored_path "${path}" && continue
     name="${path##*/}"
     [ -n "${name}" ] || continue
     [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
@@ -1081,29 +1113,33 @@ sc_helper_zoxide_z_completion() {
   COMPREPLY=("${matches[@]}")
 }
 
-sc_helper_zoxide_completion() {
-  command -v zoxide >/dev/null 2>&1 || return 0
-
-  local cur prev subcommand path name candidate
-  local commands="add edit import init query remove"
-  local options="-h --help -V --version"
-  local init_shells="bash elvish fish nushell posix powershell xonsh zsh"
+sc_helper_zoxide_path_completion() {
+  local cur path name
   local -a matches
 
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
+
+  while IFS= read -r path; do
+    [ -d "${path}" ] || continue
+    sc_helper_zoxide_ignored_path "${path}" && continue
+    name="${path##*/}"
+    [ -n "${name}" ] || continue
+    [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
+    matches+=("${name}")
+  done < <(zoxide query -l 2>/dev/null)
+
+  COMPREPLY=("${matches[@]}")
+}
+
+sc_helper_zoxide_subcommand_completion() {
+  local subcommand="$1"
+  local cur prev
+  local init_shells="bash elvish fish nushell posix powershell xonsh zsh"
+
+  cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  if [ "${COMP_CWORD}" -eq 1 ]; then
-    if [[ "${cur}" == -* ]]; then
-      COMPREPLY=( $(compgen -W "${options}" -- "${cur}") )
-    else
-      COMPREPLY=( $(compgen -W "${commands}" -- "${cur}") )
-    fi
-    return 0
-  fi
-
-  subcommand="${COMP_WORDS[1]}"
   case "${subcommand}" in
     init)
       case "${prev}" in
@@ -1131,18 +1167,44 @@ sc_helper_zoxide_completion() {
         else
           COMPREPLY=( $(compgen -W "-h --help" -- "${cur}") )
         fi
-        return 0
+      else
+        sc_helper_zoxide_path_completion
       fi
-      while IFS= read -r path; do
-        name="${path##*/}"
-        [ -n "${name}" ] || continue
-        [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
-        matches+=("${name}")
-      done < <(zoxide query -l 2>/dev/null)
-      COMPREPLY=("${matches[@]}")
       ;;
     edit|import)
       COMPREPLY=( $(compgen -W "-h --help" -- "${cur}") )
+      ;;
+  esac
+}
+
+sc_helper_zoxide_completion() {
+  command -v zoxide >/dev/null 2>&1 || return 0
+
+  local cur subcommand
+  local commands="add edit import init query remove"
+  local options="-h --help -V --version"
+
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+
+  if [ "${COMP_CWORD}" -eq 1 ]; then
+    if [ -z "${cur}" ]; then
+      COMPREPLY=( $(compgen -W "${commands}" -- "${cur}") )
+    elif [[ "${cur}" == -* ]]; then
+      COMPREPLY=( $(compgen -W "${options}" -- "${cur}") )
+    else
+      sc_helper_zoxide_path_completion
+    fi
+    return 0
+  fi
+
+  subcommand="${COMP_WORDS[1]}"
+  case "${subcommand}" in
+    add|edit|import|init|query|remove)
+      sc_helper_zoxide_subcommand_completion "${subcommand}"
+      ;;
+    *)
+      sc_helper_zoxide_path_completion
       ;;
   esac
 }
