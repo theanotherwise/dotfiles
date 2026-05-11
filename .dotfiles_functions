@@ -1034,14 +1034,14 @@ sc_helper_zoxide_reinit() {
 
   if [ -n "${_ZO_DATA_DIR:-}" ]; then
     db_files+=("${_ZO_DATA_DIR}/db.zo")
-  fi
-  if [ -n "${XDG_DATA_HOME:-}" ]; then
+  elif [ -n "${XDG_DATA_HOME:-}" ]; then
     db_files+=("${XDG_DATA_HOME}/zoxide/db.zo")
+  else
+    db_files+=(
+      "${HOME}/.local/share/zoxide/db.zo"
+      "${HOME}/Library/Application Support/zoxide/db.zo"
+    )
   fi
-  db_files+=(
-    "${HOME}/.local/share/zoxide/db.zo"
-    "${HOME}/Library/Application Support/zoxide/db.zo"
-  )
 
   for db_file in "${db_files[@]}"; do
     [ -n "${db_file}" ] || continue
@@ -1052,28 +1052,23 @@ sc_helper_zoxide_reinit() {
   done
 
   [ "${removed}" -eq 1 ] || echo "zoxide database not found"
+
+  if [ "$#" -eq 0 ]; then
+    sc_helper_zseed "${HOME}"
+  else
+    sc_helper_zseed "$@"
+  fi
 }
 
-sc_helper_zseed() {
-  if ! command -v zoxide >/dev/null 2>&1; then
-    echo "zoxide not found" 1>&2
-    return 127
-  fi
-
-  local root="${1:-${HOME}/projects}"
+sc_helper_zseed_root() {
+  local root="$1"
   local pattern
   local -a find_prune_args
+
   if [ ! -d "${root}" ]; then
     echo "Directory not found: ${root}" 1>&2
     return 1
   fi
-
-  zoxide query -l 2>/dev/null \
-    | while IFS= read -r dir; do
-        if [ ! -d "${dir}" ] || sc_helper_zoxide_ignored_path "${dir}"; then
-          zoxide remove "${dir}"
-        fi
-      done
 
   while IFS= read -r pattern; do
     [ -n "${pattern}" ] || continue
@@ -1086,8 +1081,32 @@ sc_helper_zseed() {
     -o -type d -print0 \
     | while IFS= read -r -d '' dir; do
         sc_helper_zoxide_ignored_path "${dir}" && continue
-        zoxide add "${dir}"
+        command zoxide add "${dir}"
       done
+}
+
+sc_helper_zseed() {
+  if ! command -v zoxide >/dev/null 2>&1; then
+    echo "zoxide not found" 1>&2
+    return 127
+  fi
+
+  local root status=0
+
+  zoxide query -l 2>/dev/null \
+    | while IFS= read -r dir; do
+        if [ ! -d "${dir}" ] || sc_helper_zoxide_ignored_path "${dir}"; then
+          command zoxide remove "${dir}"
+        fi
+      done
+
+  [ "$#" -gt 0 ] || set -- "${HOME}"
+
+  for root in "$@"; do
+    sc_helper_zseed_root "${root}" || status=1
+  done
+
+  return "${status}"
 }
 
 sc_helper_zoxide_init() {
