@@ -937,14 +937,88 @@ sc_helper_context_get() {
   sc_helper_context_info
 }
 
+sc_helper_ignored_dir_patterns() {
+  printf "%s\n" \
+    ".*" \
+    ".git" \
+    ".hg" \
+    ".svn" \
+    ".pyenv" \
+    "__pycache__" \
+    "node_modules" \
+    "npm-*" \
+    "Library" \
+    ".cache" \
+    ".npm" \
+    ".yarn" \
+    ".pnpm-store" \
+    ".venv" \
+    "venv" \
+    "env" \
+    ".tox" \
+    ".nox" \
+    ".pytest_cache" \
+    ".mypy_cache" \
+    ".ruff_cache" \
+    ".terraform" \
+    ".terragrunt-cache" \
+    ".next" \
+    ".nuxt" \
+    ".turbo" \
+    ".parcel-cache" \
+    "dist" \
+    "build" \
+    "target" \
+    "coverage" \
+    "vendor"
+}
+
+sc_helper_ignored_dir_csv() {
+  local pattern sep=""
+
+  while IFS= read -r pattern; do
+    [ -n "${pattern}" ] || continue
+    printf "%s%s" "${sep}" "${pattern}"
+    sep=","
+  done < <(sc_helper_ignored_dir_patterns)
+}
+
+sc_helper_fd_exclude_args() {
+  local pattern
+
+  while IFS= read -r pattern; do
+    [ -n "${pattern}" ] || continue
+    printf " --exclude '%s'" "${pattern}"
+  done < <(sc_helper_ignored_dir_patterns)
+}
+
+sc_helper_zoxide_exclude_dirs() {
+  local pattern sep=""
+
+  while IFS= read -r pattern; do
+    [ -n "${pattern}" ] || continue
+    printf "%s%s/%s:%s/%s/**:%s/**/%s:%s/**/%s/**" \
+      "${sep}" \
+      "${HOME}" "${pattern}" \
+      "${HOME}" "${pattern}" \
+      "${HOME}" "${pattern}" \
+      "${HOME}" "${pattern}"
+    sep=":"
+  done < <(sc_helper_ignored_dir_patterns)
+}
+
 sc_helper_zoxide_ignored_path() {
   local dir="/${1%/}/"
+  local pattern
 
-  case "${dir}" in
-    */.git/*|*/.hg/*|*/.svn/*|*/.pyenv/*|*/__pycache__/*|*/node_modules/*|*/npm-*/*|*/.cache/*|*/.npm/*|*/.yarn/*|*/.pnpm-store/*|*/.venv/*|*/venv/*|*/env/*|*/.tox/*|*/.nox/*|*/.pytest_cache/*|*/.mypy_cache/*|*/.ruff_cache/*|*/.terraform/*|*/.terragrunt-cache/*|*/.next/*|*/.nuxt/*|*/.turbo/*|*/.parcel-cache/*|*/dist/*|*/build/*|*/target/*|*/coverage/*|*/vendor/*)
-      return 0
-      ;;
-  esac
+  while IFS= read -r pattern; do
+    [ -n "${pattern}" ] || continue
+    case "${dir}" in
+      */${pattern}/*)
+        return 0
+        ;;
+    esac
+  done < <(sc_helper_ignored_dir_patterns)
 
   return 1
 }
@@ -956,6 +1030,8 @@ sc_helper_zseed() {
   fi
 
   local root="${1:-${HOME}/projects}"
+  local pattern
+  local -a find_prune_args
   if [ ! -d "${root}" ]; then
     echo "Directory not found: ${root}" 1>&2
     return 1
@@ -968,8 +1044,14 @@ sc_helper_zseed() {
         fi
       done
 
+  while IFS= read -r pattern; do
+    [ -n "${pattern}" ] || continue
+    [ "${#find_prune_args[@]}" -eq 0 ] || find_prune_args+=(-o)
+    find_prune_args+=(-name "${pattern}")
+  done < <(sc_helper_ignored_dir_patterns)
+
   find "${root}" \
-    \( -name .git -o -name .hg -o -name .svn -o -name .pyenv -o -name __pycache__ -o -name node_modules -o -name 'npm-*' -o -name .cache -o -name .npm -o -name .yarn -o -name .pnpm-store -o -name .venv -o -name venv -o -name env -o -name .tox -o -name .nox -o -name .pytest_cache -o -name .mypy_cache -o -name .ruff_cache -o -name .terraform -o -name .terragrunt-cache -o -name .next -o -name .nuxt -o -name .turbo -o -name .parcel-cache -o -name dist -o -name build -o -name target -o -name coverage -o -name vendor \) -prune \
+    \( "${find_prune_args[@]}" \) -prune \
     -o -type d -print0 \
     | while IFS= read -r -d '' dir; do
         sc_helper_zoxide_ignored_path "${dir}" && continue
@@ -981,7 +1063,7 @@ sc_helper_zoxide_init() {
   command -v zoxide >/dev/null 2>&1 || return 0
 
   local zoxide_excludes
-  zoxide_excludes="${HOME}/**/.git:${HOME}/**/.git/**:${HOME}/**/.hg:${HOME}/**/.hg/**:${HOME}/**/.svn:${HOME}/**/.svn/**:${HOME}/**/.pyenv:${HOME}/**/.pyenv/**:${HOME}/**/__pycache__:${HOME}/**/__pycache__/**:${HOME}/**/node_modules:${HOME}/**/node_modules/**:${HOME}/**/npm-*:${HOME}/**/npm-*/**:${HOME}/**/.cache:${HOME}/**/.cache/**:${HOME}/**/.npm:${HOME}/**/.npm/**:${HOME}/**/.yarn:${HOME}/**/.yarn/**:${HOME}/**/.pnpm-store:${HOME}/**/.pnpm-store/**:${HOME}/**/.venv:${HOME}/**/.venv/**:${HOME}/**/venv:${HOME}/**/venv/**:${HOME}/**/env:${HOME}/**/env/**:${HOME}/**/.tox:${HOME}/**/.tox/**:${HOME}/**/.nox:${HOME}/**/.nox/**:${HOME}/**/.pytest_cache:${HOME}/**/.pytest_cache/**:${HOME}/**/.mypy_cache:${HOME}/**/.mypy_cache/**:${HOME}/**/.ruff_cache:${HOME}/**/.ruff_cache/**:${HOME}/**/.terraform:${HOME}/**/.terraform/**:${HOME}/**/.terragrunt-cache:${HOME}/**/.terragrunt-cache/**:${HOME}/**/.next:${HOME}/**/.next/**:${HOME}/**/.nuxt:${HOME}/**/.nuxt/**:${HOME}/**/.turbo:${HOME}/**/.turbo/**:${HOME}/**/.parcel-cache:${HOME}/**/.parcel-cache/**:${HOME}/**/dist:${HOME}/**/dist/**:${HOME}/**/build:${HOME}/**/build/**:${HOME}/**/target:${HOME}/**/target/**:${HOME}/**/coverage:${HOME}/**/coverage/**:${HOME}/**/vendor:${HOME}/**/vendor/**"
+  zoxide_excludes="$(sc_helper_zoxide_exclude_dirs)"
 
   case ":${_ZO_EXCLUDE_DIRS:-}:" in
     *":${zoxide_excludes}:"*) ;;
@@ -1018,7 +1100,7 @@ sc_helper_fzf_init() {
   command -v fd >/dev/null 2>&1 || return 0
 
   local fd_excludes fd_base walker_skip
-  fd_excludes="--exclude '.*' --exclude .git --exclude .hg --exclude .svn --exclude .pyenv --exclude __pycache__ --exclude node_modules --exclude Library --exclude .venv --exclude venv --exclude env --exclude .tox --exclude .nox --exclude .pytest_cache --exclude .mypy_cache --exclude .ruff_cache --exclude .cache --exclude .terraform --exclude .terragrunt-cache --exclude .next --exclude .nuxt --exclude .turbo --exclude .parcel-cache --exclude .pnpm-store --exclude .yarn --exclude dist --exclude build --exclude target --exclude coverage --exclude vendor"
+  fd_excludes="$(sc_helper_fd_exclude_args)"
   fd_base="fd --color=never --strip-cwd-prefix --no-ignore-vcs ${fd_excludes}"
 
   export FZF_DEFAULT_COMMAND="${fd_base} --type f --type d"
@@ -1026,11 +1108,9 @@ sc_helper_fzf_init() {
   export FZF_ALT_C_COMMAND="${fd_base} --type d"
 
   if fzf --help 2>/dev/null | grep -q -- '--walker-skip'; then
-    walker_skip=".git,.hg,.svn,.pyenv,__pycache__,node_modules,Library,.venv,venv,env,.tox,.nox,.pytest_cache,.mypy_cache,.ruff_cache,.cache,.terraform,.terragrunt-cache,.next,.nuxt,.turbo,.parcel-cache,.pnpm-store,.yarn,dist,build,target,coverage,vendor"
-    case " ${FZF_DEFAULT_OPTS:-} " in
-      *" --walker-skip=${walker_skip} "*) ;;
-      *) export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:+${FZF_DEFAULT_OPTS} }--walker-skip=${walker_skip}" ;;
-    esac
+    walker_skip="$(sc_helper_ignored_dir_csv)"
+    FZF_DEFAULT_OPTS="$(printf "%s\n" "${FZF_DEFAULT_OPTS:-}" | sed -E 's/(^| )--walker-skip=[^ ]+//g; s/^ +//; s/ +$//')"
+    export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:+${FZF_DEFAULT_OPTS} }--walker-skip=${walker_skip}"
   fi
 }
 
