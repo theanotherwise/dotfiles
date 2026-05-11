@@ -1047,7 +1047,23 @@ sc_helper_zoxide_z_completion() {
     [ -n "${COMP_WORDS[i]}" ] && query_terms+=("${COMP_WORDS[i]}")
   done
 
+  while IFS= read -r candidate; do
+    local_dirs+=("${candidate}")
+  done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
+  for candidate in "${local_dirs[@]}"; do
+    candidate="${candidate%/}"
+    [ -n "${candidate}" ] || continue
+    matches+=("${candidate}")
+    seen+="${candidate}"$'\n'
+  done
+
+  if [ -z "${cur}" ] && [ "${#query_terms[@]}" -eq 0 ]; then
+    COMPREPLY=("${matches[@]}")
+    return 0
+  fi
+
   while IFS= read -r path; do
+    [ -d "${path}" ] || continue
     name="${path##*/}"
     [ -n "${name}" ] || continue
     [ -z "${cur}" ] || [[ "${name}" == "${cur}"* ]] || continue
@@ -1060,17 +1076,6 @@ sc_helper_zoxide_z_completion() {
     matches+=("${name}")
     seen+="${name}"$'\n'
   done < <(zoxide query -l 2>/dev/null)
-
-  while IFS= read -r candidate; do
-    local_dirs+=("${candidate}")
-  done < <(compgen -A directory -- "${cur}" 2>/dev/null || true)
-  for candidate in "${local_dirs[@]}"; do
-    candidate="${candidate%/}"
-    [ -n "${candidate}" ] || continue
-    [[ "${seen}" == *$'\n'"${candidate}"$'\n'* ]] && continue
-    matches+=("${candidate}")
-    seen+="${candidate}"$'\n'
-  done
 
   COMPREPLY=("${matches[@]}")
 }
