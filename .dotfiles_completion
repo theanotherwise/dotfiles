@@ -536,8 +536,6 @@ if declare -F _atuin >/dev/null 2>&1; then
   fi
 fi
 complete -F sc_helper_gitconfig_completion gitconfig
-declare -F sc_helper_kube_contexts_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kube_contexts_completion kubectx kctx
-declare -F sc_helper_kube_namespaces_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kube_namespaces_completion kubens kns
 declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
 declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kubetail_completion kubetail kt
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
