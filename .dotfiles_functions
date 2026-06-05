@@ -8,14 +8,101 @@ sc_helper_bashrc_branch() {
   fi
 }
 
+sc_helper_bashrc_kube_config_file() {
+  local file
+  local IFS=:
+
+  for file in ${KUBECONFIG:-${HOME}/.kube/config}; do
+    if [ -r "${file}" ]; then
+      printf "%s\n" "${file}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+sc_helper_bashrc_kube_current_context() {
+  awk '
+    function clean(value) {
+      sub(/^[[:space:]]+/, "", value)
+      sub(/[[:space:]]+$/, "", value)
+      sub(/^"/, "", value)
+      sub(/"$/, "", value)
+      return value
+    }
+
+    /^[[:space:]]*current-context:[[:space:]]*/ {
+      value = $0
+      sub(/^[[:space:]]*current-context:[[:space:]]*/, "", value)
+      print clean(value)
+      exit
+    }
+  ' "$1"
+}
+
+sc_helper_bashrc_kube_context_namespace() {
+  awk -v target="$2" '
+    function clean(value) {
+      sub(/^[[:space:]]+/, "", value)
+      sub(/[[:space:]]+$/, "", value)
+      sub(/^"/, "", value)
+      sub(/"$/, "", value)
+      return value
+    }
+
+    /^[[:space:]]*contexts:[[:space:]]*$/ {
+      in_contexts = 1
+      next
+    }
+
+    in_contexts && /^[^[:space:]-]/ {
+      in_contexts = 0
+      active = 0
+    }
+
+    in_contexts && /^[[:space:]]*-[[:space:]]*/ {
+      active = 0
+      entry_namespace = ""
+    }
+
+    in_contexts && /^[[:space:]]*namespace:[[:space:]]*/ {
+      value = $0
+      sub(/^[[:space:]]*namespace:[[:space:]]*/, "", value)
+      entry_namespace = clean(value)
+      if (active) {
+        print entry_namespace
+        exit
+      }
+    }
+
+    in_contexts && /^[[:space:]]*(-[[:space:]]*)?name:[[:space:]]*/ {
+      value = $0
+      sub(/^[[:space:]]*(-[[:space:]]*)?name:[[:space:]]*/, "", value)
+      active = (clean(value) == target)
+      if (active && entry_namespace != "") {
+        print entry_namespace
+        exit
+      }
+    }
+  ' "$1"
+}
+
 sc_helper_bashrc_kube() {
-  local kube_ctx
+  local kube_file kube_ctx kube_namespace kube_label columns
 
-  command -v kubectl >/dev/null 2>&1 || return 0
-  kube_ctx="$(kubectl config view --minify -o jsonpath="{.clusters[].name}/{.contexts[].context.namespace}" 2>/dev/null)"
+  kube_file="$(sc_helper_bashrc_kube_config_file)" || return 0
+  kube_ctx="$(sc_helper_bashrc_kube_current_context "${kube_file}")"
   [ -n "${kube_ctx}" ] || return 0
+  kube_namespace="$(sc_helper_bashrc_kube_context_namespace "${kube_file}" "${kube_ctx}")"
 
-  printf "%*s\r%s" "$((COLUMNS - 1))" "${kube_ctx}"
+  kube_label="${kube_ctx}"
+  if [ -n "${kube_namespace}" ]; then
+    kube_label="${kube_label}/${kube_namespace}"
+  fi
+
+  columns="${COLUMNS:-80}"
+  printf "%*s\r" "$((columns - 1))" "${kube_label}"
 }
 
 :

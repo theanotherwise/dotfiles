@@ -9,6 +9,7 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
 fi
 
 SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-20}"
+SC_BASH_COMPLETION_CACHE_ASYNC="${SC_BASH_COMPLETION_CACHE_ASYNC:-1}"
 SC_BASH_COMPLETION_CACHE_DIR="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
 command mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
 
@@ -68,7 +69,7 @@ sc_helper_strip_completion_file_fallback() {
 
 sc_helper_source_cached_completion() {
   local cmd="$1"
-  local cmd_path cache_file tmp_file pid ticks restore_monitor
+  local cmd_path cache_file tmp_file lock_dir pid ticks restore_monitor
   shift || return 0
 
   [ -n "${cmd}" ] || return 0
@@ -84,10 +85,18 @@ sc_helper_source_cached_completion() {
   fi
 
   tmp_file="${cache_file}.tmp.$$"
+  lock_dir="${cache_file}.lock"
 
   if [ -n "${SC_BASH_COMPLETION_CACHE_ASYNC:-}" ]; then
+    if ! command mkdir "${lock_dir}" 2>/dev/null; then
+      sc_helper_completion_cache_log "locked" "${cmd}" "${cache_file}"
+      return 0
+    fi
+
     sc_helper_completion_cache_log "queued" "${cmd}" "${cache_file}"
     (
+      trap 'command rm -f "${tmp_file}"; command rmdir "${lock_dir}" 2>/dev/null || true' EXIT
+
       "${cmd_path}" "$@" >"${tmp_file}" 2>/dev/null &
       pid=$!
       ticks=0
@@ -115,6 +124,11 @@ sc_helper_source_cached_completion() {
 
   sc_helper_completion_cache_log "generate" "${cmd}" "${cache_file}"
 
+  if ! command mkdir "${lock_dir}" 2>/dev/null; then
+    sc_helper_completion_cache_log "locked" "${cmd}" "${cache_file}"
+    return 0
+  fi
+
   restore_monitor=0
   case "$-" in
     *m*)
@@ -132,17 +146,19 @@ sc_helper_source_cached_completion() {
     ticks=$((ticks + 1))
     if [ "${ticks}" -ge "${SC_BASH_COMPLETION_TIMEOUT_TENTHS}" ]; then
       kill "${pid}" >/dev/null 2>&1 || true
-      wait "${pid}" 2>/dev/null || true
-      [ "${restore_monitor}" -eq 0 ] || set -m
-      command rm -f "${tmp_file}"
-      return 0
-    fi
+          wait "${pid}" 2>/dev/null || true
+          [ "${restore_monitor}" -eq 0 ] || set -m
+          command rm -f "${tmp_file}"
+          command rmdir "${lock_dir}" 2>/dev/null || true
+          return 0
+        fi
     sleep 0.1
   done
 
   if ! wait "${pid}" 2>/dev/null; then
     [ "${restore_monitor}" -eq 0 ] || set -m
     command rm -f "${tmp_file}"
+    command rmdir "${lock_dir}" 2>/dev/null || true
     return 0
   fi
 
@@ -155,6 +171,8 @@ sc_helper_source_cached_completion() {
   else
     command rm -f "${tmp_file}"
   fi
+
+  command rmdir "${lock_dir}" 2>/dev/null || true
 }
 
 sc_helper_source_cached_completion kubectl
