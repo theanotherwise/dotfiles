@@ -61,7 +61,7 @@ alias docker-rm-networks="docker network ls -q | xargs -r docker network rm"
 alias docker-rm-volumes="docker volume ls -q | xargs -r docker volume rm"
 alias docker-system-prune="docker system prune -f"
 alias docker-context-szew='docker context create nuc --docker "host=ssh://comp@nuc.lan.bajojajo.com"'
-alias docker-context-szew-faszyn='docker context create nuc-faszyn --docker "host=ssh://comp@nuc.faszyn.lan.bajojajo.com"'
+alias docker-context-faszyn='docker context create nuc-faszyn --docker "host=ssh://comp@nuc.faszyn.lan.bajojajo.com"'
 
 #
 #    Terraform
