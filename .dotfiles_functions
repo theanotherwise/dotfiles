@@ -1390,8 +1390,8 @@ sc_helper_atuin_init() {
     *) return 0 ;;
   esac
 
-  eval "$(atuin init bash)"
   sc_helper_bash_hooks_init
+  eval "$(atuin init bash)"
 }
 
 sc_helper_zoxide_z_completion() {

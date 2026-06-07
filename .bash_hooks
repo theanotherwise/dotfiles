@@ -15,15 +15,25 @@ __sc_bash_hooks_loaded=1
 declare -a precmd_functions
 declare -a preexec_functions
 
-# Compatibility flag for CLIs that look for bash-preexec-style hook support.
+# Compatibility surface for CLIs that look for bash-preexec-style hook support.
 bash_preexec_imported=sc-bash-hooks
+__bp_imported=sc-bash-hooks
+__bp_last_ret_value=0
+__bp_last_argument_prev_command=
+
+__bp_set_ret_value() {
+  case "${1:-0}" in
+    ''|*[!0-9]*) return 0 ;;
+    *) return "${1}" ;;
+  esac
+}
 
 __sc_bash_hooks_last_status=0
 __sc_bash_hooks_ready=0
 __sc_bash_hooks_in_prompt=0
 
 __sc_bash_hooks_set_ret_value() {
-  return "${1:-0}"
+  __bp_set_ret_value "$@"
 }
 
 __sc_bash_hooks_command_from_history() {
@@ -44,6 +54,9 @@ __sc_bash_hooks_command_from_history() {
 __sc_bash_hooks_run_preexec() {
   local status=$?
   local command fn
+
+  __bp_last_ret_value="${status}"
+  __bp_last_argument_prev_command="${_:-}"
 
   case "${BASH_COMMAND}" in
     __sc_bash_hooks_run_precmd*)
@@ -67,6 +80,7 @@ __sc_bash_hooks_run_preexec() {
   [[ -n "${command}" ]] || return "${status}"
   for fn in "${preexec_functions[@]:-}"; do
     if declare -F "${fn}" >/dev/null 2>&1; then
+      __sc_bash_hooks_set_ret_value "${status}" "${__bp_last_argument_prev_command}"
       "${fn}" "${command}"
     fi
   done
@@ -78,6 +92,8 @@ __sc_bash_hooks_run_precmd() {
   local status fn
 
   status="${__sc_bash_hooks_last_status}"
+  __bp_last_ret_value="${status}"
+  __bp_last_argument_prev_command="${_:-}"
   __sc_bash_hooks_in_prompt=1
 
   for fn in "${precmd_functions[@]:-}"; do
