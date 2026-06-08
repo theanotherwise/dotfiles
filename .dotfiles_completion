@@ -652,8 +652,28 @@ sc_helper_grouped_alias_completion_description() {
   esac
 }
 
+sc_helper_grouped_alias_completion_common_prefix() {
+  local prefix candidate
+
+  [ "$#" -gt 0 ] || return 1
+  prefix="$1"
+  shift
+
+  for candidate in "$@"; do
+    while [ -n "${prefix}" ]; do
+      case "${candidate}" in
+        "${prefix}"*) break ;;
+      esac
+      prefix="${prefix%?}"
+    done
+    [ -n "${prefix}" ] || break
+  done
+
+  printf "%s\n" "${prefix}"
+}
+
 sc_helper_grouped_alias_completion() {
-  local cur count key match
+  local common_prefix cur count key match
   local -a matches commands
 
   COMPREPLY=()
@@ -675,6 +695,14 @@ sc_helper_grouped_alias_completion() {
       if [ "${count}" -eq 1 ]; then
         SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
         COMPREPLY=("${matches[0]}")
+        return 0
+      fi
+
+      common_prefix="$(sc_helper_grouped_alias_completion_common_prefix "${matches[@]}")"
+      if [ "${#common_prefix}" -gt "${#cur}" ]; then
+        SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
+        COMPREPLY=("${matches[@]}")
+        compopt -o nospace 2>/dev/null || true
         return 0
       fi
 
