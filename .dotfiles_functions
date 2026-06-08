@@ -874,7 +874,7 @@ sc_helper_gitconfig() {
 }
 
 sc_helper_dotsetup() {
-  local setup_file pid
+  local log_file setup_file status
 
   setup_file="${HOME}/.dotfiles"
   if [ ! -f "${setup_file}" ]; then
@@ -882,10 +882,17 @@ sc_helper_dotsetup() {
     return 1
   fi
 
-  bash "${setup_file}" &
-  pid=$!
-  disown "${pid}" 2>/dev/null || true
-  printf "[%s] setup start    mode=background pid=%s file=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${pid}" "${setup_file}"
+  command mkdir -p "${HOME}/.dotfiles.cache" 2>/dev/null || true
+  log_file="${HOME}/.dotfiles.cache/setup.log"
+  printf "[%s] setup start    mode=visible file=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${setup_file}" "${log_file}"
+  bash "${setup_file}" 2>&1 | command tee "${log_file}"
+  status=${PIPESTATUS[0]}
+  if [ "${status}" -eq 0 ]; then
+    printf "[%s] setup done     status=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${log_file}"
+  else
+    printf "[%s] setup failed   status=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${log_file}" >&2
+  fi
+  return "${status}"
 }
 
 sc_helper_dotfiles_remove_tree_file_by_file() {
@@ -931,7 +938,7 @@ sc_helper_dotflush() {
 }
 
 sc_helper_dotcache() {
-  local cache_dir pid
+  local cache_dir log_file status
 
   cache_dir="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
   printf "[%s] cache flush    dir=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${cache_dir}"
@@ -939,6 +946,8 @@ sc_helper_dotcache() {
 
   if [ -f "${HOME}/.dotfiles_completion" ]; then
     command mkdir -p "${cache_dir}" 2>/dev/null || true
+    log_file="${cache_dir}/rebuild.log"
+    printf "[%s] cache rebuild  mode=visible dir=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${cache_dir}" "${log_file}"
     (
       unset SC_BASH_COMPLETION_LOADED_PID
       unset SC_BASH_COMPLETION_LOADED
@@ -947,10 +956,14 @@ sc_helper_dotcache() {
         SC_BASH_COMPLETION_CACHE_ASYNC=1 \
         SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-100}" \
         . "${HOME}/.dotfiles_completion"
-    ) &
-    pid=$!
-    disown "${pid}" 2>/dev/null || true
-    printf "[%s] cache rebuild  mode=background pid=%s dir=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${pid}" "${cache_dir}"
+    ) 2>&1 | command tee "${log_file}"
+    status=${PIPESTATUS[0]}
+    if [ "${status}" -eq 0 ]; then
+      printf "[%s] cache queued   mode=background dir=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${cache_dir}" "${log_file}"
+    else
+      printf "[%s] cache failed   status=%s dir=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${cache_dir}" "${log_file}" >&2
+    fi
+    return "${status}"
   fi
 }
 
@@ -1644,6 +1657,24 @@ sc_helper_dotversions_exec() {
   fi
 }
 
+sc_helper_dotversions_latest_version() {
+  local package="$1"
+  local binaries_dir="${2:-${HOME}/binaries}"
+  local latest_path target version
+
+  latest_path="${binaries_dir}/${package}/latest"
+  [ -L "${latest_path}" ] || return 1
+
+  target="$(readlink "${latest_path}" 2>/dev/null)" || return 1
+  target="${target%/}"
+  version="${target##*/}"
+
+  [ -n "${version}" ] || return 1
+  [ "${version}" != "latest" ] || return 1
+
+  printf "%s\n" "${version#v}"
+}
+
 sc_helper_dotversions_embedded_version() {
   local binary="$1"
   local version
@@ -2035,25 +2066,40 @@ sc_helper_dotversions_print_table_row() {
 }
 
 sc_helper_dotversions_print_grouped_rows() {
-  local rows_dir="$1"
-  local category row_category tool version description example display_category last_category
+  local rows="$1"
+  local category_order tab
 
-  last_category=""
-
-  while IFS= read -r category; do
-    while IFS="$(printf "\t")" read -r row_category tool version description example; do
-      [ -n "${row_category}" ] || continue
-      [ "${row_category}" = "${category}" ] || continue
-
-      display_category="${row_category}"
-      if [ "${row_category}" = "${last_category}" ]; then
-        display_category=""
-      fi
-
-      sc_helper_dotversions_print_table_row "${display_category}" "${tool}" "${version}" "${description}" "${example}"
-      last_category="${row_category}"
-    done < <(cat "${rows_dir}"/*.row 2>/dev/null)
-  done < <(sc_helper_dotversions_category_order)
+  tab="$(printf "\t")"
+  category_order="Containers${tab}Kubernetes Core${tab}Kubernetes Tools${tab}Helm${tab}Infrastructure as Code${tab}Security and Supply Chain${tab}Recon${tab}GitHub and Git${tab}Languages${tab}Package Managers${tab}Shell Utilities${tab}Search and Navigation${tab}Data Formats${tab}Testing and Load${tab}Other"
+  printf "%s\n" "${rows}" | awk -F "${tab}" -v category_order="${category_order}" '
+    BEGIN {
+      category_count = split(category_order, categories, FS)
+      for (i = 1; i <= category_count; i++) {
+        category_index[categories[i]] = i
+      }
+      other_index = category_index["Other"]
+    }
+    NF >= 5 {
+      row_category = $1
+      category_slot = (row_category in category_index) ? category_index[row_category] : other_index
+      row_count[category_slot]++
+      row[category_slot, row_count[category_slot]] = $0
+    }
+    END {
+      last_category = ""
+      for (category_slot = 1; category_slot <= category_count; category_slot++) {
+        for (i = 1; i <= row_count[category_slot]; i++) {
+          split(row[category_slot, i], fields, FS)
+          display_category = fields[1]
+          if (display_category == last_category) {
+            display_category = ""
+          }
+          printf "| %-26s | %-24s | %-20s | %-48s | %-40s |\n", display_category, fields[2], fields[3], fields[4], fields[5]
+          last_category = fields[1]
+        }
+      }
+    }
+  '
 }
 
 sc_helper_dotversions_docker_rows() {
@@ -2126,45 +2172,41 @@ sc_helper_dotversions_docker_rows() {
 
 sc_helper_dotversions_row() {
   local package="$1"
-  local binary name version
+  local binaries_dir="${2:-${HOME}/binaries}"
+  local part version
 
   if [ "${package}" = "okd" ]; then
-    while IFS= read -r binary; do
-      name="${binary##*/}"
-      version="${name#oc}"
-      sc_helper_dotversions_print_row "${name}" "${version}"
-    done < <(sc_helper_okd_binaries)
+    version="$(sc_helper_dotversions_latest_version "${package}" "${binaries_dir}" 2>/dev/null || true)"
+    if [ -n "${version}" ]; then
+      local old_ifs="${IFS}"
+      IFS="+"
+      for part in ${version}; do
+        [ -n "${part}" ] || continue
+        sc_helper_dotversions_print_row "oc${part}" "${part}"
+      done
+      IFS="${old_ifs}"
+    else
+      sc_helper_dotversions_print_row "${package}" "-"
+    fi
     return 0
   fi
 
-  binary="$(sc_helper_dotversions_binary "${package}")"
-
-  if [ -n "${binary}" ]; then
-    version="$(sc_helper_dotversions_version "${package}" "${binary}")"
-  else
-    version="-"
-  fi
+  version="$(sc_helper_dotversions_latest_version "${package}" "${binaries_dir}" 2>/dev/null || true)"
+  [ -n "${version}" ] || version="-"
 
   sc_helper_dotversions_print_row "${package}" "${version}"
 }
 
 sc_helper_dotversions() {
   local binaries_dir="${1:-${HOME}/binaries}"
-  local package_dir package tmp_dir row_file index pids pid status
+  local package_dir package rows
 
   if [ ! -d "${binaries_dir}" ]; then
     printf "Missing binaries directory: %s\n" "${binaries_dir}" >&2
     return 1
   fi
 
-  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotversions.XXXXXX")" || return 1
-  sc_helper_dotversions_docker_rows >"${tmp_dir}/00000.docker.row"
-
-  (
-    index=1
-    pids=""
-    status=0
-
+  rows="$(
     while IFS= read -r package_dir; do
       package="${package_dir##*/}"
       case "${package}" in
@@ -2173,26 +2215,12 @@ sc_helper_dotversions() {
           ;;
       esac
 
-      row_file="${tmp_dir}/$(printf "%05d" "${index}").row"
-
-      sc_helper_dotversions_row "${package}" >"${row_file}" &
-      pids="${pids} $!"
-      index=$((index + 1))
+      sc_helper_dotversions_row "${package}" "${binaries_dir}"
     done < <(find -L "${binaries_dir}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
-
-    for pid in ${pids}; do
-      wait "${pid}" || status=1
-    done
-
-    exit "${status}"
-  )
-  status=$?
+  )"
 
   printf "| %-26s | %-24s | %-20s | %-48s | %-40s |\n" "CATEGORY" "TOOL" "VERSION" "DESCRIPTION" "EXAMPLE"
   printf "| %-26s | %-24s | %-20s | %-48s | %-40s |\n" "--------------------------" "------------------------" "--------------------" "------------------------------------------------" "----------------------------------------"
 
-  sc_helper_dotversions_print_grouped_rows "${tmp_dir}"
-
-  command rm -rf "${tmp_dir}"
-  return "${status}"
+  sc_helper_dotversions_print_grouped_rows "${rows}"
 }

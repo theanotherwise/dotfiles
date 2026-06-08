@@ -53,15 +53,24 @@ alias untt='sc_helper_helm_unittest'
 #
 #    Docker
 #
-alias docker-up-clean="docker compose up --force-recreate --remove-orphans --build"
-alias docker-stop="docker ps -aq | xargs -r docker stop -t 0"
-alias docker-rm-containers="docker ps -aq | xargs -r docker rm -f"
-alias docker-rm-images="docker images -q | xargs -r docker rmi -f"
-alias docker-rm-networks="docker network ls -q | xargs -r docker network rm"
-alias docker-rm-volumes="docker volume ls -q | xargs -r docker volume rm"
-alias docker-system-prune="docker system prune -f"
-alias docker-context-szew='docker context create nuc --docker "host=ssh://comp@nuc.lan.bajojajo.com"'
-alias docker-context-faszyn='docker context create nuc-faszyn --docker "host=ssh://comp@nuc.faszyn.lan.bajojajo.com"'
+alias d-up-clean="docker compose up --force-recreate --remove-orphans --build"
+alias d-stop="docker ps -aq | xargs -r docker stop -t 0"
+alias d-rm-containers="docker ps -aq | xargs -r docker rm -f"
+alias d-rm-images="docker images -q | xargs -r docker rmi -f"
+alias d-rm-networks="docker network ls -q | xargs -r docker network rm"
+alias d-rm-volumes="docker volume ls -q | xargs -r docker volume rm"
+alias d-system-prune="docker system prune -f"
+alias d-context='docker context show'
+alias d-context-szew='docker context create nuc-szew --docker "host=ssh://comp@nuc.szew.lan.bajojajo.com"'
+alias d-context-faszyn='docker context create nuc-faszyn --docker "host=ssh://comp@nuc.faszyn.lan.bajojajo.com"'
+alias d-context-szew-set='docker context use nuc-szew'
+alias d-context-faszyn-set='docker context use nuc-faszyn'
+
+#
+#    SSH
+#
+alias ssh-szew='ssh comp@nuc.szew.lan.bajojajo.com'
+alias ssh-faszyn='ssh comp@nuc.faszyn.lan.bajojajo.com'
 
 #
 #    Terraform
@@ -211,10 +220,11 @@ alias rg='rg --no-filename --no-line-number --no-ignore'
 #
 alias akamai_staging='sc_helper_akamai_staging'
 alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt" -o /dev/null -s -L'
+alias myip='curl -fsS https://ifconfig.me && echo'
+alias ports='lsof -nP -iTCP -sTCP:LISTEN'
 alias tcpcheck='sc_helper_tcp_linux_check'
-alias sc-restart='exec bash -l'
+alias res='exec bash -l'
 alias sc-setup='sc_helper_dotsetup'
-alias sc-cache-flush='sc_helper_dotflush'
 alias sc-cache='sc_helper_dotcache'
 alias sc-versions='sc_helper_dotversions'
 alias z-reinit='sc_helper_zoxide_reinit'

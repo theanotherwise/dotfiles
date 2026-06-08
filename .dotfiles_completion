@@ -492,6 +492,222 @@ sc_helper_gitconfig_completion_redraw() {
   printf "%s%s" "${prompt}" "${line}" >&2
 }
 
+sc_helper_completion_redraw() {
+  sc_helper_gitconfig_completion_redraw
+}
+
+sc_helper_grouped_alias_completion_print_group() {
+  local title="$1"
+  local group="$2"
+  local printed_any="$3"
+  local description match printed=0
+  shift 3
+
+  for match in "$@"; do
+    case "${group}" in
+      docker-context)
+        case "${match}" in
+          d-context*) ;;
+          *) continue ;;
+        esac
+        ;;
+      docker-rm)
+        case "${match}" in
+          d-rm-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      docker-other)
+        case "${match}" in
+          d-context*|d-rm-*) continue ;;
+          d-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      gcloud-auth)
+        case "${match}" in
+          gcloud-auth*) ;;
+          *) continue ;;
+        esac
+        ;;
+      gcloud-project)
+        case "${match}" in
+          gcloud-projects|gcloud-set-project) ;;
+          *) continue ;;
+        esac
+        ;;
+      gcloud-kubernetes)
+        case "${match}" in
+          gcloud-kube*) ;;
+          *) continue ;;
+        esac
+        ;;
+      gcloud-other)
+        case "${match}" in
+          gcloud-auth*|gcloud-projects|gcloud-set-project|gcloud-kube*) continue ;;
+          gcloud-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      git-commit)
+        case "${match}" in
+          git-commitpush-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      git-pull-sync)
+        case "${match}" in
+          git-pull*|git-sync-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      git-inspect)
+        case "${match}" in
+          git-graph|git-log|git-ref|git-remote|git-show|git-status) ;;
+          *) continue ;;
+        esac
+        ;;
+      git-reset)
+        case "${match}" in
+          git-reset-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      git-tag)
+        case "${match}" in
+          git-tag*) ;;
+          *) continue ;;
+        esac
+        ;;
+      git-other)
+        case "${match}" in
+          git-commitpush-*|git-pull*|git-sync-*|git-graph|git-log|git-ref|git-remote|git-show|git-status|git-reset-*|git-tag*) continue ;;
+          git-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      sc-dotfiles)
+        case "${match}" in
+          sc-*) ;;
+          *) continue ;;
+        esac
+        ;;
+      *)
+        continue
+        ;;
+    esac
+
+    if [ "${printed}" -eq 0 ]; then
+      [ "${printed_any}" -eq 0 ] || printf "\n" >&2
+      printf "\033[1m%s:\033[0m\n" "${title}" >&2
+      printed=1
+    fi
+    if description="$(sc_helper_grouped_alias_completion_description "${match}")"; then
+      printf "%s — %s\n" "${match}" "${description}" >&2
+    else
+      printf "%s\n" "${match}" >&2
+    fi
+  done
+
+  [ "${printed}" -eq 1 ]
+}
+
+sc_helper_grouped_alias_completion_print_matches() {
+  local cur="$1"
+  local printed_any=0
+  shift
+
+  case "${cur}" in
+    d-*)
+      sc_helper_grouped_alias_completion_print_group "Docker Context" docker-context "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Docker RM" docker-rm "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Docker Others" docker-other "${printed_any}" "$@" && printed_any=1
+      ;;
+    gcloud-*)
+      sc_helper_grouped_alias_completion_print_group "GCloud Auth" gcloud-auth "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "GCloud Projects" gcloud-project "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "GCloud Kubernetes" gcloud-kubernetes "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "GCloud Others" gcloud-other "${printed_any}" "$@" && printed_any=1
+      ;;
+    git-*)
+      sc_helper_grouped_alias_completion_print_group "Git Commit" git-commit "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Git Pull and Sync" git-pull-sync "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Git Inspect" git-inspect "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Git Reset" git-reset "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Git Tags" git-tag "${printed_any}" "$@" && printed_any=1
+      sc_helper_grouped_alias_completion_print_group "Git Others" git-other "${printed_any}" "$@" && printed_any=1
+      ;;
+    sc-*)
+      sc_helper_grouped_alias_completion_print_group "Dotfiles" sc-dotfiles "${printed_any}" "$@" && printed_any=1
+      ;;
+  esac
+}
+
+sc_helper_grouped_alias_completion_description() {
+  case "$1" in
+    sc-cache) printf "%s\n" "flush and visibly queue completion cache rebuild" ;;
+    sc-setup) printf "%s\n" "run ~/.dotfiles setup with visible output" ;;
+    sc-versions) printf "%s\n" "show latest symlink versions grouped by category" ;;
+    *) return 1 ;;
+  esac
+}
+
+sc_helper_grouped_alias_completion() {
+  local cur count key match
+  local -a matches commands
+
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+
+  case "${cur}" in
+    d-*|gcloud-*|git-*|sc-*)
+      while IFS= read -r match; do
+        [ -n "${match}" ] || continue
+        matches+=("${match}")
+      done < <(compgen -A alias -- "${cur}" | sort)
+
+      count="${#matches[@]}"
+      if [ "${count}" -eq 0 ]; then
+        SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
+        return 0
+      fi
+
+      if [ "${count}" -eq 1 ]; then
+        SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
+        COMPREPLY=("${matches[0]}")
+        return 0
+      fi
+
+      key="${COMP_LINE:-}:${COMP_POINT:-}:${cur}"
+      if [ "${SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY:-}" != "${key}" ]; then
+        SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY="${key}"
+        return 0
+      fi
+
+      printf "\n" >&2
+      sc_helper_grouped_alias_completion_print_matches "${cur}" "${matches[@]}"
+      sc_helper_completion_redraw
+      return 0
+      ;;
+  esac
+
+  SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
+  while IFS= read -r match; do
+    [ -n "${match}" ] || continue
+    commands+=("${match}")
+  done < <(
+    {
+      compgen -A alias -- "${cur}"
+      compgen -A function -- "${cur}"
+      compgen -A builtin -- "${cur}"
+      compgen -A command -- "${cur}"
+      compgen -A keyword -- "${cur}"
+    } | sort -u
+  )
+
+  COMPREPLY=("${commands[@]}")
+}
+
 sc_helper_gitconfig_completion() {
   local cur key name email count
   local -a matches
@@ -554,6 +770,7 @@ if declare -F _atuin >/dev/null 2>&1; then
   fi
 fi
 complete -F sc_helper_gitconfig_completion gitconfig
+complete -F sc_helper_grouped_alias_completion -I 2>/dev/null || true
 declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
 declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kubetail_completion kubetail kt
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
