@@ -61,8 +61,10 @@ alias d-rm-networks="docker network ls -q | xargs -r docker network rm"
 alias d-rm-volumes="docker volume ls -q | xargs -r docker volume rm"
 alias d-system-prune="docker system prune -f"
 alias d-context='docker context show'
+alias d-context-compute='docker context create compute --docker "host=ssh://taw@10.100.100.8"'
 alias d-context-szew='docker context create nuc-szew --docker "host=ssh://comp@nuc.szew.lan.bajojajo.com"'
 alias d-context-faszyn='docker context create nuc-faszyn --docker "host=ssh://comp@nuc.faszyn.lan.bajojajo.com"'
+alias d-context-compute-set='docker context use compute'
 alias d-context-szew-set='docker context use nuc-szew'
 alias d-context-faszyn-set='docker context use nuc-faszyn'
 
