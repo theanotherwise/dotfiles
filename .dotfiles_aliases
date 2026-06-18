@@ -73,6 +73,7 @@ alias d-context-faszyn-set='docker context use nuc-faszyn'
 #
 alias ssh-szew='ssh comp@nuc.szew.lan.bajojajo.com'
 alias ssh-faszyn='ssh comp@nuc.faszyn.lan.bajojajo.com'
+alias ssh-compute='ssh taw@10.100.100.8'
 
 #
 #    Terraform
@@ -93,6 +94,10 @@ alias gcloud-auth="gcloud auth login --no-launch-browser"
 alias gcloud-auth-app="gcloud auth application-default login --no-launch-browser"
 alias gcloud-kube="gcloud container clusters list"
 alias gcloud-kube-creds="gcloud container clusters get-credentials"
+alias gcloud-vm-start-compute="gcloud compute instances start compute --zone=europe-west1-b --project=prod-common-ncc"
+alias gcloud-vm-stop-compute="gcloud compute instances stop compute --zone=europe-west1-b --project=prod-common-ncc"
+alias gcloud-vm-start-ncc-tunnel="gcloud compute instances start cloudflare-tunnel --zone=europe-west1-b --project=prod-common-ncc"
+alias gcloud-vm-stop-ncc-tunnel="gcloud compute instances stop cloudflare-tunnel --zone=europe-west1-b --project=prod-common-ncc"
 alias export-gar-token='export GAR_TOKEN="$(gcloud auth print-access-token)"'
 
 #
