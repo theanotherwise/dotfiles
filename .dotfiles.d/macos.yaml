@@ -91,9 +91,9 @@ binaries:
     override: False
     strip: True
     inBin: True
-    latest: 3.9.15
+    latest: 3.9.16
     versions:
-      - version: 3.9.15
+      - version: 3.9.16
   #
   #
   #
