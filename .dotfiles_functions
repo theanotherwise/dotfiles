@@ -940,8 +940,60 @@ sc_helper_nuclei() {
   fi
 }
 
+sc_helper_git_scan_table() {
+  local color_enabled="${1:-0}"
+
+  awk -F '\t' -v color_enabled="${color_enabled}" '
+    {
+      row_count++
+      if (NF > column_count) {
+        column_count = NF
+      }
+      for (column = 1; column <= NF; column++) {
+        cells[row_count, column] = $column
+        if (length($column) > widths[column]) {
+          widths[column] = length($column)
+        }
+      }
+    }
+    END {
+      red = sprintf("%c[31m", 27)
+      reset = sprintf("%c[0m", 27)
+
+      for (row = 1; row <= row_count; row++) {
+        bad_uncommitted = (row > 1 && cells[row, 3] != "no")
+        bad_unpushed = (row > 1 && cells[row, 4] != "no")
+        bad_sync = (row > 1 && cells[row, 5] != "synced")
+        repository_problem = (bad_uncommitted || bad_unpushed || bad_sync)
+
+        for (column = 1; column <= column_count; column++) {
+          raw = cells[row, column]
+          rendered = raw
+
+          if (color_enabled == 1 && row > 1) {
+            if ((column == 1 && repository_problem) ||
+                (column == 3 && bad_uncommitted) ||
+                (column == 4 && bad_unpushed) ||
+                (column == 5 && bad_sync)) {
+              rendered = red raw reset
+            }
+          }
+
+          printf "%s", rendered
+          if (column < column_count) {
+            for (padding = length(raw); padding < widths[column] + 2; padding++) {
+              printf " "
+            }
+          }
+        }
+        printf "\n"
+      }
+    }
+  '
+}
+
 sc_helper_git_scan() {
-  local root="." fetch_requested=0
+  local root="." color_enabled=0 fetch_requested=0
   local ahead behind branch directory directory_name fetch_failed sync uncommitted unpushed upstream
 
   case "${1:-}" in
@@ -968,6 +1020,10 @@ sc_helper_git_scan() {
   if [ ! -d "${root}" ]; then
     printf "Directory does not exist: %s\n" "${root}" >&2
     return 2
+  fi
+
+  if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    color_enabled=1
   fi
 
   {
@@ -1037,7 +1093,7 @@ sc_helper_git_scan() {
       printf "%s\t%s\t%s\t%s\t%s\n" \
         "${directory_name}" "${branch}" "${uncommitted}" "${unpushed}" "${sync}"
     done
-  } | sc_helper_tsv_table
+  } | sc_helper_git_scan_table "${color_enabled}"
 }
 
 sc_helper_git_tag_push() {
