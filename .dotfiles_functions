@@ -32,6 +32,18 @@ sc_helper_kubeconfig_init() {
   export KUBECONFIG="${kubeconfig_files}"
 }
 
+sc_helper_kubeconfig_prod_rke2_core() {
+  local kubeconfig_file="${HOME}/.dotfiles.files/kubeconfig/rke2.yaml"
+
+  if [ ! -f "${kubeconfig_file}" ] || [ ! -r "${kubeconfig_file}" ]; then
+    printf "Kubeconfig is not readable: %s\n" "${kubeconfig_file}" >&2
+    return 1
+  fi
+
+  export KUBECONFIG="${kubeconfig_file}"
+  printf "KUBECONFIG=%s\n" "${KUBECONFIG}"
+}
+
 sc_helper_bashrc_git_dir() {
   local dir git_dir line
 
