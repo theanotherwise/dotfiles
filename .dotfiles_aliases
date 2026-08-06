@@ -164,6 +164,7 @@ alias git-log='bash -c '"'"'
 #    Git Status
 #
 alias git-status="git status -vvv --long"
+alias git-scan='sc_helper_git_scan'
 
 #
 #    Git Config

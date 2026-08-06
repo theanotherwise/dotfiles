@@ -940,6 +940,70 @@ sc_helper_nuclei() {
   fi
 }
 
+sc_helper_git_scan() {
+  local root="${1:-.}"
+  local ahead branch directory directory_name repo_status uncommitted unpushed upstream
+
+  if [ "$#" -gt 1 ]; then
+    printf "Usage: git-scan [directory]\n" >&2
+    return 2
+  fi
+
+  if [ ! -d "${root}" ]; then
+    printf "Directory does not exist: %s\n" "${root}" >&2
+    return 2
+  fi
+
+  {
+    printf "DIRECTORY\tREPO\tBRANCH\tUNCOMMITTED\tUNPUSHED\n"
+
+    for directory in "${root}"/*/; do
+      [ -d "${directory}" ] || continue
+      directory="${directory%/}"
+      directory_name="${directory##*/}"
+
+      if [ ! -e "${directory}/.git" ]; then
+        printf "%s\tno\t-\t-\t-\n" "${directory_name}"
+        continue
+      fi
+
+      if ! command git -C "${directory}" rev-parse --git-dir >/dev/null 2>&1; then
+        printf "%s\tinvalid\t-\tunknown\tunknown\n" "${directory_name}"
+        continue
+      fi
+
+      repo_status="yes"
+      branch="$(command git -C "${directory}" symbolic-ref --quiet --short HEAD 2>/dev/null)"
+      if [ -z "${branch}" ]; then
+        branch="$(command git -C "${directory}" rev-parse --short HEAD 2>/dev/null)"
+        branch="${branch:+detached@${branch}}"
+        branch="${branch:-unborn}"
+      fi
+
+      if [ -n "$(command git -C "${directory}" status --porcelain=v1 --untracked-files=normal 2>/dev/null)" ]; then
+        uncommitted="yes"
+      else
+        uncommitted="no"
+      fi
+
+      upstream="$(command git -C "${directory}" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)"
+      if [ -z "${upstream}" ]; then
+        unpushed="no-upstream"
+      else
+        ahead="$(command git -C "${directory}" rev-list --count "${upstream}..HEAD" 2>/dev/null)"
+        case "${ahead}" in
+          0) unpushed="no" ;;
+          ""|*[!0-9]*) unpushed="unknown" ;;
+          *) unpushed="yes" ;;
+        esac
+      fi
+
+      printf "%s\t%s\t%s\t%s\t%s\n" \
+        "${directory_name}" "${repo_status}" "${branch}" "${uncommitted}" "${unpushed}"
+    done
+  } | sc_helper_tsv_table
+}
+
 sc_helper_git_tag_push() {
   T=$(date -u +"%Y-%m-%d.%H-%M-%S").$(git rev-parse --short HEAD)
   git tag "$T"
