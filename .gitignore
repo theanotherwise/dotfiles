@@ -8,6 +8,7 @@
 !.dotfiles
 !.dotfiles.d/
 .dotfiles.cache/
+.dotfiles.files/
 !.dotfiles_aliases
 !.dotfiles_completion
 !.dotfiles_functions
