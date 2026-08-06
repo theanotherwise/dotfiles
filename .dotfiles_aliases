@@ -80,6 +80,9 @@ alias d-context-faszyn-set='docker context use nuc-faszyn'
 alias ssh-conn-szew='ssh -A comp@nuc.szew.lan.bajojajo.com'
 alias ssh-conn-faszyn='ssh -A comp@nuc.faszyn.lan.bajojajo.com'
 alias ssh-conn-prod-rke2-mgmt='ssh -A ubuntu@54.38.14.33'
+alias ssh-conn-prod-rke2-cp-0='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.100.50.142'
+alias ssh-conn-prod-rke2-cp-1='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.100.50.166'
+alias ssh-conn-prod-rke2-cp-2='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.100.50.188'
 alias ssh-compute='ssh taw@10.100.100.8'
 
 #
