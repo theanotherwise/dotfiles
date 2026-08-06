@@ -3,24 +3,30 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
 fi
 
 sc_helper_kubeconfig_init() {
-  local kubeconfig_dir kubeconfig_file kubeconfig_files=""
+  local default_kubeconfig kubeconfig_dir kubeconfig_file kubeconfig_files=""
 
   # Respect an explicit kubeconfig selection inherited by this shell.
   [ -z "${KUBECONFIG:-}" ] || return 0
 
+  default_kubeconfig="${HOME}/.kube/config"
   kubeconfig_dir="${HOME}/.dotfiles.files/kubeconfig"
-  [ -d "${kubeconfig_dir}" ] || return 0
 
-  for kubeconfig_file in "${kubeconfig_dir}"/*; do
-    [ -f "${kubeconfig_file}" ] || continue
-    [ -r "${kubeconfig_file}" ] || continue
+  if [ -f "${default_kubeconfig}" ] && [ -r "${default_kubeconfig}" ]; then
+    kubeconfig_files="${default_kubeconfig}"
+  fi
 
-    case "${kubeconfig_file}" in
-      *:*) continue ;;
-    esac
+  if [ -d "${kubeconfig_dir}" ]; then
+    for kubeconfig_file in "${kubeconfig_dir}"/*; do
+      [ -f "${kubeconfig_file}" ] || continue
+      [ -r "${kubeconfig_file}" ] || continue
 
-    kubeconfig_files="${kubeconfig_files}${kubeconfig_files:+:}${kubeconfig_file}"
-  done
+      case "${kubeconfig_file}" in
+        *:*) continue ;;
+      esac
+
+      kubeconfig_files="${kubeconfig_files}${kubeconfig_files:+:}${kubeconfig_file}"
+    done
+  fi
 
   [ -n "${kubeconfig_files}" ] || return 0
   export KUBECONFIG="${kubeconfig_files}"
