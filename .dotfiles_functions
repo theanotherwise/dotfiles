@@ -2,10 +2,74 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
+sc_helper_bashrc_git_dir() {
+  local dir git_dir line
+
+  dir="${PWD:-}"
+  [ -n "${dir}" ] || return 1
+
+  while [ -n "${dir}" ]; do
+    if [ -d "${dir}/.git" ]; then
+      SC_BASHRC_GIT_DIR="${dir}/.git"
+      printf "%s\n" "${dir}/.git"
+      return 0
+    fi
+
+    if [ -f "${dir}/.git" ]; then
+      IFS= read -r line <"${dir}/.git" || return 1
+      case "${line}" in
+        gitdir:\ /*)
+          git_dir="${line#gitdir: }"
+          ;;
+        gitdir:\ *)
+          git_dir="${dir}/${line#gitdir: }"
+          ;;
+        *)
+          return 1
+          ;;
+      esac
+
+      [ -d "${git_dir}" ] || return 1
+      SC_BASHRC_GIT_DIR="${git_dir}"
+      printf "%s\n" "${git_dir}"
+      return 0
+    fi
+
+    [ "${dir}" = "/" ] && break
+    dir="${dir%/*}"
+    [ -n "${dir}" ] || dir="/"
+  done
+
+  return 1
+}
+
 sc_helper_bashrc_branch() {
-  if git branch >/dev/null 2>&1; then
-    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
-  fi
+  local branch git_dir head
+
+  SC_BASHRC_GIT_DIR=""
+  sc_helper_bashrc_git_dir >/dev/null || return 0
+  git_dir="${SC_BASHRC_GIT_DIR}"
+  [ -n "${git_dir}" ] || return 0
+  [ -r "${git_dir}/HEAD" ] || return 0
+  IFS= read -r head <"${git_dir}/HEAD" || return 0
+
+  case "${head}" in
+    ref:\ refs/heads/*)
+      branch="${head#ref: refs/heads/}"
+      ;;
+    ref:\ *)
+      branch="${head#ref: }"
+      branch="${branch##*/}"
+      ;;
+    "")
+      return 0
+      ;;
+    *)
+      branch="${head:0:7}"
+      ;;
+  esac
+
+  [ -n "${branch}" ] && printf "(%s) " "${branch}"
 }
 
 sc_helper_bashrc_kube_config_file() {
@@ -14,6 +78,7 @@ sc_helper_bashrc_kube_config_file() {
 
   for file in ${KUBECONFIG:-${HOME}/.kube/config}; do
     if [ -r "${file}" ]; then
+      SC_BASHRC_KUBE_CONFIG_FILE="${file}"
       printf "%s\n" "${file}"
       return 0
     fi
@@ -22,7 +87,7 @@ sc_helper_bashrc_kube_config_file() {
   return 1
 }
 
-sc_helper_bashrc_kube_current_context() {
+sc_helper_bashrc_kube_label_from_file() {
   awk '
     function clean(value) {
       sub(/^[[:space:]]+/, "", value)
@@ -32,23 +97,17 @@ sc_helper_bashrc_kube_current_context() {
       return value
     }
 
+    function save_entry() {
+      if (entry_name != "" && entry_namespace != "") {
+        namespaces[entry_name] = entry_namespace
+      }
+    }
+
     /^[[:space:]]*current-context:[[:space:]]*/ {
       value = $0
       sub(/^[[:space:]]*current-context:[[:space:]]*/, "", value)
-      print clean(value)
-      exit
-    }
-  ' "$1"
-}
-
-sc_helper_bashrc_kube_context_namespace() {
-  awk -v target="$2" '
-    function clean(value) {
-      sub(/^[[:space:]]+/, "", value)
-      sub(/[[:space:]]+$/, "", value)
-      sub(/^"/, "", value)
-      sub(/"$/, "", value)
-      return value
+      current = clean(value)
+      next
     }
 
     /^[[:space:]]*contexts:[[:space:]]*$/ {
@@ -57,12 +116,15 @@ sc_helper_bashrc_kube_context_namespace() {
     }
 
     in_contexts && /^[^[:space:]-]/ {
+      save_entry()
       in_contexts = 0
-      active = 0
+      entry_name = ""
+      entry_namespace = ""
     }
 
     in_contexts && /^[[:space:]]*-[[:space:]]*/ {
-      active = 0
+      save_entry()
+      entry_name = ""
       entry_namespace = ""
     }
 
@@ -70,38 +132,66 @@ sc_helper_bashrc_kube_context_namespace() {
       value = $0
       sub(/^[[:space:]]*namespace:[[:space:]]*/, "", value)
       entry_namespace = clean(value)
-      if (active) {
-        print entry_namespace
-        exit
-      }
     }
 
     in_contexts && /^[[:space:]]*(-[[:space:]]*)?name:[[:space:]]*/ {
       value = $0
       sub(/^[[:space:]]*(-[[:space:]]*)?name:[[:space:]]*/, "", value)
-      active = (clean(value) == target)
-      if (active && entry_namespace != "") {
-        print entry_namespace
-        exit
+      entry_name = clean(value)
+    }
+
+    END {
+      save_entry()
+      if (current != "") {
+        if (namespaces[current] != "") {
+          print current "/" namespaces[current]
+        } else {
+          print current
+        }
       }
     }
   ' "$1"
 }
 
 sc_helper_bashrc_kube() {
-  local kube_file kube_ctx kube_namespace kube_label columns
+  local cache_age cache_seconds columns kube_file kube_label now
 
-  kube_file="$(sc_helper_bashrc_kube_config_file)" || return 0
-  kube_ctx="$(sc_helper_bashrc_kube_current_context "${kube_file}")"
-  [ -n "${kube_ctx}" ] || return 0
-  kube_namespace="$(sc_helper_bashrc_kube_context_namespace "${kube_file}" "${kube_ctx}")"
+  SC_BASHRC_KUBE_CONFIG_FILE=""
+  sc_helper_bashrc_kube_config_file >/dev/null || return 0
+  kube_file="${SC_BASHRC_KUBE_CONFIG_FILE}"
+  [ -n "${kube_file}" ] || return 0
+  now="${SECONDS:-0}"
+  cache_seconds="${SC_BASHRC_KUBE_CACHE_SECONDS:-5}"
+  case "${cache_seconds}" in
+    ""|*[!0-9]*) cache_seconds=5 ;;
+  esac
 
-  kube_label="${kube_ctx}"
-  if [ -n "${kube_namespace}" ]; then
-    kube_label="${kube_label}/${kube_namespace}"
+  if [ "${SC_BASHRC_KUBE_CACHE_FILE:-}" = "${kube_file}" ] && [ -n "${SC_BASHRC_KUBE_CACHE_AT:-}" ]; then
+    cache_age=$((now - SC_BASHRC_KUBE_CACHE_AT))
+    if [ "${cache_age}" -ge 0 ] && [ "${cache_age}" -lt "${cache_seconds}" ]; then
+      kube_label="${SC_BASHRC_KUBE_CACHE_LABEL:-}"
+    fi
   fi
 
+  if [ -z "${kube_label+x}" ]; then
+    kube_label="$(sc_helper_bashrc_kube_label_from_file "${kube_file}")"
+    SC_BASHRC_KUBE_CACHE_FILE="${kube_file}"
+    SC_BASHRC_KUBE_CACHE_AT="${now}"
+    SC_BASHRC_KUBE_CACHE_LABEL="${kube_label}"
+  fi
+
+  [ -n "${kube_label}" ] || return 0
+
   columns="${COLUMNS:-80}"
+  case "${columns}" in
+    ""|*[!0-9]*) columns=80 ;;
+  esac
+  [ "${columns}" -gt 1 ] || columns=80
+
+  if [ "${#kube_label}" -ge "${columns}" ]; then
+    kube_label="${kube_label:0:$((columns - 1))}"
+  fi
+
   printf "%*s\r" "$((columns - 1))" "${kube_label}"
 }
 

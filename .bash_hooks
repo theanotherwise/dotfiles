@@ -40,9 +40,27 @@ __sc_bash_hooks_command_from_history() {
   local command
 
   command=$(
-    HISTTIMEFORMAT='' builtin history 1 2>/dev/null \
-      | sed '1 s/^ *[0-9][0-9]*[* ] //'
+    HISTTIMEFORMAT='' builtin history 1 2>/dev/null
   )
+  while [[ "${command}" == " "* ]]; do
+    command="${command# }"
+  done
+  while [[ "${command}" == [0-9]* ]]; do
+    command="${command#?}"
+  done
+  case "${command}" in
+    " "*)
+      command="${command# }"
+      ;;
+    "*"*)
+      command="${command#\*}"
+      ;;
+  esac
+  case "${command}" in
+    " "*)
+      command="${command# }"
+      ;;
+  esac
 
   if [[ -n "${command}" ]]; then
     printf '%s\n' "${command}"

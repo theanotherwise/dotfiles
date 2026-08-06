@@ -22,6 +22,150 @@ sc_helper_completion_cache_log() {
   printf "[%s] cache %-8s tool=%-24s file=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${cmd}" "${cache_file}"
 }
 
+sc_helper_completion_filedir_match_filter() {
+  local path="$1"
+  local filter="$2"
+  local token
+
+  [ -n "${filter}" ] || return 0
+  [ -d "${path}" ] && return 0
+
+  case "${filter}" in
+    @\(*\))
+      filter="${filter#@(}"
+      filter="${filter%)}"
+      ;;
+  esac
+  filter="${filter//|/ }"
+
+  for token in ${filter}; do
+    token="${token#*.}"
+    token="${token#.}"
+    [ -n "${token}" ] || continue
+    case "${path}" in
+      *."${token}") return 0 ;;
+    esac
+  done
+
+  return 1
+}
+
+sc_helper_completion_filedir() {
+  local candidate cur_word filter mode
+
+  mode="${1:-}"
+  case "${mode}" in
+    -d)
+      shift
+      ;;
+    *)
+      mode=""
+      ;;
+  esac
+  filter="${1:-}"
+  cur_word="${cur:-${COMP_WORDS[COMP_CWORD]:-}}"
+  COMPREPLY=()
+
+  if [ "${mode}" = "-d" ]; then
+    while IFS= read -r candidate; do
+      COMPREPLY+=("${candidate}")
+    done < <(compgen -d -- "${cur_word}")
+    return 0
+  fi
+
+  while IFS= read -r candidate; do
+    if sc_helper_completion_filedir_match_filter "${candidate}" "${filter}"; then
+      COMPREPLY+=("${candidate}")
+    fi
+  done < <(compgen -f -- "${cur_word}")
+}
+
+# Minimal bash-completion API shims for generated completions used without the
+# full bash-completion package. Keep these upstream names: generated scripts
+# call them directly.
+if ! declare -F _filedir >/dev/null 2>&1; then
+  _filedir() {
+    sc_helper_completion_filedir "$@"
+  }
+fi
+
+if ! declare -F _get_comp_words_by_ref >/dev/null 2>&1; then
+  _get_comp_words_by_ref() {
+    local cur_var="" prev_var="" words_var="" cword_var=""
+    local current_word previous_word word_index
+    local -a completion_words
+
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+        -c)
+          cur_var="${2:-}"
+          shift 2
+          ;;
+        -p)
+          prev_var="${2:-}"
+          shift 2
+          ;;
+        -w)
+          words_var="${2:-}"
+          shift 2
+          ;;
+        -i)
+          cword_var="${2:-}"
+          shift 2
+          ;;
+        -n)
+          shift 2
+          ;;
+        -s)
+          shift
+          ;;
+        --)
+          shift
+          break
+          ;;
+        -*)
+          shift
+          ;;
+        *)
+          break
+          ;;
+      esac
+    done
+
+    [ "$#" -gt 0 ] && cur_var="$1" && shift
+    [ "$#" -gt 0 ] && prev_var="$1" && shift
+    [ "$#" -gt 0 ] && words_var="$1" && shift
+    [ "$#" -gt 0 ] && cword_var="$1" && shift
+
+    completion_words=("${COMP_WORDS[@]}")
+    word_index="${COMP_CWORD:-0}"
+    current_word="${completion_words[word_index]:-}"
+    previous_word=""
+    if [ "${word_index}" -gt 0 ]; then
+      previous_word="${completion_words[word_index - 1]:-}"
+    fi
+
+    [ -z "${cur_var}" ] || printf -v "${cur_var}" "%s" "${current_word}"
+    [ -z "${prev_var}" ] || printf -v "${prev_var}" "%s" "${previous_word}"
+    [ -z "${cword_var}" ] || printf -v "${cword_var}" "%s" "${word_index}"
+    [ -z "${words_var}" ] || eval "${words_var}=(\"\${completion_words[@]}\")"
+  }
+fi
+
+if ! declare -F _split_longopt >/dev/null 2>&1; then
+  _split_longopt() {
+    case "${cur:-}" in
+      --*=*)
+        prev="${cur%%=*}"
+        cur="${cur#*=}"
+        return 0
+        ;;
+    esac
+
+    return 1
+  }
+fi
+
 sc_helper_strip_completion_file_fallback() {
   local target="$1"
   local spec opt next i last_index

@@ -6,7 +6,7 @@ umask 0022
 
 # Load for interactive shells and also for login non-interactive shells (e.g. `bash -lc`).
 if [[ $- != *i* ]]; then
-  shopt -q login_shell || return
+  shopt -q login_shell || return 0
 fi
 
 # Keep interactive non-login shells (`bash`) consistent with login shell startup.
