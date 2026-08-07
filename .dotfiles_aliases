@@ -86,7 +86,7 @@ alias ssh-conn-ovh-psem-prod-rke2-cp-1='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.1
 alias ssh-conn-ovh-psem-prod-rke2-cp-2='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.100.50.188'
 alias ssh-conn-ovh-psem-prod-rke2-wl-0='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.100.50.10'
 alias ssh-conn-ovh-psem-prod-rke2-wl-1='ssh -A -J ubuntu@54.38.14.33 ubuntu@10.100.50.11'
-alias ssh-tun-psem-prod-rke2-core='ssh -N -o ExitOnForwardFailure=yes -L 6443:10.100.50.117:6443 ubuntu@54.38.14.33'
+alias ssh-tun-psem-prod-rke2-core='sc_helper_ssh_tun_psem_prod_rke2_core'
 alias ssh-compute='ssh taw@10.100.100.8'
 
 #

@@ -254,6 +254,19 @@ sc_helper_shell_join() {
   printf "%s" "${output}"
 }
 
+sc_helper_ssh_tun_psem_prod_rke2_core() {
+  printf '%s\n' \
+    'SSH tunnel:' \
+    '  local:  127.0.0.1:6443' \
+    '  via:    ubuntu@54.38.14.33 (RKE2 mgmt)' \
+    '  remote: 10.100.50.117:6443 (RKE2 core)' \
+    'Press Ctrl+C to close the tunnel.'
+
+  ssh -N -o ExitOnForwardFailure=yes \
+    -L 6443:10.100.50.117:6443 \
+    ubuntu@54.38.14.33
+}
+
 sc_helper_watch() {
   local interval="${1:-}"
   local command_string opt script
