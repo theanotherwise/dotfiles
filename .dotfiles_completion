@@ -824,6 +824,13 @@ sc_helper_grouped_alias_completion() {
   cur="${COMP_WORDS[COMP_CWORD]}"
 
   case "${cur}" in
+    */*)
+      SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
+      return 0
+      ;;
+  esac
+
+  case "${cur}" in
     d-*|gcloud-*|git-*|sc-*)
       while IFS= read -r match; do
         [ -n "${match}" ] || continue
@@ -942,7 +949,7 @@ if declare -F _atuin >/dev/null 2>&1; then
   fi
 fi
 complete -F sc_helper_gitconfig_completion gitconfig
-complete -F sc_helper_grouped_alias_completion -I 2>/dev/null || true
+complete -o bashdefault -o default -F sc_helper_grouped_alias_completion -I 2>/dev/null || true
 declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
 declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kubetail_completion kubetail kt
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
