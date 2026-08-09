@@ -2,46 +2,38 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
-sc_helper_dotfiles_sync() {
-  command git -C "${HOME}" pull --ff-only origin main || return 1
-  command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills"
-}
-
-sc_helper_dotfiles_install() {
-  command python3 "${HOME}/.dotfiles.d/dotfiles.py"
-}
-
-sc_helper_dotfiles_fix() {
+sc_helper_dotfiles_confirm_discard() {
   local answer
-  local skills_dir="${HOME}/.dotfiles.ai-skills"
+  local label="${2:-repository}"
+  local repo_dir="${1:-}"
   local status_output
+  local -a status_args=()
 
-  if ! command git -C "${skills_dir}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills"
-    return $?
+  [ -n "${repo_dir}" ] || return 2
+
+  if [ "${3:-}" = "ignore-submodules" ]; then
+    status_args=(--ignore-submodules=all)
   fi
 
-  status_output="$(command git -C "${skills_dir}" status --porcelain)"
+  status_output="$(command git -C "${repo_dir}" status --porcelain "${status_args[@]}")" || return 1
 
   if [ -n "${status_output}" ]; then
-    printf '%s\n' \
-      'Local changes in .dotfiles.ai-skills:' \
-      ''
-    command git -C "${skills_dir}" status --short
-    command git -C "${skills_dir}" diff --cached --no-ext-diff -- .
-    command git -C "${skills_dir}" diff --no-ext-diff -- .
+    printf 'Local changes in %s:\n\n' "${label}"
+    command git -C "${repo_dir}" status --short "${status_args[@]}"
+    command git -C "${repo_dir}" diff --cached --no-ext-diff "${status_args[@]}" -- .
+    command git -C "${repo_dir}" diff --no-ext-diff "${status_args[@]}" -- .
 
     printf '%s\n' \
       '' \
       'Untracked files and directories that will be removed:'
-    command git -C "${skills_dir}" clean -nd
-    printf '\nDiscard all changes shown above and update from origin/main? [y/N] '
+    command git -C "${repo_dir}" clean -nd
+    printf '\nDiscard all local changes shown above in %s? [y/N] ' "${label}"
     IFS= read -r answer
 
     case "${answer}" in
       y|Y|yes|YES|Yes)
-        command git -C "${skills_dir}" restore --source=HEAD --staged --worktree -- . || return 1
-        command git -C "${skills_dir}" clean -fd || return 1
+        command git -C "${repo_dir}" restore --source=HEAD --staged --worktree -- . || return 1
+        command git -C "${repo_dir}" clean -fd || return 1
         ;;
       *)
         printf '%s\n' 'Cancelled. No local changes were removed.'
@@ -49,9 +41,24 @@ sc_helper_dotfiles_fix() {
         ;;
     esac
   fi
+}
+
+sc_helper_dotfiles_sync() {
+  local skills_dir="${HOME}/.dotfiles.ai-skills"
+
+  sc_helper_dotfiles_confirm_discard "${HOME}" "dotfiles" "ignore-submodules" || return 1
+  command git -C "${HOME}" pull --ff-only --recurse-submodules=no origin main || return 1
+
+  if command git -C "${skills_dir}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    sc_helper_dotfiles_confirm_discard "${skills_dir}" "dotfiles.ai-skills" || return 1
+  fi
 
   command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills" || return 1
   command git -C "${skills_dir}" status --short --branch
+}
+
+sc_helper_dotfiles_install() {
+  command python3 "${HOME}/.dotfiles.d/dotfiles.py"
 }
 
 sc_helper_kubeconfig_init() {

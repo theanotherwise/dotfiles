@@ -14,7 +14,6 @@ alias f="fzf"
 alias a="atuin search -i"
 alias dotfiles.sync='sc_helper_dotfiles_sync'
 alias dotfiles.install='sc_helper_dotfiles_install'
-alias dotfiles.fix='sc_helper_dotfiles_fix'
 alias dotfiles.reset='exec bash -l'
 
 #
