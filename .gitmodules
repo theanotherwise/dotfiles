@@ -1,4 +1,4 @@
 [submodule ".dotfiles.ai-skills"]
 	path = .dotfiles.ai-skills
-	url = git@github.com:opsolving/ai-skills.git
+	url = git@github.com:theanotherwise/ai-skills.git
 	branch = main
