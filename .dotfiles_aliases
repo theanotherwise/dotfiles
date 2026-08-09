@@ -12,6 +12,7 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias f="fzf"
 alias a="atuin search -i"
+alias dotfiles='sc_helper_dotfiles'
 
 #
 #    Claude

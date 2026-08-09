@@ -2,6 +2,11 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
+sc_helper_dotfiles() {
+  command git -C "${HOME}" pull --ff-only origin main || return 1
+  command bash "${HOME}/.dotfiles"
+}
+
 sc_helper_kubeconfig_init() {
   local default_kubeconfig kubeconfig_dir kubeconfig_file kubeconfig_files=""
 

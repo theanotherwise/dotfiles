@@ -2,13 +2,6 @@
 
 SCRIPT_DIR_PATH="$(dirname "$(realpath "$0")")"
 
-DOTFILES_FILES_PATH="${HOME}/.dotfiles.files"
-DOTFILES_FILES_DIRECTORIES=(
-    "kubeconfig"
-)
-
-for directory in "${DOTFILES_FILES_DIRECTORIES[@]}"; do
-    mkdir -p "${DOTFILES_FILES_PATH}/${directory}"
-done
+git -C "${SCRIPT_DIR_PATH}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills" || exit 1
 
 python3 "${SCRIPT_DIR_PATH}/.dotfiles.d/dotfiles.py"

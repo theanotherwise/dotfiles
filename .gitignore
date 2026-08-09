@@ -1,14 +1,22 @@
 *
 
 !.gitignore
+!.gitmodules
 !AGENTS.md
 !.gitconfig
 !.vimrc
 !.README.md
+!.agents/
+!.agents/skills
+!.claude/
+!.claude/skills
 !.dotfiles
 !.dotfiles.d/
+!.dotfiles.ai-skills
 .dotfiles.cache/
-.dotfiles.files/
+!.dotfiles.files/
+!.dotfiles.files/kubeconfig/
+!.dotfiles.files/kubeconfig/.keep
 !.dotfiles_aliases
 !.dotfiles_completion
 !.dotfiles_functions
