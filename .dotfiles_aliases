@@ -12,8 +12,10 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias f="fzf"
 alias a="atuin search -i"
-alias dotfiles='sc_helper_dotfiles'
+alias dotfiles.sync='sc_helper_dotfiles_sync'
+alias dotfiles.install='sc_helper_dotfiles_install'
 alias dotfiles.fix='sc_helper_dotfiles_fix'
+alias dotfiles.reset='exec bash -l'
 
 #
 #    Claude
@@ -247,7 +249,6 @@ alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt"
 alias myip='curl -fsS https://ifconfig.me && echo'
 alias ports='lsof -nP -iTCP -sTCP:LISTEN'
 alias tcpcheck='sc_helper_tcp_linux_check'
-alias res='exec bash -l'
 alias sc-setup='sc_helper_dotsetup'
 alias sc-cache='sc_helper_dotcache'
 alias sc-versions='sc_helper_dotversions'
