@@ -7,6 +7,49 @@ sc_helper_dotfiles() {
   command bash "${HOME}/.dotfiles"
 }
 
+sc_helper_dotfiles_fix() {
+  local answer
+  local skills_dir="${HOME}/.dotfiles.ai-skills"
+  local status_output
+
+  if ! command git -C "${skills_dir}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills"
+    return $?
+  fi
+
+  status_output="$(command git -C "${skills_dir}" status --porcelain)"
+
+  if [ -n "${status_output}" ]; then
+    printf '%s\n' \
+      'Local changes in .dotfiles.ai-skills:' \
+      ''
+    command git -C "${skills_dir}" status --short
+    command git -C "${skills_dir}" diff --cached --no-ext-diff -- .
+    command git -C "${skills_dir}" diff --no-ext-diff -- .
+
+    printf '%s\n' \
+      '' \
+      'Untracked files and directories that will be removed:'
+    command git -C "${skills_dir}" clean -nd
+    printf '\nDiscard all changes shown above and update from origin/main? [y/N] '
+    IFS= read -r answer
+
+    case "${answer}" in
+      y|Y|yes|YES|Yes)
+        command git -C "${skills_dir}" restore --source=HEAD --staged --worktree -- . || return 1
+        command git -C "${skills_dir}" clean -fd || return 1
+        ;;
+      *)
+        printf '%s\n' 'Cancelled. No local changes were removed.'
+        return 1
+        ;;
+    esac
+  fi
+
+  command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills" || return 1
+  command git -C "${skills_dir}" status --short --branch
+}
+
 sc_helper_kubeconfig_init() {
   local default_kubeconfig kubeconfig_dir kubeconfig_file kubeconfig_files=""
 

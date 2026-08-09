@@ -13,6 +13,7 @@ alias rmdir="rmdir -v"
 alias f="fzf"
 alias a="atuin search -i"
 alias dotfiles='sc_helper_dotfiles'
+alias .dotfiles.fix='sc_helper_dotfiles_fix'
 
 #
 #    Claude
