@@ -53,6 +53,7 @@ sc_helper_dotfiles_sync() {
     sc_helper_dotfiles_confirm_discard "${skills_dir}" "dotfiles.ai-skills" || return 1
   fi
 
+  command git -C "${HOME}" submodule sync --recursive -- ".dotfiles.ai-skills" || return 1
   command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills" || return 1
   command git -C "${skills_dir}" status --short --branch
 }

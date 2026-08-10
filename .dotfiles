@@ -2,6 +2,7 @@
 
 SCRIPT_DIR_PATH="$(dirname "$(realpath "$0")")"
 
+git -C "${SCRIPT_DIR_PATH}" submodule sync --recursive -- ".dotfiles.ai-skills" || exit 1
 git -C "${SCRIPT_DIR_PATH}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills" || exit 1
 
 python3 "${SCRIPT_DIR_PATH}/.dotfiles.d/dotfiles.py"
