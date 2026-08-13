@@ -79,23 +79,23 @@ __sc_bash_hooks_run_preexec() {
   case "${BASH_COMMAND}" in
     __sc_bash_hooks_run_precmd*)
       __sc_bash_hooks_last_status="${status}"
-      return "${status}"
+      return 0
       ;;
   esac
 
-  [[ "${__sc_bash_hooks_ready}" == "1" ]] || return "${status}"
-  [[ "${__sc_bash_hooks_in_prompt}" == "0" ]] || return "${status}"
+  [[ "${__sc_bash_hooks_ready}" == "1" ]] || return 0
+  [[ "${__sc_bash_hooks_in_prompt}" == "0" ]] || return 0
 
   case "${BASH_COMMAND}" in
     __sc_bash_hooks_*|__atuin_history*|__atuin_widget_run*|__atuin_bash42_dispatch*)
-      return "${status}"
+      return 0
       ;;
   esac
 
   __sc_bash_hooks_ready=0
   command="$(__sc_bash_hooks_command_from_history)"
 
-  [[ -n "${command}" ]] || return "${status}"
+  [[ -n "${command}" ]] || return 0
   for fn in "${preexec_functions[@]:-}"; do
     if declare -F "${fn}" >/dev/null 2>&1; then
       __sc_bash_hooks_set_ret_value "${status}" "${__bp_last_argument_prev_command}"
@@ -103,7 +103,9 @@ __sc_bash_hooks_run_preexec() {
     fi
   done
 
-  return "${status}"
+  # A non-zero DEBUG trap result tells Bash to skip the command it was about
+  # to run. Always succeed here; the original status is carried separately.
+  return 0
 }
 
 __sc_bash_hooks_run_precmd() {
@@ -121,9 +123,18 @@ __sc_bash_hooks_run_precmd() {
     fi
   done
 
+  # Persist this shell's new commands and import commands appended by other
+  # open shells so native Bash history stays consistent across terminal tabs.
+  builtin history -a
+  builtin history -n
+
+  return "${status}"
+}
+
+__sc_bash_hooks_finish_prompt() {
   __sc_bash_hooks_in_prompt=0
   __sc_bash_hooks_ready=1
-  return "${status}"
+  return 0
 }
 
 __sc_bash_hooks_install_prompt_command() {
@@ -131,9 +142,9 @@ __sc_bash_hooks_install_prompt_command() {
     *__sc_bash_hooks_run_precmd*) ;;
     *)
       if [[ -n "${PROMPT_COMMAND:-}" ]]; then
-        PROMPT_COMMAND="__sc_bash_hooks_run_precmd; ${PROMPT_COMMAND}"
+        PROMPT_COMMAND="__sc_bash_hooks_run_precmd; ${PROMPT_COMMAND}; __sc_bash_hooks_finish_prompt"
       else
-        PROMPT_COMMAND="__sc_bash_hooks_run_precmd"
+        PROMPT_COMMAND="__sc_bash_hooks_run_precmd; __sc_bash_hooks_finish_prompt"
       fi
       ;;
   esac

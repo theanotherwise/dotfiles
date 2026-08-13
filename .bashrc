@@ -41,4 +41,5 @@ export PS1="\[\e[1;34m\$(sc_helper_bashrc_kube)\e[m\][\[\e[32m\]\u\[\e[m\]]@[\[\
 export HISTSIZE="10000"
 export HISTFILESIZE="10000"
 export HISTTIMEFORMAT="%Y-%m-%d %T "
+shopt -s histappend
 export EDITOR="vim"
