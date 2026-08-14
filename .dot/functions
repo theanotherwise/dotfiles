@@ -655,17 +655,8 @@ sc_helper_kube_namespaces() {
       }
       return result
     }
-    function border() {
-      printf "+%s+%s+%s+\n", repeated("-", name_width + 2), repeated("-", status_width + 2), repeated("-", age_width + 2)
-    }
-    function label(group) {
-      if (group == 0) {
-        return "# SYSTEM"
-      }
-      if (group == 1) {
-        return "# OPERATOR"
-      }
-      return "# DEFAULT"
+    function separator() {
+      printf "%s+%s+%s\n", repeated("-", name_width + 1), repeated("-", status_width + 2), repeated("-", age_width + 1)
     }
     {
       groups[NR] = $1
@@ -683,19 +674,12 @@ sc_helper_kube_namespaces() {
       }
     }
     END {
-      section_width = name_width + status_width + age_width + 6
-      border()
       for (row = 1; row <= NR; row++) {
-        if (row == 1 || groups[row] != groups[row - 1]) {
-          if (row > 1) {
-            border()
-          }
-          printf "| %-*s |\n", section_width, label(groups[row])
-          border()
+        if (row > 1 && groups[row] != groups[row - 1]) {
+          separator()
         }
-        printf "| %-*s | %-*s | %-*s |\n", name_width, names[row], status_width, statuses[row], age_width, ages[row]
+        printf "%-*s | %-*s | %-*s\n", name_width, names[row], status_width, statuses[row], age_width, ages[row]
       }
-      border()
     }
   '
 }
