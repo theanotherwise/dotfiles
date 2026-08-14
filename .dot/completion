@@ -783,6 +783,7 @@ sc_helper_grouped_alias_completion_print_matches() {
 sc_helper_grouped_alias_completion_description() {
   case "$1" in
     dot) printf "%s\n" "sync repository, rebuild completion cache, and reset shell" ;;
+    dot.reset) printf "%s\n" "reset current shell without syncing or rebuilding cache" ;;
     dot.install) printf "%s\n" "install configured binaries" ;;
     dot.ignores) printf "%s\n" "print VS Code workspace excludes as JSON or YAML" ;;
     dot.ver) printf "%s\n" "show latest symlink versions grouped by category" ;;
