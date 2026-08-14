@@ -92,9 +92,9 @@ binaries:
     override: False
     strip: True
     inBin: False
-    latest: 0.11.12
+    latest: 0.12.4
     versions:
-      - version: 0.11.12
+      - version: 0.12.4
   - name: subfinder
     url: https://github.com/projectdiscovery/subfinder/releases/download/v{version}/subfinder_{version}_linux_amd64.zip
     type: zip
