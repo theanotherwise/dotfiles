@@ -7,7 +7,8 @@ This project contains personal shell and tool configuration intended to be check
 ## Structure
 
 - [`.bash_profile`](./.bash_profile) prepares `PATH`, exports shell defaults, and loads [`.bashrc`](./.bashrc).
-- [`.README.md`](./.README.md) is only for repository initialization instructions.
+- [`README.md`](./README.md) is only for repository initialization instructions.
+- [`init.sh`](./init.sh) bootstraps or repairs the home-directory checkout from `origin/main`, then runs [`.dot/setup`](./.dot/setup).
 - [`.bashrc`](./.bashrc) loads shell startup files from [`.dot`](./.dot) and sets Bash prompt/history/editor defaults.
 - [`.bash_hooks`](./.bash_hooks) provides Bash-specific runtime hooks such as `preexec`/`precmd` compatibility for tools that need command lifecycle events.
 - [`.dot/init`](./.dot/init) runs repository-owned tool initialization helpers after functions, completions, and aliases are loaded, including automatic `KUBECONFIG` discovery from the default `~/.kube/config` and `~/.dot/files/kubeconfig`.
@@ -24,7 +25,8 @@ This project contains personal shell and tool configuration intended to be check
 ## Placement Rules
 
 - [`.bash_profile`](./.bash_profile) should stay limited to login-shell environment setup: `PATH`, exported build/runtime defaults, and loading [`.bashrc`](./.bashrc). Do not put aliases, reusable functions, completions, prompt logic, or tool-specific initialization blocks here.
-- [`.README.md`](./.README.md) should stay limited to initializing this repository in a home directory. Do not put shell file role descriptions, Git identity usage, AI/editor policies, operational rules, or other project documentation here; keep those details in this [AGENTS.md](./AGENTS.md).
+- [`README.md`](./README.md) should stay limited to initializing this repository in a home directory. Do not put shell file role descriptions, Git identity usage, AI/editor policies, operational rules, or other project documentation here; keep those details in this [AGENTS.md](./AGENTS.md).
+- [`init.sh`](./init.sh) must remain safe to rerun after the home checkout's `.git` directory is removed. It may replace paths tracked by this repository with `origin/main`, but it must preserve unrelated and ignored files in the user's home directory and repair stale submodule metadata before invoking [`.dot/setup`](./.dot/setup).
 - [`.bashrc`](./.bashrc) should stay thin. It may guard shell mode, source startup files, and set prompt/history/editor defaults. Do not define functions, aliases, completion handlers, call tool-specific helpers directly, or place long inline tool setup blocks here.
 - [`.bash_hooks`](./.bash_hooks) is for Bash-only command lifecycle glue such as `DEBUG` trap and `PROMPT_COMMAND` wiring. Keep it idempotent, interactive-shell-only, and limited to hook dispatch; public helper functions still belong in [`.dot/functions`](./.dot/functions).
 - [`.dot/init`](./.dot/init) is for startup-time tool initialization calls such as zoxide setup. Do not define reusable functions, aliases, or completion handlers here; put definitions in [`.dot/functions`](./.dot/functions), [`.dot/aliases`](./.dot/aliases), or [`.dot/completion`](./.dot/completion) as appropriate.
