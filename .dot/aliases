@@ -43,24 +43,14 @@ alias k="sc_helper_kubectl"
 alias kctx="kubectx"
 alias kctx-prod-rke2-core='sc_helper_kubeconfig_prod_rke2_core'
 alias kns="kubens"
-alias kc="kube-capacity"
 alias kt="stern"
 alias kl="kube-linter"
-alias kp="popeye"
-alias knt="kubent"
-alias ks="kubespy"
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
 alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 alias ksecret='sc_helper_kube_secret'
 alias ksecrets='sc_helper_kube_secret'
 alias kcontainers='sc_helper_kube_containers'
 alias kerrors='sc_helper_kube_errors'
-
-#
-#    Helm
-#
-alias helm-unittest='sc_helper_helm_unittest'
-alias untt='sc_helper_helm_unittest'
 
 #
 #    Docker
@@ -100,7 +90,6 @@ alias ssh-compute='ssh taw@10.100.100.8'
 #
 alias terragrunt="terragrunt"
 alias terralint="tflint"
-alias terrapike="pike"
 alias export-tofu='export TG_TF_PATH=tofu'
 alias export-terraform='export TG_TF_PATH=terraform'
 

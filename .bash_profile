@@ -4,11 +4,10 @@ fi
 
 for tool in go groovy node pnpm mvn yq jq ripgrep uv \
             subfinder httpx dnsx naabu katana gau asnmap mapcidr tlsx nuclei amass ffuf \
-            kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
-            kubectl argocd kubectx kubens kustomize kubeconform stern kubectl-neat \
-            tofu terraform terragrunt tflint helm helmify helmfile rtfmt pike \
-            helm-unittest upx oras k6 github-mcp-server shellcheck shfmt \
-            trivy gh actionlint fzf atuin fd bat delta zoxide sops age conftest syft grype \
+            kube-linter k3d k9s kubectl argocd kubectx kubens kustomize kubeconform stern \
+            tofu terraform terragrunt tflint helm helmfile rtfmt upx oras k6 \
+            github-mcp-server shellcheck shfmt trivy gh actionlint fzf atuin fd bat delta \
+            zoxide sops age syft grype \
             cosign; do
   PATH="${HOME}/binaries/${tool}/latest/bin:${PATH}"
 done

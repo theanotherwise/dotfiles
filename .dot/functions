@@ -2008,46 +2008,6 @@ sc_helper_versions() {
   printf "\n"
 }
 
-sc_helper_helm_unittest_binary() {
-  local bin_dir="${HOME}/binaries/helm-unittest/latest/bin"
-  local candidate path
-
-  [ -d "${bin_dir}" ] || return 1
-
-  for candidate in untt untt-macos-arm64 untt-macos-amd64 untt-linux-arm64 untt-linux-amd64; do
-    path="${bin_dir}/${candidate}"
-    if [ -x "${path}" ] && [ ! -d "${path}" ]; then
-      printf "%s\n" "${path}"
-      return 0
-    fi
-  done
-
-  path="$(find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'untt*' 2>/dev/null | sort | head -1)"
-  [ -n "${path}" ] || return 1
-  printf "%s\n" "${path}"
-}
-
-sc_helper_helm_unittest() {
-  local binary
-
-  binary="$(sc_helper_helm_unittest_binary)"
-  if [ -z "${binary}" ]; then
-    echo "helm-unittest binary not found in ${HOME}/binaries/helm-unittest/latest/bin" 1>&2
-    return 127
-  fi
-
-  if [ "$#" -eq 1 ]; then
-    case "${1}" in
-      --version|version)
-        sc_helper_dotversions_version helm-unittest "${binary}"
-        return 0
-        ;;
-    esac
-  fi
-
-  "${binary}" "$@"
-}
-
 sc_helper_dotversions_binary() {
   local package="$1"
   local bin_dir="${HOME}/binaries/${package}/latest/bin"
@@ -2056,13 +2016,6 @@ sc_helper_dotversions_binary() {
   [ -d "${bin_dir}" ] || return 1
 
   case "${package}" in
-    helm-unittest)
-      sc_helper_helm_unittest_binary
-      return 0
-      ;;
-    kube-popeye)
-      candidate="popeye"
-      ;;
     opentofu|tofu)
       candidate="tofu"
       ;;
@@ -2158,16 +2111,6 @@ sc_helper_dotversions_version() {
   local binary="$2"
   local variants variant output status version
 
-  if [ "${package}" = "helm-unittest" ]; then
-    version="$(sc_helper_dotversions_embedded_version "${binary}")"
-    if [ -n "${version}" ]; then
-      printf "%s\n" "${version}"
-    else
-      printf "%s\n" "-"
-    fi
-    return 0
-  fi
-
   case "${package}" in
     go|opentofu|terraform|tofu)
       variants="version
@@ -2246,7 +2189,6 @@ sc_helper_dotversions_description() {
     asnmap) printf "%s\n" "Maps organizations and ASNs to CIDRs" ;;
     atuin) printf "%s\n" "Searches shell history with context" ;;
     bat) printf "%s\n" "cat with syntax highlighting and paging" ;;
-    conftest) printf "%s\n" "Tests config files with OPA/Rego policies" ;;
     containerd) printf "%s\n" "Low-level container runtime used by Docker" ;;
     cosign) printf "%s\n" "Signs and verifies container images" ;;
     delta) printf "%s\n" "Syntax-highlighted pager for git diffs" ;;
@@ -2265,25 +2207,18 @@ sc_helper_dotversions_description() {
     groovy) printf "%s\n" "JVM scripting language runtime" ;;
     grype) printf "%s\n" "Scans images and filesystems for CVEs" ;;
     helm) printf "%s\n" "Kubernetes package manager for charts" ;;
-    helm-unittest) printf "%s\n" "Unit tests for Helm chart templates" ;;
     helmfile) printf "%s\n" "Declares and syncs Helm releases" ;;
-    helmify) printf "%s\n" "Converts Kubernetes YAML into Helm charts" ;;
     httpx) printf "%s\n" "Probes live HTTP services and metadata" ;;
     jq) printf "%s\n" "Filters and transforms JSON data" ;;
     k3d) printf "%s\n" "Runs local k3s clusters in Docker" ;;
     k6) printf "%s\n" "Scriptable HTTP and load test runner" ;;
     k9s) printf "%s\n" "Terminal UI for Kubernetes clusters" ;;
     katana) printf "%s\n" "Crawls web apps for URLs and endpoints" ;;
-    kube-capacity) printf "%s\n" "Shows Kubernetes node and pod resource use" ;;
     kube-linter) printf "%s\n" "Finds Kubernetes manifest problems" ;;
-    kube-popeye|popeye) printf "%s\n" "Audits live Kubernetes cluster hygiene" ;;
     kubeconform) printf "%s\n" "Validates manifests against Kubernetes schemas" ;;
     kubectl) printf "%s\n" "Kubernetes CLI" ;;
-    kubectl-neat) printf "%s\n" "Removes noise from kubectl YAML output" ;;
     kubectx) printf "%s\n" "Switches the current Kubernetes context" ;;
     kubens) printf "%s\n" "Switches the current Kubernetes namespace" ;;
-    kubent) printf "%s\n" "Finds removed or deprecated Kubernetes APIs" ;;
-    kubespy) printf "%s\n" "Watches Kubernetes resource rollouts" ;;
     kustomize) printf "%s\n" "Builds patched Kubernetes manifests" ;;
     mapcidr) printf "%s\n" "Expands and slices IP/CIDR ranges" ;;
     mvn) printf "%s\n" "Builds and tests Maven/JVM projects" ;;
@@ -2291,7 +2226,6 @@ sc_helper_dotversions_description() {
     node) printf "%s\n" "JavaScript runtime for CLIs and apps" ;;
     nuclei) printf "%s\n" "Runs template-based security checks" ;;
     oras) printf "%s\n" "Pushes and pulls OCI registry artifacts" ;;
-    pike) printf "%s\n" "Maps Terraform plans to IAM permissions" ;;
     pnpm) printf "%s\n" "Fast disk-efficient JS package manager" ;;
     ripgrep|rg) printf "%s\n" "Recursive regex search across files" ;;
     runc) printf "%s\n" "OCI container runtime used by Docker" ;;
@@ -2324,16 +2258,16 @@ sc_helper_dotversions_category() {
     kubectl)
       printf "%s\n" "Kubernetes Core"
       ;;
-    argocd|k3d|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl-neat|kubectx|kubens|kubent|kubespy|kustomize|stern)
+    argocd|k3d|k9s|kube-linter|kubeconform|kubectx|kubens|kustomize|stern)
       printf "%s\n" "Kubernetes Tools"
       ;;
-    helm|helm-unittest|helmfile|helmify)
+    helm|helmfile)
       printf "%s\n" "Helm"
       ;;
-    opentofu|pike|terraform|terragrunt|tflint|tofu)
+    opentofu|terraform|terragrunt|tflint|tofu)
       printf "%s\n" "Infrastructure as Code"
       ;;
-    age|conftest|cosign|grype|sops|syft|trivy|oras)
+    age|cosign|grype|sops|syft|trivy|oras)
       printf "%s\n" "Security and Supply Chain"
       ;;
     actionlint|gh|github-mcp-server)
@@ -2396,7 +2330,6 @@ sc_helper_dotversions_example() {
     asnmap) printf "%s\n" "asnmap -org GOOGLE -silent" ;;
     atuin) printf "%s\n" "atuin search kubectl" ;;
     bat) printf "%s\n" "bat file.txt" ;;
-    conftest) printf "%s\n" "conftest test policy.yaml" ;;
     containerd) printf "%s\n" "docker version" ;;
     cosign) printf "%s\n" "cosign verify image" ;;
     delta) printf "%s\n" "delta diff.patch" ;;
@@ -2415,25 +2348,18 @@ sc_helper_dotversions_example() {
     groovy) printf "%s\n" "groovy script.groovy" ;;
     grype) printf "%s\n" "grype nginx:latest" ;;
     helm) printf "%s\n" "helm list -A" ;;
-    helm-unittest) printf "%s\n" "helm-unittest charts/app" ;;
     helmfile) printf "%s\n" "helmfile list" ;;
-    helmify) printf "%s\n" "helmify k8s.yaml" ;;
     httpx) printf "%s\n" "httpx -l hosts.txt -sc -title" ;;
     jq) printf "%s\n" "jq . file.json" ;;
     k3d) printf "%s\n" "k3d cluster list" ;;
     k6) printf "%s\n" "k6 run test.js" ;;
     k9s) printf "%s\n" "k9s" ;;
     katana) printf "%s\n" "katana -u https://example.com" ;;
-    kube-capacity) printf "%s\n" "kube-capacity" ;;
     kube-linter) printf "%s\n" "kube-linter lint manifests" ;;
-    kube-popeye|popeye) printf "%s\n" "popeye" ;;
     kubeconform) printf "%s\n" "kubeconform manifests" ;;
     kubectl) printf "%s\n" "kubectl get pods" ;;
-    kubectl-neat) printf "%s\n" "kubectl-neat pod.yaml" ;;
     kubectx) printf "%s\n" "kubectx prod" ;;
     kubens) printf "%s\n" "kubens default" ;;
-    kubent) printf "%s\n" "kubent" ;;
-    kubespy) printf "%s\n" "kubespy trace deploy/app" ;;
     kustomize) printf "%s\n" "kustomize build ." ;;
     mapcidr) printf "%s\n" "mapcidr -cidr 10.0.0.0/24" ;;
     mvn) printf "%s\n" "mvn test" ;;
@@ -2441,7 +2367,6 @@ sc_helper_dotversions_example() {
     node) printf "%s\n" "node app.js" ;;
     nuclei) printf "%s\n" "nuclei -u https://example.com" ;;
     oras) printf "%s\n" "oras repo tags registry/repo" ;;
-    pike) printf "%s\n" "pike scan" ;;
     pnpm) printf "%s\n" "pnpm test" ;;
     ripgrep|rg) printf "%s\n" "rg pattern" ;;
     runc) printf "%s\n" "docker version" ;;
