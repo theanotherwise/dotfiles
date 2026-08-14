@@ -766,6 +766,292 @@ sc_helper_kube_namespaces() {
   '
 }
 
+sc_helper_kube_pod_resource_rows() {
+  command jq -r '
+    def cpu_m:
+      (. // "0" | tostring) as $quantity
+      | if $quantity | endswith("n") then ($quantity[0:-1] | tonumber) / 1000000
+        elif $quantity | endswith("u") then ($quantity[0:-1] | tonumber) / 1000
+        elif $quantity | endswith("m") then ($quantity[0:-1] | tonumber)
+        else ($quantity | tonumber) * 1000
+        end;
+
+    def memory_bytes:
+      (. // "0" | tostring) as $quantity
+      | if $quantity | endswith("Ei") then ($quantity[0:-2] | tonumber) * 1152921504606846976
+        elif $quantity | endswith("Pi") then ($quantity[0:-2] | tonumber) * 1125899906842624
+        elif $quantity | endswith("Ti") then ($quantity[0:-2] | tonumber) * 1099511627776
+        elif $quantity | endswith("Gi") then ($quantity[0:-2] | tonumber) * 1073741824
+        elif $quantity | endswith("Mi") then ($quantity[0:-2] | tonumber) * 1048576
+        elif $quantity | endswith("Ki") then ($quantity[0:-2] | tonumber) * 1024
+        elif $quantity | endswith("E") then ($quantity[0:-1] | tonumber) * 1000000000000000000
+        elif $quantity | endswith("P") then ($quantity[0:-1] | tonumber) * 1000000000000000
+        elif $quantity | endswith("T") then ($quantity[0:-1] | tonumber) * 1000000000000
+        elif $quantity | endswith("G") then ($quantity[0:-1] | tonumber) * 1000000000
+        elif $quantity | endswith("M") then ($quantity[0:-1] | tonumber) * 1000000
+        elif $quantity | endswith("K") then ($quantity[0:-1] | tonumber) * 1000
+        elif $quantity | endswith("m") then ($quantity[0:-1] | tonumber) / 1000
+        else ($quantity | tonumber)
+        end;
+
+    def container_cpu($container; $kind):
+      (((($container.resources // {})[$kind] // {}).cpu // "0") | cpu_m);
+
+    def container_memory($container; $kind):
+      (((($container.resources // {})[$kind] // {}).memory // "0") | memory_bytes);
+
+    def summed_cpu($containers; $kind):
+      reduce $containers[] as $container (0; . + container_cpu($container; $kind));
+
+    def summed_memory($containers; $kind):
+      reduce $containers[] as $container (0; . + container_memory($container; $kind));
+
+    def container_pod_cpu($pod; $kind):
+      (summed_cpu(($pod.spec.containers // []); $kind)) as $running
+      | reduce ($pod.spec.initContainers // [])[] as $container (
+          {running: $running, restartable: 0, init_max: 0};
+          (container_cpu($container; $kind)) as $value
+          | if $container.restartPolicy == "Always" then
+              .running += $value
+              | .restartable += $value
+              | .init_max = ([.init_max, .restartable] | max)
+            else
+              .init_max = ([.init_max, (.restartable + $value)] | max)
+            end
+        )
+      | [.running, .init_max] | max;
+
+    def container_pod_memory($pod; $kind):
+      (summed_memory(($pod.spec.containers // []); $kind)) as $running
+      | reduce ($pod.spec.initContainers // [])[] as $container (
+          {running: $running, restartable: 0, init_max: 0};
+          (container_memory($container; $kind)) as $value
+          | if $container.restartPolicy == "Always" then
+              .running += $value
+              | .restartable += $value
+              | .init_max = ([.init_max, .restartable] | max)
+            else
+              .init_max = ([.init_max, (.restartable + $value)] | max)
+            end
+        )
+      | [.running, .init_max] | max;
+
+    def pod_cpu($pod; $kind):
+      (((($pod.spec.resources // {})[$kind] // {}).cpu // null)) as $pod_level
+      | (if $pod_level != null then ($pod_level | cpu_m)
+         else container_pod_cpu($pod; $kind)
+         end) as $value
+      | if $kind == "limits" and $value == 0 then 0
+        else $value + (($pod.spec.overhead.cpu // "0") | cpu_m)
+        end;
+
+    def pod_memory($pod; $kind):
+      (((($pod.spec.resources // {})[$kind] // {}).memory // null)) as $pod_level
+      | (if $pod_level != null then ($pod_level | memory_bytes)
+         else container_pod_memory($pod; $kind)
+         end) as $value
+      | if $kind == "limits" and $value == 0 then 0
+        else $value + (($pod.spec.overhead.memory // "0") | memory_bytes)
+        end;
+
+    def rounded_thousandths:
+      ((. * 1000 | round) / 1000);
+
+    def rounded_hundredths:
+      ((. * 100 | round) / 100);
+
+    def format_cpu:
+      if . == 0 then "0"
+      else (rounded_thousandths | tostring) + "m"
+      end;
+
+    def format_memory:
+      . as $bytes
+      | if $bytes == 0 then "0B"
+        elif $bytes >= 1152921504606846976 then (($bytes / 1152921504606846976 | rounded_hundredths | tostring) + "Ei")
+        elif $bytes >= 1125899906842624 then (($bytes / 1125899906842624 | rounded_hundredths | tostring) + "Pi")
+        elif $bytes >= 1099511627776 then (($bytes / 1099511627776 | rounded_hundredths | tostring) + "Ti")
+        elif $bytes >= 1073741824 then (($bytes / 1073741824 | rounded_hundredths | tostring) + "Gi")
+        elif $bytes >= 1048576 then (($bytes / 1048576 | rounded_hundredths | tostring) + "Mi")
+        elif $bytes >= 1024 then (($bytes / 1024 | rounded_hundredths | tostring) + "Ki")
+        else (($bytes | rounded_hundredths | tostring) + "B")
+        end;
+
+    (if has("items") then .items[] else . end) as $pod
+    | [
+        ($pod.metadata.namespace // "default"),
+        $pod.metadata.name,
+        (pod_cpu($pod; "requests") | format_cpu),
+        (pod_memory($pod; "requests") | format_memory),
+        (pod_cpu($pod; "limits") | format_cpu),
+        (pod_memory($pod; "limits") | format_memory)
+      ]
+    | @tsv
+  '
+}
+
+sc_helper_kube_pods() {
+  if ! command -v kubectl >/dev/null 2>&1; then
+    printf '%s\n' 'kubectl not found' >&2
+    return 127
+  fi
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '%s\n' 'jq not found' >&2
+    return 127
+  fi
+
+  local all_namespaces=0 no_headers=0 passthrough=0
+  local arg output_value="" pods_json native_rows resource_rows
+  local index=0
+  local -a native_args json_args
+
+  native_args=("$@")
+  while [ "${index}" -lt "${#native_args[@]}" ]; do
+    arg="${native_args[index]}"
+    case "${arg}" in
+      -A|--all-namespaces|--all-namespaces=true)
+        all_namespaces=1
+        ;;
+      --all-namespaces=false)
+        all_namespaces=0
+        ;;
+      --no-headers|--no-headers=true)
+        no_headers=1
+        ;;
+      --no-headers=false)
+        no_headers=0
+        ;;
+      -o|--output)
+        if [ $((index + 1)) -ge "${#native_args[@]}" ]; then
+          passthrough=1
+        else
+          output_value="${native_args[index + 1]}"
+          index=$((index + 1))
+        fi
+        ;;
+      -o=*|--output=*)
+        output_value="${arg#*=}"
+        ;;
+      -o?*)
+        output_value="${arg#-o}"
+        ;;
+      -w|--watch|--watch=true|--watch-only|--watch-only=true|-h|--help)
+        passthrough=1
+        ;;
+    esac
+    index=$((index + 1))
+  done
+
+  if [ -n "${output_value}" ] && [ "${output_value}" != "wide" ]; then
+    passthrough=1
+  fi
+  if [ "${passthrough}" -eq 1 ]; then
+    command kubectl get pods "${native_args[@]}"
+    return
+  fi
+
+  index=0
+  while [ "${index}" -lt "${#native_args[@]}" ]; do
+    arg="${native_args[index]}"
+    case "${arg}" in
+      -o|--output|-L|--label-columns)
+        index=$((index + 1))
+        ;;
+      -o=*|--output=*|-o?*|-L=*|-L?*|--label-columns=*|--no-headers|--no-headers=*|--show-kind|--show-kind=*|--show-labels|--show-labels=*|--server-print|--server-print=*|--use-openapi-print-columns|--use-openapi-print-columns=*)
+        ;;
+      *)
+        json_args+=("${arg}")
+        ;;
+    esac
+    index=$((index + 1))
+  done
+
+  native_rows="$(command kubectl get pods "${native_args[@]}")" || return
+  [ -n "${native_rows}" ] || return 0
+  case "${native_rows}" in
+    'No resources found'*)
+      printf '%s\n' "${native_rows}"
+      return 0
+      ;;
+  esac
+
+  pods_json="$(command kubectl get pods "${json_args[@]}" -o json)" || return
+  resource_rows="$(printf '%s' "${pods_json}" | sc_helper_kube_pod_resource_rows)" || return
+
+  {
+    printf '%s\n' "${resource_rows}"
+    printf '%s\n' '__DOT_KUBE_PODS_TABLE__'
+    printf '%s\n' "${native_rows}"
+  } | awk -F '\t' -v all_namespaces="${all_namespaces}" -v no_headers="${no_headers}" '
+    function update_width(value, current) {
+      return length(value) > current ? length(value) : current
+    }
+    function pod_key(line, fields, count, namespace, name) {
+      count = split(line, fields, /[[:space:]]+/)
+      if (all_namespaces) {
+        namespace = fields[1]
+        name = fields[2]
+      } else {
+        namespace = ""
+        name = fields[1]
+      }
+      sub("^pod/", "", name)
+      return all_namespaces ? namespace "/" name : name
+    }
+    BEGIN {
+      cpu_request_width = length("CPU_REQ")
+      memory_request_width = length("MEM_REQ")
+      cpu_limit_width = length("CPU_LIM")
+      memory_limit_width = length("MEM_LIM")
+    }
+    $0 == "__DOT_KUBE_PODS_TABLE__" {
+      reading_table = 1
+      next
+    }
+    !reading_table {
+      if (!NF) next
+      key = all_namespaces ? $1 "/" $2 : $2
+      cpu_requests[key] = $3
+      memory_requests[key] = $4
+      cpu_limits[key] = $5
+      memory_limits[key] = $6
+      cpu_request_width = update_width($3, cpu_request_width)
+      memory_request_width = update_width($4, memory_request_width)
+      cpu_limit_width = update_width($5, cpu_limit_width)
+      memory_limit_width = update_width($6, memory_limit_width)
+      next
+    }
+    {
+      table_rows[++table_count] = $0
+      native_width = update_width($0, native_width)
+    }
+    END {
+      for (row = 1; row <= table_count; row++) {
+        if (row == 1 && !no_headers) {
+          cpu_request = "CPU_REQ"
+          memory_request = "MEM_REQ"
+          cpu_limit = "CPU_LIM"
+          memory_limit = "MEM_LIM"
+        } else {
+          key = pod_key(table_rows[row])
+          if (key in cpu_requests) {
+            cpu_request = cpu_requests[key]
+            memory_request = memory_requests[key]
+            cpu_limit = cpu_limits[key]
+            memory_limit = memory_limits[key]
+          } else {
+            cpu_request = "-"
+            memory_request = "-"
+            cpu_limit = "-"
+            memory_limit = "-"
+          }
+        }
+        printf "%-*s  %-*s  %-*s  %-*s  %-*s\n", native_width, table_rows[row], cpu_request_width, cpu_request, memory_request_width, memory_request, cpu_limit_width, cpu_limit, memory_limit_width, memory_limit
+      }
+    }
+  '
+}
+
 sc_helper_kube_capacity() {
   local rows mode namespace
 

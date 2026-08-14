@@ -46,6 +46,7 @@ alias kctx="kubectx"
 alias kctx-prod-rke2-core='sc_helper_kubeconfig_prod_rke2_core'
 alias kns="kubens"
 alias k-ns="sc_helper_kube_namespaces"
+alias k-pods="sc_helper_kube_pods"
 alias kc="sc_helper_kube_capacity"
 alias kt="stern"
 alias kl="kube-linter"
