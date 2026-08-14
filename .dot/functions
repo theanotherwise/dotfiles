@@ -615,6 +615,225 @@ sc_helper_kubectl() {
   command kubectl "$@"
 }
 
+sc_helper_kube_capacity() {
+  local rows
+
+  case "${1:-}" in
+    "") ;;
+    -h|--help)
+      printf '%s\n' \
+        'Usage: kc' \
+        '' \
+        'Shows cluster and per-node CPU/memory requests and limits for active scheduled pods.'
+      return 0
+      ;;
+    *)
+      printf '%s\n' 'Usage: kc' >&2
+      return 2
+      ;;
+  esac
+
+  if ! command -v kubectl >/dev/null 2>&1; then
+    printf '%s\n' 'kubectl not found' >&2
+    return 127
+  fi
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '%s\n' 'jq not found' >&2
+    return 127
+  fi
+
+  rows="$({
+    set -o pipefail
+    {
+      command kubectl get nodes -o json \
+        && command kubectl get pods --all-namespaces -o json
+    } | command jq -r -s '
+      def cpu_m:
+        (. // "0" | tostring) as $q
+        | if $q | endswith("n") then ($q[0:-1] | tonumber) / 1000000
+          elif $q | endswith("u") then ($q[0:-1] | tonumber) / 1000
+          elif $q | endswith("m") then ($q[0:-1] | tonumber)
+          else ($q | tonumber) * 1000
+          end;
+
+      def memory_bytes:
+        (. // "0" | tostring) as $q
+        | if $q | endswith("Ei") then ($q[0:-2] | tonumber) * 1152921504606846976
+          elif $q | endswith("Pi") then ($q[0:-2] | tonumber) * 1125899906842624
+          elif $q | endswith("Ti") then ($q[0:-2] | tonumber) * 1099511627776
+          elif $q | endswith("Gi") then ($q[0:-2] | tonumber) * 1073741824
+          elif $q | endswith("Mi") then ($q[0:-2] | tonumber) * 1048576
+          elif $q | endswith("Ki") then ($q[0:-2] | tonumber) * 1024
+          elif $q | endswith("E") then ($q[0:-1] | tonumber) * 1000000000000000000
+          elif $q | endswith("P") then ($q[0:-1] | tonumber) * 1000000000000000
+          elif $q | endswith("T") then ($q[0:-1] | tonumber) * 1000000000000
+          elif $q | endswith("G") then ($q[0:-1] | tonumber) * 1000000000
+          elif $q | endswith("M") then ($q[0:-1] | tonumber) * 1000000
+          elif $q | endswith("K") then ($q[0:-1] | tonumber) * 1000
+          elif $q | endswith("m") then ($q[0:-1] | tonumber) / 1000
+          else ($q | tonumber)
+          end;
+
+      def container_cpu($container; $kind):
+        (((($container.resources // {})[$kind] // {}).cpu // "0") | cpu_m);
+
+      def container_memory($container; $kind):
+        (((($container.resources // {})[$kind] // {}).memory // "0") | memory_bytes);
+
+      def summed_cpu($containers; $kind):
+        reduce $containers[] as $container (0; . + container_cpu($container; $kind));
+
+      def summed_memory($containers; $kind):
+        reduce $containers[] as $container (0; . + container_memory($container; $kind));
+
+      def container_pod_cpu($pod; $kind):
+        (summed_cpu(($pod.spec.containers // []); $kind)) as $running
+        | reduce ($pod.spec.initContainers // [])[] as $container (
+            {running: $running, restartable: 0, init_max: 0};
+            (container_cpu($container; $kind)) as $value
+            | if $container.restartPolicy == "Always" then
+                .running += $value
+                | .restartable += $value
+                | .init_max = ([.init_max, .restartable] | max)
+              else
+                .init_max = ([.init_max, (.restartable + $value)] | max)
+              end
+          )
+        | [.running, .init_max] | max;
+
+      def container_pod_memory($pod; $kind):
+        (summed_memory(($pod.spec.containers // []); $kind)) as $running
+        | reduce ($pod.spec.initContainers // [])[] as $container (
+            {running: $running, restartable: 0, init_max: 0};
+            (container_memory($container; $kind)) as $value
+            | if $container.restartPolicy == "Always" then
+                .running += $value
+                | .restartable += $value
+                | .init_max = ([.init_max, .restartable] | max)
+              else
+                .init_max = ([.init_max, (.restartable + $value)] | max)
+              end
+          )
+        | [.running, .init_max] | max;
+
+      def pod_cpu($pod; $kind):
+        (((($pod.spec.resources // {})[$kind] // {}).cpu // null)) as $pod_level
+        | (if $pod_level != null then ($pod_level | cpu_m)
+           else container_pod_cpu($pod; $kind)
+           end) as $value
+        | if $kind == "limits" and $value == 0 then 0
+          else $value + (($pod.spec.overhead.cpu // "0") | cpu_m)
+          end;
+
+      def pod_memory($pod; $kind):
+        (((($pod.spec.resources // {})[$kind] // {}).memory // null)) as $pod_level
+        | (if $pod_level != null then ($pod_level | memory_bytes)
+           else container_pod_memory($pod; $kind)
+           end) as $value
+        | if $kind == "limits" and $value == 0 then 0
+          else $value + (($pod.spec.overhead.memory // "0") | memory_bytes)
+          end;
+
+      def empty_usage:
+        {cpu_request: 0, cpu_limit: 0, memory_request: 0, memory_limit: 0, pods: 0};
+
+      .[0] as $nodes
+      | .[1] as $pods
+      | reduce (
+          $pods.items[]
+          | select((.spec.nodeName // "") != "")
+          | select(.status.phase != "Succeeded" and .status.phase != "Failed")
+        ) as $pod ({};
+          ($pod.spec.nodeName) as $node
+          | (.[$node] // empty_usage) as $current
+          | .[$node] = {
+              cpu_request: ($current.cpu_request + pod_cpu($pod; "requests")),
+              cpu_limit: ($current.cpu_limit + pod_cpu($pod; "limits")),
+              memory_request: ($current.memory_request + pod_memory($pod; "requests")),
+              memory_limit: ($current.memory_limit + pod_memory($pod; "limits")),
+              pods: ($current.pods + 1)
+            }
+        ) as $usage
+      | [
+          $nodes.items[]
+          | . as $node
+          | ($usage[$node.metadata.name] // empty_usage) as $used
+          | $used + {
+              node: $node.metadata.name,
+              cpu_allocatable: (($node.status.allocatable.cpu // "0") | cpu_m),
+              memory_allocatable: (($node.status.allocatable.memory // "0") | memory_bytes)
+            }
+        ] | sort_by(.node) as $node_rows
+      | ({
+          node: "*",
+          cpu_request: ($node_rows | map(.cpu_request) | add // 0),
+          cpu_limit: ($node_rows | map(.cpu_limit) | add // 0),
+          memory_request: ($node_rows | map(.memory_request) | add // 0),
+          memory_limit: ($node_rows | map(.memory_limit) | add // 0),
+          cpu_allocatable: ($node_rows | map(.cpu_allocatable) | add // 0),
+          memory_allocatable: ($node_rows | map(.memory_allocatable) | add // 0),
+          pods: ($node_rows | map(.pods) | add // 0)
+        } as $cluster
+        | [$cluster] + $node_rows)
+      | .[]
+      | [
+          .node,
+          .cpu_request,
+          .cpu_limit,
+          .memory_request,
+          .memory_limit,
+          .cpu_allocatable,
+          .memory_allocatable,
+          .pods
+        ]
+      | @tsv
+    '
+  })" || {
+    printf '%s\n' 'Could not read Kubernetes node and pod resources' >&2
+    return 1
+  }
+
+  {
+    printf 'NODE\tCPU REQUESTS\tCPU LIMITS\tMEMORY REQUESTS\tMEMORY LIMITS\tPODS\n'
+    printf '%s\n' "${rows}" | awk -F '\t' '
+      function trim_decimal(value) {
+        sub(/[.]00$/, "", value)
+        if (value ~ /[.]/) {
+          sub(/0$/, "", value)
+          sub(/[.]$/, "", value)
+        }
+        return value
+      }
+      function cpu(value) {
+        if (value == 0) return "0"
+        if (value < 1000) return sprintf("%.0fm", value)
+        return trim_decimal(sprintf("%.2f", value / 1000))
+      }
+      function memory(value) {
+        if (value == 0) return "0"
+        if (value >= 1099511627776) return trim_decimal(sprintf("%.2f", value / 1099511627776)) "Ti"
+        if (value >= 1073741824) return trim_decimal(sprintf("%.2f", value / 1073741824)) "Gi"
+        if (value >= 1048576) return trim_decimal(sprintf("%.2f", value / 1048576)) "Mi"
+        if (value >= 1024) return trim_decimal(sprintf("%.2f", value / 1024)) "Ki"
+        return sprintf("%.0fB", value)
+      }
+      function percentage(value, total) {
+        if (total <= 0) return "-"
+        return sprintf("%.0f%%", value * 100 / total)
+      }
+      BEGIN { OFS = "\t" }
+      {
+        print $1,
+          cpu($2) " (" percentage($2, $6) ")",
+          cpu($3) " (" percentage($3, $6) ")",
+          memory($4) " (" percentage($4, $7) ")",
+          memory($5) " (" percentage($5, $7) ")",
+          $8
+      }
+    '
+  } | sc_helper_tsv_table
+}
+
 sc_helper_tsv_table() {
   if command -v column >/dev/null 2>&1; then
     column -t -s "$(printf '\t')"
@@ -2224,7 +2443,6 @@ sc_helper_dotversions_description() {
     k6) printf "%s\n" "Scriptable HTTP and load test runner" ;;
     k9s) printf "%s\n" "Terminal UI for Kubernetes clusters" ;;
     katana) printf "%s\n" "Crawls web apps for URLs and endpoints" ;;
-    kube-capacity) printf "%s\n" "Shows Kubernetes node and pod resource use" ;;
     kube-linter) printf "%s\n" "Finds Kubernetes manifest problems" ;;
     kubeconform) printf "%s\n" "Validates manifests against Kubernetes schemas" ;;
     kubectl) printf "%s\n" "Kubernetes CLI" ;;
@@ -2270,7 +2488,7 @@ sc_helper_dotversions_category() {
     kubectl|oc)
       printf "%s\n" "Kubernetes Core"
       ;;
-    argocd|k3d|k9s|kube-capacity|kube-linter|kubeconform|kubectx|kubens|kustomize|stern)
+    argocd|k3d|k9s|kube-linter|kubeconform|kubectx|kubens|kustomize|stern)
       printf "%s\n" "Kubernetes Tools"
       ;;
     helm|helmfile)
@@ -2367,7 +2585,6 @@ sc_helper_dotversions_example() {
     k6) printf "%s\n" "k6 run test.js" ;;
     k9s) printf "%s\n" "k9s" ;;
     katana) printf "%s\n" "katana -u https://example.com" ;;
-    kube-capacity) printf "%s\n" "kube-capacity --pods --util" ;;
     kube-linter) printf "%s\n" "kube-linter lint manifests" ;;
     kubeconform) printf "%s\n" "kubeconform manifests" ;;
     kubectl) printf "%s\n" "kubectl get pods" ;;

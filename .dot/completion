@@ -344,7 +344,6 @@ sc_helper_source_cached_completion oras
 sc_helper_source_cached_completion k6
 sc_helper_source_cached_completion k3d
 sc_helper_source_cached_completion k9s
-sc_helper_source_cached_completion kube-capacity
 sc_helper_source_cached_completion kube-linter
 sc_helper_source_cached_completion stern
 sc_helper_source_cached_completion helmfile
@@ -947,7 +946,6 @@ if declare -F _atuin >/dev/null 2>&1; then
 fi
 complete -F sc_helper_gitconfig_completion gitconfig
 complete -o bashdefault -o default -F sc_helper_grouped_alias_completion -I 2>/dev/null || true
-declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
 declare -F __start_stern >/dev/null 2>&1 && complete -o default -F __start_stern kt
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
 complete -F sc_helper_ksecret_completion ksecret ksecrets
