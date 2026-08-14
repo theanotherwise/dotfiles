@@ -615,6 +615,34 @@ sc_helper_kubectl() {
   command kubectl "$@"
 }
 
+sc_helper_kube_namespaces() {
+  local namespaces
+
+  if [ "$#" -ne 0 ]; then
+    printf '%s\n' 'Usage: knsl' >&2
+    return 2
+  fi
+  if ! command -v kubectl >/dev/null 2>&1; then
+    printf '%s\n' 'kubectl not found' >&2
+    return 127
+  fi
+
+  namespaces="$(command kubectl get namespaces)" || return
+  printf '%s\n' "${namespaces}" \
+    | awk '
+        NR == 1 {
+          printf "-1\t\t%s\n", $0
+          next
+        }
+        NF {
+          group = ($1 ~ /-system$/ ? 0 : ($1 ~ /-operator$/ ? 1 : 2))
+          printf "%d\t%s\t%s\n", group, $1, $0
+        }
+      ' \
+    | LC_ALL=C sort -t $'\t' -k1,1n -k2,2 \
+    | cut -f3-
+}
+
 sc_helper_kube_capacity() {
   local rows mode namespace
 
