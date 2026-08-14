@@ -9,7 +9,6 @@ import re
 import tarfile
 import lzma
 import zipfile
-import getpass
 import platform
 import datetime
 import threading
@@ -30,8 +29,8 @@ PKG_TYPES = {
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
 TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
 LOG_LOCK = threading.Lock()
+TARGET_DIR = os.path.join(os.path.expanduser("~"), "binaries")
 
-active_user = getpass.getuser()
 config_name = SYSTEM_CONFIG[platform.system()]
 
 with open(os.path.dirname(__file__) + "/{0}".format(config_name), "r") as file:
@@ -230,7 +229,7 @@ def versioning(versions, url, _type, override, name, strip, in_bin):
         new_in_bin = alternative_key(i, 'inBin', in_bin)
         new_ext = parse_extension(new_url)
 
-        version_path = "{}/{}/{}".format(CONFIG['target_dir'].format(user=active_user), name, i['version'])
+        version_path = "{}/{}/{}".format(TARGET_DIR, name, i['version'])
 
         if dir_exists(version_path) and new_override:
             recursive_remove(version_path)
@@ -254,7 +253,7 @@ def package_versions():
 
 
 def mkdir_package(name):
-    package_path = "{}/{}".format(CONFIG['target_dir'].format(user=active_user), name)
+    package_path = "{}/{}".format(TARGET_DIR, name)
     os.makedirs(package_path, exist_ok=True)
 
     return package_path
@@ -315,7 +314,7 @@ def fetch_packages(packages):
 
     for p in packages:
         if p.skipped_versions:
-            log_event("skip", tool=p.name, versions=",".join(p.skipped_versions), path="{}/{}".format(CONFIG['target_dir'].format(user=active_user), p.name))
+            log_event("skip", tool=p.name, versions=",".join(p.skipped_versions), path="{}/{}".format(TARGET_DIR, p.name))
 
     if not pending:
         return 0, skipped_versions
@@ -338,7 +337,7 @@ def cleanup():
 
 def main():
     packages = package_versions()
-    log_event("start", platform=platform.system(), config=config_name, target=CONFIG['target_dir'].format(user=active_user), tmp=TMP_PATH)
+    log_event("start", platform=platform.system(), config=config_name, target=TARGET_DIR, tmp=TMP_PATH)
     setup()
     try:
         installed, skipped = fetch_packages(packages)
