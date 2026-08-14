@@ -345,14 +345,11 @@ sc_helper_source_cached_completion kube-capacity
 sc_helper_source_cached_completion k3d
 sc_helper_source_cached_completion k9s
 sc_helper_source_cached_completion kube-linter
-sc_helper_source_cached_completion oc
 sc_helper_source_cached_completion popeye
 sc_helper_source_cached_completion kubespy
 sc_helper_source_cached_completion kubectl-neat
 sc_helper_source_cached_completion stern
-sc_helper_source_cached_completion terrascan
 sc_helper_source_cached_completion helmfile
-sc_helper_source_cached_completion tfsec-checkgen
 sc_helper_source_cached_completion sops
 sc_helper_source_cached_completion conftest
 sc_helper_source_cached_completion syft
@@ -372,10 +369,6 @@ fi
 
 if [ -f "${HOME}/.dot/completions/kubens.bash" ]; then
   . "${HOME}/.dot/completions/kubens.bash"
-fi
-
-if [ -f "${HOME}/.dot/completions/kubetail.bash" ]; then
-  . "${HOME}/.dot/completions/kubetail.bash"
 fi
 
 sc_helper_ksecret_completion() {
@@ -957,15 +950,13 @@ fi
 complete -F sc_helper_gitconfig_completion gitconfig
 complete -o bashdefault -o default -F sc_helper_grouped_alias_completion -I 2>/dev/null || true
 declare -F __start_kube-capacity >/dev/null 2>&1 && complete -o nospace -F __start_kube-capacity kc
-declare -F sc_helper_kubetail_completion >/dev/null 2>&1 && complete -o nospace -F sc_helper_kubetail_completion kubetail kt
+declare -F __start_stern >/dev/null 2>&1 && complete -o default -F __start_stern kt
 declare -F __start_kube-linter >/dev/null 2>&1 && complete -o nospace -F __start_kube-linter kl
 declare -F __start_popeye >/dev/null 2>&1 && complete -o nospace -F __start_popeye kp
 declare -F __start_kubespy >/dev/null 2>&1 && complete -o nospace -F __start_kubespy ks
 complete -F sc_helper_ksecret_completion ksecret ksecrets
 complete -o nospace -F sc_helper_kcontainers_completion kcontainers
 complete -F sc_helper_kerrors_completion kerrors
-declare -F __start_terrascan >/dev/null 2>&1 && complete -o nospace -F __start_terrascan tfscan
-
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" terraform
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" tform
 [ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" terragrunt

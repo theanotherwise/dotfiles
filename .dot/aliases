@@ -43,7 +43,7 @@ alias kctx="kubectx"
 alias kctx-prod-rke2-core='sc_helper_kubeconfig_prod_rke2_core'
 alias kns="kubens"
 alias kc="kube-capacity"
-alias kt="kubetail"
+alias kt="stern"
 alias kl="kube-linter"
 alias kp="popeye"
 alias knt="kubent"
@@ -99,7 +99,6 @@ alias ssh-compute='ssh taw@10.100.100.8'
 #
 alias terragrunt="terragrunt"
 alias terralint="tflint"
-alias terrasec="tfsec"
 alias terrapike="pike"
 alias export-tofu='export TG_TF_PATH=tofu'
 alias export-terraform='export TG_TF_PATH=terraform'

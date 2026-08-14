@@ -2,12 +2,12 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
-for tool in go groovy node yarn pnpm mvn yq jq ripgrep uv \
+for tool in go groovy node pnpm mvn yq jq ripgrep uv \
             subfinder httpx dnsx naabu katana gau asnmap mapcidr tlsx nuclei amass ffuf \
             kubent kube-linter kube-popeye kubespy k3d k9s kube-capacity \
-            kubectl argocd kubectx kubens kubetail kustomize kubeconform stern kubectl-neat \
-            tofu terraform terragrunt terrascan tflint helm helmify helmfile rtfmt tfsec pike \
-            helm-unittest okd upx oras k6 github-mcp-server shellcheck shfmt \
+            kubectl argocd kubectx kubens kustomize kubeconform stern kubectl-neat \
+            tofu terraform terragrunt tflint helm helmify helmfile rtfmt pike \
+            helm-unittest upx oras k6 github-mcp-server shellcheck shfmt \
             trivy gh actionlint fzf atuin fd bat delta zoxide sops age conftest syft grype \
             cosign; do
   PATH="${HOME}/binaries/${tool}/latest/bin:${PATH}"
@@ -16,7 +16,6 @@ done
 PATH="/opt/homebrew/bin:${PATH}"
 PATH="/opt/homebrew/opt/openjdk@11/bin:${PATH}"
 
-PATH="${HOME}/.yarn/bin:${PATH}"
 PATH="${HOME}/.local/bin:${PATH}"
 PATH="${HOME}/.pyenv/shims:${PATH}"
 

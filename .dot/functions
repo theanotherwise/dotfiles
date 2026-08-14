@@ -1926,7 +1926,7 @@ sc_helper_zoxide_completion() {
 # Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
-  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VYARN="-" VDOCKER="-" VCOMPOSE="-"
+  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VDOCKER="-" VCOMPOSE="-"
 
   printf "\n"
 
@@ -1973,11 +1973,6 @@ sc_helper_versions() {
     VN=$(node --version 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VN" ] || VN="-"
   fi
-  if command -v yarn >/dev/null 2>&1; then
-    VYARN=$(yarn --version 2>/dev/null | head -1 | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
-    [ -n "$VYARN" ] || VYARN="-"
-  fi
-
   if command -v docker >/dev/null 2>&1; then
     VDOCKER=$(docker --version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)
     [ -n "$VDOCKER" ] || VDOCKER="-"
@@ -1994,10 +1989,9 @@ sc_helper_versions() {
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "yq:" "$cR" "$cV" "$VYQ" "$cR" \
     "$lK" "jq:" "$cR" "$cV" "$VJQ" "$cR"
-  # Node | Yarn
-  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
-    "$lK" "Node:" "$cR" "$cV" "$VN" "$cR" \
-    "$lK" "Yarn:" "$cR" "$cV" "$VYARN" "$cR"
+  # Node
+  printf "%b%-${LW}s%b %b%-${VW}s%b\n" \
+    "$lK" "Node:" "$cR" "$cV" "$VN" "$cR"
   # Docker | Compose
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Docker:" "$cR" "$cV" "$VDOCKER" "$cR" \
@@ -2054,14 +2048,6 @@ sc_helper_helm_unittest() {
   "${binary}" "$@"
 }
 
-sc_helper_okd_binaries() {
-  local bin_dir="${HOME}/binaries/okd/latest/bin"
-
-  [ -d "${bin_dir}" ] || return 1
-
-  find -L "${bin_dir}" -maxdepth 1 -type f -perm -111 -name 'oc[0-9]*' 2>/dev/null | sort -V
-}
-
 sc_helper_dotversions_binary() {
   local package="$1"
   local bin_dir="${HOME}/binaries/${package}/latest/bin"
@@ -2076,10 +2062,6 @@ sc_helper_dotversions_binary() {
       ;;
     kube-popeye)
       candidate="popeye"
-      ;;
-    okd)
-      sc_helper_okd_binaries | tail -1
-      return 0
       ;;
     opentofu|tofu)
       candidate="tofu"
@@ -2174,7 +2156,7 @@ sc_helper_dotversions_embedded_version() {
 sc_helper_dotversions_version() {
   local package="$1"
   local binary="$2"
-  local variants variant output status version name
+  local variants variant output status version
 
   if [ "${package}" = "helm-unittest" ]; then
     version="$(sc_helper_dotversions_embedded_version "${binary}")"
@@ -2205,7 +2187,7 @@ version --client
 version
 --version"
       ;;
-    kubectl|okd)
+    kubectl)
       variants="version --client --short
 version --client
 version
@@ -2249,19 +2231,6 @@ version
       return 0
     fi
   done <<< "${variants}"
-
-  if [ "${package}" = "okd" ]; then
-    name="${binary##*/}"
-    case "${name}" in
-      oc[0-9]*)
-        version="${name#oc}"
-        if printf "%s\n" "${version}" | grep -Eq '^[0-9]+([.][0-9A-Za-z_-]+)*$'; then
-          printf "%s\n" "${version}"
-          return 0
-        fi
-        ;;
-    esac
-  fi
 
   printf "%s\n" "-"
 }
@@ -2315,15 +2284,12 @@ sc_helper_dotversions_description() {
     kubens) printf "%s\n" "Switches the current Kubernetes namespace" ;;
     kubent) printf "%s\n" "Finds removed or deprecated Kubernetes APIs" ;;
     kubespy) printf "%s\n" "Watches Kubernetes resource rollouts" ;;
-    kubetail) printf "%s\n" "Tails logs from many Kubernetes pods" ;;
     kustomize) printf "%s\n" "Builds patched Kubernetes manifests" ;;
     mapcidr) printf "%s\n" "Expands and slices IP/CIDR ranges" ;;
     mvn) printf "%s\n" "Builds and tests Maven/JVM projects" ;;
     naabu) printf "%s\n" "Finds open ports for recon targets" ;;
     node) printf "%s\n" "JavaScript runtime for CLIs and apps" ;;
     nuclei) printf "%s\n" "Runs template-based security checks" ;;
-    oc[0-9]*) printf "%s\n" "OpenShift/OKD command-line client" ;;
-    okd) printf "%s\n" "OpenShift/OKD CLI version bundle" ;;
     oras) printf "%s\n" "Pushes and pulls OCI registry artifacts" ;;
     pike) printf "%s\n" "Maps Terraform plans to IAM permissions" ;;
     pnpm) printf "%s\n" "Fast disk-efficient JS package manager" ;;
@@ -2337,14 +2303,11 @@ sc_helper_dotversions_description() {
     syft) printf "%s\n" "Generates SBOMs for images and filesystems" ;;
     terraform) printf "%s\n" "Plans and applies infrastructure changes" ;;
     terragrunt) printf "%s\n" "DRY wrapper around Terraform/OpenTofu" ;;
-    terrascan) printf "%s\n" "Scans IaC for security and compliance issues" ;;
     tflint) printf "%s\n" "Lints Terraform modules and provider usage" ;;
-    tfsec) printf "%s\n" "Finds Terraform security issues" ;;
     tofu|opentofu) printf "%s\n" "OpenTofu infrastructure as code CLI" ;;
     trivy) printf "%s\n" "Scans images, repos, and configs for risk" ;;
     tlsx) printf "%s\n" "Collects TLS certs and fingerprints" ;;
     uv) printf "%s\n" "Fast Python package and environment manager" ;;
-    yarn) printf "%s\n" "JavaScript package manager and script runner" ;;
     yq) printf "%s\n" "Filters and edits YAML/JSON data" ;;
     zoxide) printf "%s\n" "cd replacement ranked by frecency" ;;
     *) printf "%s\n" "Local CLI from the binaries directory" ;;
@@ -2358,16 +2321,16 @@ sc_helper_dotversions_category() {
     containerd|docker\ client|docker\ compose|docker\ engine|docker-init|runc)
       printf "%s\n" "Containers"
       ;;
-    kubectl|oc[0-9]*|okd)
+    kubectl)
       printf "%s\n" "Kubernetes Core"
       ;;
-    argocd|k3d|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl-neat|kubectx|kubens|kubent|kubespy|kubetail|kustomize|stern)
+    argocd|k3d|k9s|kube-capacity|kube-linter|kube-popeye|popeye|kubeconform|kubectl-neat|kubectx|kubens|kubent|kubespy|kustomize|stern)
       printf "%s\n" "Kubernetes Tools"
       ;;
     helm|helm-unittest|helmfile|helmify)
       printf "%s\n" "Helm"
       ;;
-    opentofu|pike|terraform|terragrunt|terrascan|tflint|tfsec|tofu)
+    opentofu|pike|terraform|terragrunt|tflint|tofu)
       printf "%s\n" "Infrastructure as Code"
       ;;
     age|conftest|cosign|grype|sops|syft|trivy|oras)
@@ -2379,7 +2342,7 @@ sc_helper_dotversions_category() {
     go|groovy|node)
       printf "%s\n" "Languages"
       ;;
-    mvn|pnpm|uv|yarn)
+    mvn|pnpm|uv)
       printf "%s\n" "Package Managers"
       ;;
     bat|delta|shellcheck|shfmt)
@@ -2471,15 +2434,12 @@ sc_helper_dotversions_example() {
     kubens) printf "%s\n" "kubens default" ;;
     kubent) printf "%s\n" "kubent" ;;
     kubespy) printf "%s\n" "kubespy trace deploy/app" ;;
-    kubetail) printf "%s\n" "kubetail app" ;;
     kustomize) printf "%s\n" "kustomize build ." ;;
     mapcidr) printf "%s\n" "mapcidr -cidr 10.0.0.0/24" ;;
     mvn) printf "%s\n" "mvn test" ;;
     naabu) printf "%s\n" "naabu -host example.com" ;;
     node) printf "%s\n" "node app.js" ;;
     nuclei) printf "%s\n" "nuclei -u https://example.com" ;;
-    oc[0-9]*) printf "%s\n" "${tool} get pods" ;;
-    okd) printf "%s\n" "oc4.11 get pods" ;;
     oras) printf "%s\n" "oras repo tags registry/repo" ;;
     pike) printf "%s\n" "pike scan" ;;
     pnpm) printf "%s\n" "pnpm test" ;;
@@ -2493,14 +2453,11 @@ sc_helper_dotversions_example() {
     syft) printf "%s\n" "syft nginx:latest" ;;
     terraform) printf "%s\n" "terraform plan" ;;
     terragrunt) printf "%s\n" "terragrunt run plan" ;;
-    terrascan) printf "%s\n" "terrascan scan" ;;
     tflint) printf "%s\n" "tflint" ;;
-    tfsec) printf "%s\n" "tfsec ." ;;
     tofu|opentofu) printf "%s\n" "tofu plan" ;;
     trivy) printf "%s\n" "trivy image nginx:latest" ;;
     tlsx) printf "%s\n" "tlsx -u example.com -san" ;;
     uv) printf "%s\n" "uv run pytest" ;;
-    yarn) printf "%s\n" "yarn test" ;;
     yq) printf "%s\n" "yq . file.yaml" ;;
     zoxide) printf "%s\n" "z project" ;;
     *) printf "%s\n" "${tool} --help" ;;
@@ -2640,23 +2597,7 @@ sc_helper_dotversions_docker_rows() {
 sc_helper_dotversions_row() {
   local package="$1"
   local binaries_dir="${2:-${HOME}/binaries}"
-  local part version
-
-  if [ "${package}" = "okd" ]; then
-    version="$(sc_helper_dotversions_latest_version "${package}" "${binaries_dir}" 2>/dev/null || true)"
-    if [ -n "${version}" ]; then
-      local old_ifs="${IFS}"
-      IFS="+"
-      for part in ${version}; do
-        [ -n "${part}" ] || continue
-        sc_helper_dotversions_print_row "oc${part}" "${part}"
-      done
-      IFS="${old_ifs}"
-    else
-      sc_helper_dotversions_print_row "${package}" "-"
-    fi
-    return 0
-  fi
+  local version
 
   version="$(sc_helper_dotversions_latest_version "${package}" "${binaries_dir}" 2>/dev/null || true)"
   [ -n "${version}" ] || version="-"
