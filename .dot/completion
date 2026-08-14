@@ -822,7 +822,12 @@ sc_helper_grouped_alias_completion() {
   local -a matches commands
 
   COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
+  if [ "${COMP_CWORD:-0}" -lt 0 ] || [ "${#COMP_WORDS[@]}" -eq 0 ]; then
+    compopt +o bashdefault +o default 2>/dev/null || true
+    SC_HELPER_GROUPED_ALIAS_COMPLETION_LAST_KEY=""
+    return 0
+  fi
+  cur="${COMP_WORDS[COMP_CWORD]:-}"
 
   case "${cur}" in
     */*)
