@@ -320,6 +320,7 @@ sc_helper_source_cached_completion() {
 }
 
 sc_helper_source_cached_completion kubectl
+sc_helper_source_cached_completion oc
 sc_helper_source_cached_completion argocd
 sc_helper_source_cached_completion kustomize
 sc_helper_source_cached_completion helm

@@ -1923,10 +1923,10 @@ sc_helper_zoxide_completion() {
   sc_helper_zoxide_z_completion
 }
 
-# Versions summary (Terraform, Terragrunt, kubectl, Helm, Kustomize)
+# Versions summary (Terraform, Terragrunt, kubectl, oc, Helm, Kustomize)
 sc_helper_versions() {
   local cR="\033[0m" cV="\033[97m" lK="\033[1;34m" W2=12
-  local VT="-" VTG="-" VK="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VDOCKER="-" VCOMPOSE="-"
+  local VT="-" VTG="-" VK="-" VOC="-" VH="-" VKU="-" VG="-" VGR="-" VJQ="-" VYQ="-" VN="-" VDOCKER="-" VCOMPOSE="-"
 
   printf "\n"
 
@@ -1941,6 +1941,10 @@ sc_helper_versions() {
   if command -v kubectl >/dev/null 2>&1; then
     VK=$(kubectl version --client --short 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
     [ -n "$VK" ] || VK="-"
+  fi
+  if command -v oc >/dev/null 2>&1; then
+    VOC=$(oc version --client 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
+    [ -n "$VOC" ] || VOC="-"
   fi
   if command -v helm >/dev/null 2>&1; then
     VH=$(helm version --short 2>/dev/null | grep -oE 'v?[0-9]+(\.[0-9]+)+' | head -1 | sed 's/^v//')
@@ -2000,9 +2004,12 @@ sc_helper_versions() {
   printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Go:" "$cR" "$cV" "$VG" "$cR" \
     "$lK" "Groovy:" "$cR" "$cV" "$VGR" "$cR"
-  # kubectl | Helm | Kustomize (3 kolumny)
-  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
+  # kubectl | oc
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "kubectl:" "$cR" "$cV" "$VK" "$cR" \
+    "$lK" "oc:" "$cR" "$cV" "$VOC" "$cR"
+  # Helm | Kustomize
+  printf "%b%-${LW}s%b %b%-${VW}s%b  %b%-${LW}s%b %b%-${VW}s%b\n" \
     "$lK" "Helm:" "$cR" "$cV" "$VH" "$cR" \
     "$lK" "Kustomize:" "$cR" "$cV" "$VKU" "$cR"
   printf "\n"
@@ -2130,6 +2137,9 @@ version --client
 version
 --version"
       ;;
+    oc)
+      variants="version --client"
+      ;;
     kubectl)
       variants="version --client --short
 version --client
@@ -2225,6 +2235,7 @@ sc_helper_dotversions_description() {
     naabu) printf "%s\n" "Finds open ports for recon targets" ;;
     node) printf "%s\n" "JavaScript runtime for CLIs and apps" ;;
     nuclei) printf "%s\n" "Runs template-based security checks" ;;
+    oc) printf "%s\n" "OpenShift CLI for clusters and applications" ;;
     oras) printf "%s\n" "Pushes and pulls OCI registry artifacts" ;;
     pnpm) printf "%s\n" "Fast disk-efficient JS package manager" ;;
     ripgrep|rg) printf "%s\n" "Recursive regex search across files" ;;
@@ -2255,7 +2266,7 @@ sc_helper_dotversions_category() {
     containerd|docker\ client|docker\ compose|docker\ engine|docker-init|runc)
       printf "%s\n" "Containers"
       ;;
-    kubectl)
+    kubectl|oc)
       printf "%s\n" "Kubernetes Core"
       ;;
     argocd|k3d|k9s|kube-linter|kubeconform|kubectx|kubens|kustomize|stern)
@@ -2366,6 +2377,7 @@ sc_helper_dotversions_example() {
     naabu) printf "%s\n" "naabu -host example.com" ;;
     node) printf "%s\n" "node app.js" ;;
     nuclei) printf "%s\n" "nuclei -u https://example.com" ;;
+    oc) printf "%s\n" "oc get routes" ;;
     oras) printf "%s\n" "oras repo tags registry/repo" ;;
     pnpm) printf "%s\n" "pnpm test" ;;
     ripgrep|rg) printf "%s\n" "rg pattern" ;;

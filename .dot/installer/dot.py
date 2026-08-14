@@ -46,7 +46,7 @@ class Package:
 
 
 class PackageVersion:
-    def __init__(self, version, _type, url, ext, override, strip, in_bin):
+    def __init__(self, version, _type, url, ext, override, strip, in_bin, executables):
         self.version = version
         self.type = _type
         self.ext = ext
@@ -55,6 +55,7 @@ class PackageVersion:
         self.override = override
         self.strip = strip
         self.in_bin = in_bin
+        self.executables = executables
 
     def set_filename(self, filename):
         self.filename = filename
@@ -142,8 +143,44 @@ def extract_tar_non_strip(tar_path, dest_path, _type):
                 tar.extractall(path=dest_path)
 
 
-def extract_tar(tar_path, dest_path, strip, _type):
-    if strip:
+def extract_tar_executables(tar_path, dest_path, _type, executables):
+    if _type == PKG_TYPES['tar_gz']:
+        archive = tarfile.open(tar_path, "r:gz")
+    elif _type == PKG_TYPES['tar_xz']:
+        xz_file = lzma.open(tar_path, "rb")
+        archive = tarfile.open(fileobj=xz_file, mode="r")
+    else:
+        sys.exit("Unrecognized tar format '{}'".format(_type))
+
+    selected = set()
+    try:
+        for member in archive.getmembers():
+            executable = os.path.basename(member.name.rstrip("/"))
+            if not member.isfile() or executable not in executables:
+                continue
+            if executable in selected:
+                sys.exit("Duplicate executable '{}' in '{}'".format(executable, tar_path))
+
+            source = archive.extractfile(member)
+            if source is None:
+                continue
+            with source, open(os.path.join(dest_path, executable), "wb") as target:
+                shutil.copyfileobj(source, target)
+            selected.add(executable)
+    finally:
+        archive.close()
+        if _type == PKG_TYPES['tar_xz']:
+            xz_file.close()
+
+    missing = sorted(set(executables) - selected)
+    if missing:
+        sys.exit("Missing executables {} in '{}'".format(",".join(missing), tar_path))
+
+
+def extract_tar(tar_path, dest_path, strip, _type, executables):
+    if executables:
+        extract_tar_executables(tar_path, dest_path, _type, executables)
+    elif strip:
         extract_tar_strip(tar_path, dest_path, _type)
     else:
         extract_tar_non_strip(tar_path, dest_path, _type)
@@ -169,8 +206,29 @@ def extract_zip_non_strip(zip_path, dest_path):
         zip_ref.extractall(dest_path)
 
 
-def extract_zip(zip_path, dest_path, strip):
-    if strip:
+def extract_zip_executables(zip_path, dest_path, executables):
+    selected = set()
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        for member in zip_ref.infolist():
+            executable = os.path.basename(member.filename.rstrip("/"))
+            if member.is_dir() or executable not in executables:
+                continue
+            if executable in selected:
+                sys.exit("Duplicate executable '{}' in '{}'".format(executable, zip_path))
+
+            with zip_ref.open(member) as source, open(os.path.join(dest_path, executable), "wb") as target:
+                shutil.copyfileobj(source, target)
+            selected.add(executable)
+
+    missing = sorted(set(executables) - selected)
+    if missing:
+        sys.exit("Missing executables {} in '{}'".format(",".join(missing), zip_path))
+
+
+def extract_zip(zip_path, dest_path, strip, executables):
+    if executables:
+        extract_zip_executables(zip_path, dest_path, executables)
+    elif strip:
         extract_zip_strip(zip_path, dest_path)
     else:
         extract_zip_non_strip(zip_path, dest_path)
@@ -201,12 +259,12 @@ def extract(package, v, ver_path):
             new_bin_path = "{}/{}".format(TMP_PATH, v.filename)
             new_ver_path = if_in_bin_dir(ver_path, v.in_bin)
 
-            extract_zip(new_bin_path, new_ver_path, v.strip)
+            extract_zip(new_bin_path, new_ver_path, v.strip, v.executables)
         elif v.type == PKG_TYPES['tar_gz'] or v.type == PKG_TYPES['tar_xz']:
             new_bin_path = "{}/{}".format(TMP_PATH, v.filename)
             new_ver_path = if_in_bin_dir(ver_path, v.in_bin)
 
-            extract_tar(new_bin_path, new_ver_path, v.strip, v.type)
+            extract_tar(new_bin_path, new_ver_path, v.strip, v.type, v.executables)
         else:
             sys.exit("Unrecognized format '{}'".format(v.type))
 
@@ -217,7 +275,7 @@ def recursive_remove(_path):
     shutil.rmtree(_path)
 
 
-def versioning(versions, url, _type, override, name, strip, in_bin):
+def versioning(versions, url, _type, override, name, strip, in_bin, executables):
     arr = []
     skipped = []
 
@@ -227,15 +285,16 @@ def versioning(versions, url, _type, override, name, strip, in_bin):
         new_override = alternative_key(i, 'override', override)
         new_strip = alternative_key(i, 'strip', strip)
         new_in_bin = alternative_key(i, 'inBin', in_bin)
+        new_executables = alternative_key(i, 'executables', executables)
         new_ext = parse_extension(new_url)
 
         version_path = "{}/{}/{}".format(TARGET_DIR, name, i['version'])
 
         if dir_exists(version_path) and new_override:
             recursive_remove(version_path)
-            arr.append(PackageVersion(i['version'], new_type, new_url, new_ext, new_override, new_strip, new_in_bin))
+            arr.append(PackageVersion(i['version'], new_type, new_url, new_ext, new_override, new_strip, new_in_bin, new_executables))
         elif not dir_exists(version_path):
-            arr.append(PackageVersion(i['version'], new_type, new_url, new_ext, new_override, new_strip, new_in_bin))
+            arr.append(PackageVersion(i['version'], new_type, new_url, new_ext, new_override, new_strip, new_in_bin, new_executables))
         else:
             skipped.append(i['version'])
 
@@ -246,7 +305,10 @@ def package_versions():
     arr = []
 
     for i in CONFIG['binaries']:
-        versions, skipped = versioning(i['versions'], i['url'], i['type'], i['override'], i['name'], i['strip'], i['inBin'])
+        versions, skipped = versioning(
+            i['versions'], i['url'], i['type'], i['override'], i['name'],
+            i['strip'], i['inBin'], i.get('executables')
+        )
         arr.append(Package(i['name'], versions, i['latest'], skipped))
 
     return arr

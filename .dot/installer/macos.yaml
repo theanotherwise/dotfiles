@@ -203,6 +203,17 @@ binaries:
     latest: 5.9.0
     versions:
       - version: 5.9.0
+  - name: oc
+    url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{version}/openshift-client-mac-arm64-{version}.tar.gz
+    type: tar.gz
+    override: False
+    strip: False
+    inBin: False
+    executables:
+      - oc
+    latest: 4.22.9
+    versions:
+      - version: 4.22.9
   - name: kubectl
     url: https://dl.k8s.io/release/v{version}/bin/darwin/arm64/kubectl
     type: binary
