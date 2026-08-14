@@ -15,7 +15,6 @@ alias a="atuin search -i"
 alias dot='dot.sync && dot.install && dot.reset'
 alias dot.sync='sc_helper_dotfiles_sync'
 alias dot.install='sc_helper_dotfiles_install'
-alias dot.setup='sc_helper_dotsetup'
 alias dot.cache='sc_helper_dotcache'
 alias dot.ignores='sc_helper_dotfiles_ignores'
 alias dot.reset='exec bash -l'

@@ -1318,28 +1318,6 @@ sc_helper_gitconfig() {
   return 2
 }
 
-sc_helper_dotsetup() {
-  local log_file setup_file status
-
-  setup_file="${HOME}/.dotfiles"
-  if [ ! -f "${setup_file}" ]; then
-    printf "[%s] setup missing  file=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${setup_file}" >&2
-    return 1
-  fi
-
-  command mkdir -p "${HOME}/.dotfiles.cache" 2>/dev/null || true
-  log_file="${HOME}/.dotfiles.cache/setup.log"
-  printf "[%s] setup start    mode=visible file=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${setup_file}" "${log_file}"
-  bash "${setup_file}" 2>&1 | command tee "${log_file}"
-  status=${PIPESTATUS[0]}
-  if [ "${status}" -eq 0 ]; then
-    printf "[%s] setup done     status=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${log_file}"
-  else
-    printf "[%s] setup failed   status=%s log=%s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "${status}" "${log_file}" >&2
-  fi
-  return "${status}"
-}
-
 sc_helper_dotfiles_remove_tree_file_by_file() {
   local target="$1"
   local entry restore_nullglob restore_dotglob
