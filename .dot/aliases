@@ -12,9 +12,9 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias f="fzf"
 alias a="atuin search -i"
-alias dot='sc_helper_dotfiles_sync && exec bash -l'
-alias dot.install='sc_helper_dotfiles_install'
-alias dot.ignores='sc_helper_dotfiles_ignores'
+alias dot='sc_helper_dot_sync && exec bash -l'
+alias dot.install='sc_helper_dot_install'
+alias dot.ignores='sc_helper_dot_ignores'
 alias dot.ver='sc_helper_dotversions'
 
 #

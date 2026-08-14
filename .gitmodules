@@ -1,4 +1,4 @@
-[submodule ".dotfiles.ai-skills"]
-	path = .dotfiles.ai-skills
+[submodule ".dot/ai-skills"]
+	path = .dot/ai-skills
 	url = https://github.com/theanotherwise/ai-skills.git
 	branch = main

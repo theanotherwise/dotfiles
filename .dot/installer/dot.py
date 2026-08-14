@@ -27,7 +27,7 @@ PKG_TYPES = {
 }
 
 RANDOM_STRING = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
-TMP_PATH = "/tmp/dotfiles-{}".format(RANDOM_STRING)
+TMP_PATH = "/tmp/dot-{}".format(RANDOM_STRING)
 LOG_LOCK = threading.Lock()
 TARGET_DIR = os.path.join(os.path.expanduser("~"), "binaries")
 
@@ -280,7 +280,7 @@ def make_symlink(package_path, package_version):
 
 
 def setup_jobs():
-    value = os.environ.get("SC_DOTFILES_SETUP_JOBS", "6")
+    value = os.environ.get("SC_DOT_SETUP_JOBS", "6")
     try:
         jobs = int(value)
     except ValueError:

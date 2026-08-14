@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DOT_DIR_PATH="$(dirname "$(realpath "$0")")"
+REPO_DIR_PATH="$(dirname "${DOT_DIR_PATH}")"
+
+git -C "${REPO_DIR_PATH}" submodule sync --recursive -- ".dot/ai-skills" || exit 1
+git -C "${REPO_DIR_PATH}" submodule update --init --remote --recursive -- ".dot/ai-skills" || exit 1
+
+python3 "${DOT_DIR_PATH}/installer/dot.py"

@@ -10,7 +10,7 @@ fi
 
 SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-20}"
 SC_BASH_COMPLETION_CACHE_ASYNC="${SC_BASH_COMPLETION_CACHE_ASYNC:-1}"
-SC_BASH_COMPLETION_CACHE_DIR="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dotfiles.cache}"
+SC_BASH_COMPLETION_CACHE_DIR="${SC_BASH_COMPLETION_CACHE_DIR:-${HOME}/.dot/cache}"
 command mkdir -p "${SC_BASH_COMPLETION_CACHE_DIR}" 2>/dev/null || true
 
 sc_helper_completion_cache_log() {
@@ -360,22 +360,22 @@ sc_helper_source_cached_completion grype
 sc_helper_source_cached_completion cosign
 sc_helper_source_cached_completion codex
 
-if [ -f "${HOME}/.dotfiles.d/completion/git.bash" ]; then
-  . "${HOME}/.dotfiles.d/completion/git.bash"
+if [ -f "${HOME}/.dot/completions/git.bash" ]; then
+  . "${HOME}/.dot/completions/git.bash"
   sc_helper_strip_completion_file_fallback git
   sc_helper_strip_completion_file_fallback gitk
 fi
 
-if [ -f "${HOME}/.dotfiles.d/completion/kubectx.bash" ]; then
-  . "${HOME}/.dotfiles.d/completion/kubectx.bash"
+if [ -f "${HOME}/.dot/completions/kubectx.bash" ]; then
+  . "${HOME}/.dot/completions/kubectx.bash"
 fi
 
-if [ -f "${HOME}/.dotfiles.d/completion/kubens.bash" ]; then
-  . "${HOME}/.dotfiles.d/completion/kubens.bash"
+if [ -f "${HOME}/.dot/completions/kubens.bash" ]; then
+  . "${HOME}/.dot/completions/kubens.bash"
 fi
 
-if [ -f "${HOME}/.dotfiles.d/completion/kubetail.bash" ]; then
-  . "${HOME}/.dotfiles.d/completion/kubetail.bash"
+if [ -f "${HOME}/.dot/completions/kubetail.bash" ]; then
+  . "${HOME}/.dot/completions/kubetail.bash"
 fi
 
 sc_helper_ksecret_completion() {
@@ -730,9 +730,9 @@ sc_helper_grouped_alias_completion_print_group() {
           *) continue ;;
         esac
         ;;
-      sc-dotfiles)
+      dot-commands)
         case "${match}" in
-          sc-*) ;;
+          dot|dot.*) ;;
           *) continue ;;
         esac
         ;;
@@ -781,17 +781,18 @@ sc_helper_grouped_alias_completion_print_matches() {
       sc_helper_grouped_alias_completion_print_group "Git Tags" git-tag "${printed_any}" "$@" && printed_any=1
       sc_helper_grouped_alias_completion_print_group "Git Others" git-other "${printed_any}" "$@" && printed_any=1
       ;;
-    sc-*)
-      sc_helper_grouped_alias_completion_print_group "Dotfiles" sc-dotfiles "${printed_any}" "$@" && printed_any=1
+    dot*)
+      sc_helper_grouped_alias_completion_print_group "Dot" dot-commands "${printed_any}" "$@" && printed_any=1
       ;;
   esac
 }
 
 sc_helper_grouped_alias_completion_description() {
   case "$1" in
-    sc-cache) printf "%s\n" "flush and visibly queue completion cache rebuild" ;;
-    sc-setup) printf "%s\n" "run ~/.dotfiles setup with visible output" ;;
-    sc-versions) printf "%s\n" "show latest symlink versions grouped by category" ;;
+    dot) printf "%s\n" "sync repository, rebuild completion cache, and reset shell" ;;
+    dot.install) printf "%s\n" "install configured binaries" ;;
+    dot.ignores) printf "%s\n" "print VS Code workspace excludes as JSON or YAML" ;;
+    dot.ver) printf "%s\n" "show latest symlink versions grouped by category" ;;
     *) return 1 ;;
   esac
 }
