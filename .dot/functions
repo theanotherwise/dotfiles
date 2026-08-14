@@ -2203,6 +2203,26 @@ sc_helper_atuin_init() {
   fi
 }
 
+sc_helper_history() {
+  local limit="${1:-}"
+
+  if ! command -v atuin >/dev/null 2>&1; then
+    printf '%s\n' 'atuin not found' >&2
+    return 127
+  fi
+
+  if [ "$#" -gt 1 ] || { [ -n "${limit}" ] && [[ "${limit}" == *[!0-9]* ]]; }; then
+    printf '%s\n' 'Usage: history [number]' >&2
+    return 2
+  fi
+
+  if [ -n "${limit}" ]; then
+    command atuin history list --reverse=true --format $'{time}\t{command}' | tail -n "${limit}"
+  else
+    command atuin history list --reverse=true --format $'{time}\t{command}'
+  fi
+}
+
 sc_helper_zoxide_z_completion() {
   command -v zoxide >/dev/null 2>&1 || return 0
 

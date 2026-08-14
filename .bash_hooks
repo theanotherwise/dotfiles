@@ -123,11 +123,6 @@ __sc_bash_hooks_run_precmd() {
     fi
   done
 
-  # Persist this shell's new commands and import commands appended by other
-  # open shells so native Bash history stays consistent across terminal tabs.
-  builtin history -a
-  builtin history -n
-
   return "${status}"
 }
 
