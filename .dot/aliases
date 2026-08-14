@@ -43,6 +43,7 @@ alias k="sc_helper_kubectl"
 alias kctx="kubectx"
 alias kctx-prod-rke2-core='sc_helper_kubeconfig_prod_rke2_core'
 alias kns="kubens"
+alias kc="kube-capacity"
 alias kt="stern"
 alias kl="kube-linter"
 alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'

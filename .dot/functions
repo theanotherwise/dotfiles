@@ -2224,6 +2224,7 @@ sc_helper_dotversions_description() {
     k6) printf "%s\n" "Scriptable HTTP and load test runner" ;;
     k9s) printf "%s\n" "Terminal UI for Kubernetes clusters" ;;
     katana) printf "%s\n" "Crawls web apps for URLs and endpoints" ;;
+    kube-capacity) printf "%s\n" "Shows Kubernetes node and pod resource use" ;;
     kube-linter) printf "%s\n" "Finds Kubernetes manifest problems" ;;
     kubeconform) printf "%s\n" "Validates manifests against Kubernetes schemas" ;;
     kubectl) printf "%s\n" "Kubernetes CLI" ;;
@@ -2269,7 +2270,7 @@ sc_helper_dotversions_category() {
     kubectl|oc)
       printf "%s\n" "Kubernetes Core"
       ;;
-    argocd|k3d|k9s|kube-linter|kubeconform|kubectx|kubens|kustomize|stern)
+    argocd|k3d|k9s|kube-capacity|kube-linter|kubeconform|kubectx|kubens|kustomize|stern)
       printf "%s\n" "Kubernetes Tools"
       ;;
     helm|helmfile)
@@ -2366,6 +2367,7 @@ sc_helper_dotversions_example() {
     k6) printf "%s\n" "k6 run test.js" ;;
     k9s) printf "%s\n" "k9s" ;;
     katana) printf "%s\n" "katana -u https://example.com" ;;
+    kube-capacity) printf "%s\n" "kube-capacity --pods --util" ;;
     kube-linter) printf "%s\n" "kube-linter lint manifests" ;;
     kubeconform) printf "%s\n" "kubeconform manifests" ;;
     kubectl) printf "%s\n" "kubectl get pods" ;;
