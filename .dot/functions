@@ -670,22 +670,26 @@ sc_helper_kube_namespaces() {
       }
       !NF { next }
       {
-        if ($1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system") {
-          group = 2
-          order = 0
+        if ($1 ~ /gke/) {
+          group_order = 3
+          group = "gke"
+        } else if ($1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system") {
+          group_order = 2
+          group = "default"
         } else if ($1 ~ /-system$/) {
-          group = 0
-          order = 0
+          group_order = 0
+          group = "system"
         } else if ($1 ~ /-operator$/) {
-          group = 1
-          order = 0
+          group_order = 1
+          group = "operator"
         } else {
-          group = 2
-          order = 1
+          split($1, name_parts, "-")
+          group_order = 4
+          group = "other:" name_parts[1]
         }
-        printf "%d\t%d\t%s\t%s\t%s\t%d\t%d\t%.0f\n", group, order, $1, $2, $3, pod_counts[$1] + 0, pvc_counts[$1] + 0, pvc_bytes[$1] + 0
+        printf "%d\t%s\t%s\t%s\t%s\t%d\t%d\t%.0f\n", group_order, group, $1, $2, $3, pod_counts[$1] + 0, pvc_counts[$1] + 0, pvc_bytes[$1] + 0
       }
-    ' | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3)"
+    ' | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2 -k3,3)"
 
   [ -n "${rows}" ] || return 0
 
@@ -712,19 +716,17 @@ sc_helper_kube_namespaces() {
       if (bytes >= 1024) return compact_number(bytes / 1024) "Ki"
       return sprintf("%.0fB", bytes)
     }
-    function separator(group, title, prefix) {
-      if (group == 0) {
-        title = "system"
-      } else if (group == 1) {
-        title = "operator"
-      } else {
-        title = "default"
-      }
-      prefix = "--[ " title " ]"
-      printf "%s%s+%s+%s+%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(prefix)), repeated("-", status_width + 2), repeated("-", age_width + 2), repeated("-", pods_width + 2), repeated("-", pvc_width + 2), repeated("-", storage_width + 1)
+    function separator(title, prefix, plain_prefix) {
+      plain_prefix = "--[ " title " ]"
+      prefix = "--[ " blue title reset " ]"
+      printf "%s%s+%s+%s+%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(plain_prefix)), repeated("-", status_width + 2), repeated("-", age_width + 2), repeated("-", pods_width + 2), repeated("-", pvc_width + 2), repeated("-", storage_width + 1)
+    }
+    BEGIN {
+      blue = sprintf("%c[34m", 27)
+      reset = sprintf("%c[0m", 27)
     }
     {
-      groups[NR] = $1
+      groups[NR] = $2
       names[NR] = $3
       statuses[NR] = $4
       ages[NR] = $5
@@ -733,6 +735,9 @@ sc_helper_kube_namespaces() {
       storage_labels[NR] = storage_size($8 + 0)
       if (length($3) > name_width) {
         name_width = length($3)
+      }
+      if (length($2) + 5 > name_width) {
+        name_width = length($2) + 5
       }
       if (length($4) > status_width) {
         status_width = length($4)
