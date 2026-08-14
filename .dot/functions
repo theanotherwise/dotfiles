@@ -670,12 +670,12 @@ sc_helper_kube_namespaces() {
       }
       !NF { next }
       {
-        if ($1 ~ /gke/) {
+        if ($1 == "default" || $1 ~ /^kube-/) {
+          group_order = 2
+          group = "kube"
+        } else if ($1 ~ /gke/) {
           group_order = 3
           group = "gke"
-        } else if ($1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system") {
-          group_order = 2
-          group = "default"
         } else if ($1 ~ /-system$/) {
           group_order = 0
           group = "system"
