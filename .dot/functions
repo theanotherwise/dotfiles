@@ -825,8 +825,8 @@ sc_helper_kube_capacity() {
         | [
             .node,
             .cpu_request,
-            .cpu_limit,
             .memory_request,
+            .cpu_limit,
             .memory_limit,
             .cpu_allocatable,
             .memory_allocatable,
@@ -877,8 +877,8 @@ sc_helper_kube_capacity() {
             .name,
             .pods,
             .cpu_request,
-            .cpu_limit,
             .memory_request,
+            .cpu_limit,
             .memory_limit
           ]
         | @tsv
@@ -895,9 +895,9 @@ sc_helper_kube_capacity() {
 
   {
     if [ "${mode}" = "controllers" ]; then
-      printf 'KIND\tNAME\tPODS\tCPU REQUESTS\tCPU LIMITS\tMEMORY REQUESTS\tMEMORY LIMITS\n'
+      printf 'KIND\tNAME\tPODS\tCPU REQUESTS\tMEMORY REQUESTS\tCPU LIMITS\tMEMORY LIMITS\n'
     else
-      printf 'NODE\tCPU REQUESTS\tCPU LIMITS\tMEMORY REQUESTS\tMEMORY LIMITS\tPODS\n'
+      printf 'NODE\tCPU REQUESTS\tMEMORY REQUESTS\tCPU LIMITS\tMEMORY LIMITS\tPODS\n'
     fi
     if [ -n "${rows}" ]; then
       printf '%s\n' "${rows}" | awk -F '\t' -v mode="${mode}" '
@@ -929,12 +929,12 @@ sc_helper_kube_capacity() {
       BEGIN { OFS = "\t" }
       {
         if (mode == "controllers") {
-          print $1, $2, $3, cpu($4), cpu($5), memory($6), memory($7)
+          print $1, $2, $3, cpu($4), memory($5), cpu($6), memory($7)
         } else {
           print $1,
             cpu($2) " (" percentage($2, $6) ")",
-            cpu($3) " (" percentage($3, $6) ")",
-            memory($4) " (" percentage($4, $7) ")",
+            memory($3) " (" percentage($3, $7) ")",
+            cpu($4) " (" percentage($4, $6) ")",
             memory($5) " (" percentage($5, $7) ")",
             $8
         }
