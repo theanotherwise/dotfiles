@@ -619,7 +619,7 @@ sc_helper_kube_namespaces() {
   local namespaces resource_rows rows
 
   if [ "$#" -ne 0 ]; then
-    printf '%s\n' 'Usage: knsl' >&2
+    printf '%s\n' 'Usage: k-ns' >&2
     return 2
   fi
   if ! command -v kubectl >/dev/null 2>&1; then
