@@ -616,7 +616,7 @@ sc_helper_kubectl() {
 }
 
 sc_helper_kube_namespaces() {
-  local namespaces pod_namespaces rows
+  local namespaces resource_rows rows
 
   if [ "$#" -ne 0 ]; then
     printf '%s\n' 'Usage: knsl' >&2
@@ -631,18 +631,43 @@ sc_helper_kube_namespaces() {
     printf '%s\n' 'Could not list Kubernetes namespaces' >&2
     return 1
   }
-  pod_namespaces="$(command kubectl get pods --all-namespaces --no-headers -o 'custom-columns=NAMESPACE:.metadata.namespace')" || {
-    printf '%s\n' 'Could not count Kubernetes pods' >&2
+  resource_rows="$(command kubectl get pods,persistentvolumeclaims --all-namespaces --no-headers -o 'custom-columns=KIND:.kind,NAMESPACE:.metadata.namespace,STORAGE:.spec.resources.requests.storage')" || {
+    printf '%s\n' 'Could not list Kubernetes pods and PVCs' >&2
     return 1
   }
 
   rows="$({
-    printf '%s\n' "${pod_namespaces}"
+    printf '%s\n' "${resource_rows}"
     printf '%s\n' '__DOT_NAMESPACE_ROWS__'
     printf '%s\n' "${namespaces}"
   } | awk '
+      function quantity_bytes(quantity, multiplier) {
+        multiplier = 1
+        if (quantity ~ /Ei$/) { sub(/Ei$/, "", quantity); multiplier = 1152921504606846976 }
+        else if (quantity ~ /Pi$/) { sub(/Pi$/, "", quantity); multiplier = 1125899906842624 }
+        else if (quantity ~ /Ti$/) { sub(/Ti$/, "", quantity); multiplier = 1099511627776 }
+        else if (quantity ~ /Gi$/) { sub(/Gi$/, "", quantity); multiplier = 1073741824 }
+        else if (quantity ~ /Mi$/) { sub(/Mi$/, "", quantity); multiplier = 1048576 }
+        else if (quantity ~ /Ki$/) { sub(/Ki$/, "", quantity); multiplier = 1024 }
+        else if (quantity ~ /E$/) { sub(/E$/, "", quantity); multiplier = 1000000000000000000 }
+        else if (quantity ~ /P$/) { sub(/P$/, "", quantity); multiplier = 1000000000000000 }
+        else if (quantity ~ /T$/) { sub(/T$/, "", quantity); multiplier = 1000000000000 }
+        else if (quantity ~ /G$/) { sub(/G$/, "", quantity); multiplier = 1000000000 }
+        else if (quantity ~ /M$/) { sub(/M$/, "", quantity); multiplier = 1000000 }
+        else if (quantity ~ /[kK]$/) { sub(/[kK]$/, "", quantity); multiplier = 1000 }
+        else if (quantity ~ /m$/) { sub(/m$/, "", quantity); multiplier = 0.001 }
+        return (quantity + 0) * multiplier
+      }
       $0 == "__DOT_NAMESPACE_ROWS__" { reading_namespaces = 1; next }
-      !reading_namespaces { if (NF) pod_counts[$1]++; next }
+      !reading_namespaces {
+        if ($1 == "Pod") {
+          pod_counts[$2]++
+        } else if ($1 == "PersistentVolumeClaim") {
+          pvc_counts[$2]++
+          pvc_bytes[$2] += quantity_bytes($3)
+        }
+        next
+      }
       !NF { next }
       {
         if ($1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system") {
@@ -658,7 +683,7 @@ sc_helper_kube_namespaces() {
           group = 2
           order = 1
         }
-        printf "%d\t%d\t%s\t%s\t%s\t%d\n", group, order, $1, $2, $3, pod_counts[$1] + 0
+        printf "%d\t%d\t%s\t%s\t%s\t%d\t%d\t%.0f\n", group, order, $1, $2, $3, pod_counts[$1] + 0, pvc_counts[$1] + 0, pvc_bytes[$1] + 0
       }
     ' | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3)"
 
@@ -672,6 +697,21 @@ sc_helper_kube_namespaces() {
       }
       return result
     }
+    function compact_number(value, result) {
+      result = sprintf("%.2f", value)
+      sub(/0+$/, "", result)
+      sub(/\.$/, "", result)
+      return result
+    }
+    function storage_size(bytes) {
+      if (bytes >= 1152921504606846976) return compact_number(bytes / 1152921504606846976) "Ei"
+      if (bytes >= 1125899906842624) return compact_number(bytes / 1125899906842624) "Pi"
+      if (bytes >= 1099511627776) return compact_number(bytes / 1099511627776) "Ti"
+      if (bytes >= 1073741824) return compact_number(bytes / 1073741824) "Gi"
+      if (bytes >= 1048576) return compact_number(bytes / 1048576) "Mi"
+      if (bytes >= 1024) return compact_number(bytes / 1024) "Ki"
+      return sprintf("%.0fB", bytes)
+    }
     function separator(group, title, prefix) {
       if (group == 0) {
         title = "system"
@@ -681,7 +721,7 @@ sc_helper_kube_namespaces() {
         title = "default"
       }
       prefix = "--[ " title " ]"
-      printf "%s%s+%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(prefix)), repeated("-", status_width + 2), repeated("-", age_width + 2), repeated("-", pods_width + 1)
+      printf "%s%s+%s+%s+%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(prefix)), repeated("-", status_width + 2), repeated("-", age_width + 2), repeated("-", pods_width + 2), repeated("-", pvc_width + 2), repeated("-", storage_width + 1)
     }
     {
       groups[NR] = $1
@@ -689,6 +729,8 @@ sc_helper_kube_namespaces() {
       statuses[NR] = $4
       ages[NR] = $5
       pod_labels[NR] = $6 ($6 == 1 ? " pod" : " pods")
+      pvc_labels[NR] = $7 " pvc"
+      storage_labels[NR] = storage_size($8 + 0)
       if (length($3) > name_width) {
         name_width = length($3)
       }
@@ -701,13 +743,19 @@ sc_helper_kube_namespaces() {
       if (length(pod_labels[NR]) > pods_width) {
         pods_width = length(pod_labels[NR])
       }
+      if (length(pvc_labels[NR]) > pvc_width) {
+        pvc_width = length(pvc_labels[NR])
+      }
+      if (length(storage_labels[NR]) > storage_width) {
+        storage_width = length(storage_labels[NR])
+      }
     }
     END {
       for (row = 1; row <= NR; row++) {
         if (row == 1 || groups[row] != groups[row - 1]) {
           separator(groups[row])
         }
-        printf "%-*s | %-*s | %-*s | %-*s\n", name_width, names[row], status_width, statuses[row], age_width, ages[row], pods_width, pod_labels[row]
+        printf "%-*s | %-*s | %-*s | %-*s | %-*s | %-*s\n", name_width, names[row], status_width, statuses[row], age_width, ages[row], pods_width, pod_labels[row], pvc_width, pvc_labels[row], storage_width, storage_labels[row]
       }
     }
   '
