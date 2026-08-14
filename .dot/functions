@@ -616,22 +616,44 @@ sc_helper_kubectl() {
 }
 
 sc_helper_kube_capacity() {
-  local rows
+  local rows mode namespace
 
-  case "${1:-}" in
-    "") ;;
-    -h|--help)
-      printf '%s\n' \
-        'Usage: kc' \
-        '' \
-        'Shows cluster and per-node CPU/memory requests and limits for active scheduled pods.'
-      return 0
-      ;;
-    *)
-      printf '%s\n' 'Usage: kc' >&2
-      return 2
-      ;;
-  esac
+  mode="nodes"
+  namespace=""
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      -c|--controllers)
+        mode="controllers"
+        shift
+        ;;
+      -n|--namespace)
+        if [ -z "${2:-}" ]; then
+          printf '%s\n' 'Usage: kc [-c] [-n namespace]' >&2
+          return 2
+        fi
+        namespace="$2"
+        shift 2
+        ;;
+      -h|--help)
+        printf '%s\n' \
+          'Usage: kc' \
+          '       kc -c [-n namespace]' \
+          '' \
+          'kc       cluster and per-node requests and limits' \
+          'kc -c    Deployment, StatefulSet, and DaemonSet totals in a namespace'
+        return 0
+        ;;
+      *)
+        printf '%s\n' 'Usage: kc [-c] [-n namespace]' >&2
+        return 2
+        ;;
+    esac
+  done
+
+  if [ "${mode}" = "nodes" ] && [ -n "${namespace}" ]; then
+    printf '%s\n' 'The namespace option requires -c' >&2
+    return 2
+  fi
 
   if ! command -v kubectl >/dev/null 2>&1; then
     printf '%s\n' 'kubectl not found' >&2
@@ -642,12 +664,21 @@ sc_helper_kube_capacity() {
     return 127
   fi
 
+  if [ "${mode}" = "controllers" ] && [ -z "${namespace}" ]; then
+    namespace="$(command kubectl config view --minify -o jsonpath='{.contexts[0].context.namespace}' 2>/dev/null)"
+    [ -n "${namespace}" ] || namespace="default"
+  fi
+
   rows="$({
     set -o pipefail
-    {
+    if [ "${mode}" = "controllers" ]; then
+      printf '%s\n' '{}'
+      command kubectl get deployments.apps,statefulsets.apps,daemonsets.apps,replicasets.apps,pods \
+        -n "${namespace}" -o json
+    else
       command kubectl get nodes -o json \
         && command kubectl get pods --all-namespaces -o json
-    } | command jq -r -s '
+    fi | command jq -r -s --arg mode "${mode}" '
       def cpu_m:
         (. // "0" | tostring) as $q
         | if $q | endswith("n") then ($q[0:-1] | tonumber) / 1000000
@@ -737,65 +768,139 @@ sc_helper_kube_capacity() {
       def empty_usage:
         {cpu_request: 0, cpu_limit: 0, memory_request: 0, memory_limit: 0, pods: 0};
 
-      .[0] as $nodes
-      | .[1] as $pods
-      | reduce (
-          $pods.items[]
-          | select((.spec.nodeName // "") != "")
-          | select(.status.phase != "Succeeded" and .status.phase != "Failed")
-        ) as $pod ({};
-          ($pod.spec.nodeName) as $node
-          | (.[$node] // empty_usage) as $current
-          | .[$node] = {
-              cpu_request: ($current.cpu_request + pod_cpu($pod; "requests")),
-              cpu_limit: ($current.cpu_limit + pod_cpu($pod; "limits")),
-              memory_request: ($current.memory_request + pod_memory($pod; "requests")),
-              memory_limit: ($current.memory_limit + pod_memory($pod; "limits")),
-              pods: ($current.pods + 1)
-            }
-        ) as $usage
-      | [
-          $nodes.items[]
-          | . as $node
-          | ($usage[$node.metadata.name] // empty_usage) as $used
-          | $used + {
-              node: $node.metadata.name,
-              cpu_allocatable: (($node.status.allocatable.cpu // "0") | cpu_m),
-              memory_allocatable: (($node.status.allocatable.memory // "0") | memory_bytes)
-            }
-        ] | sort_by(.node) as $node_rows
-      | ({
-          node: "*",
-          cpu_request: ($node_rows | map(.cpu_request) | add // 0),
-          cpu_limit: ($node_rows | map(.cpu_limit) | add // 0),
-          memory_request: ($node_rows | map(.memory_request) | add // 0),
-          memory_limit: ($node_rows | map(.memory_limit) | add // 0),
-          cpu_allocatable: ($node_rows | map(.cpu_allocatable) | add // 0),
-          memory_allocatable: ($node_rows | map(.memory_allocatable) | add // 0),
-          pods: ($node_rows | map(.pods) | add // 0)
-        } as $cluster
-        | [$cluster] + $node_rows)
-      | .[]
-      | [
-          .node,
-          .cpu_request,
-          .cpu_limit,
-          .memory_request,
-          .memory_limit,
-          .cpu_allocatable,
-          .memory_allocatable,
-          .pods
-        ]
-      | @tsv
+      def controller_owner($object):
+        [($object.metadata.ownerReferences // [])[] | select(.controller == true)][0] // null;
+
+      def workload_key($pod; $replica_sets):
+        controller_owner($pod) as $owner
+        | if $owner == null then null
+          elif $owner.kind == "ReplicaSet" then
+            ($replica_sets[$owner.name] // null) as $deployment
+            | if $deployment == null then null else "Deployment/\($deployment)" end
+          elif $owner.kind == "StatefulSet" or $owner.kind == "DaemonSet" then
+            "\($owner.kind)/\($owner.name)"
+          else null
+          end;
+
+      if $mode == "nodes" then
+        .[0] as $nodes
+        | .[1] as $pods
+        | reduce (
+            $pods.items[]
+            | select((.spec.nodeName // "") != "")
+            | select(.status.phase != "Succeeded" and .status.phase != "Failed")
+          ) as $pod ({};
+            ($pod.spec.nodeName) as $node
+            | (.[$node] // empty_usage) as $current
+            | .[$node] = {
+                cpu_request: ($current.cpu_request + pod_cpu($pod; "requests")),
+                cpu_limit: ($current.cpu_limit + pod_cpu($pod; "limits")),
+                memory_request: ($current.memory_request + pod_memory($pod; "requests")),
+                memory_limit: ($current.memory_limit + pod_memory($pod; "limits")),
+                pods: ($current.pods + 1)
+              }
+          ) as $usage
+        | [
+            $nodes.items[]
+            | . as $node
+            | ($usage[$node.metadata.name] // empty_usage) as $used
+            | $used + {
+                node: $node.metadata.name,
+                cpu_allocatable: (($node.status.allocatable.cpu // "0") | cpu_m),
+                memory_allocatable: (($node.status.allocatable.memory // "0") | memory_bytes)
+              }
+          ] | sort_by(.node) as $node_rows
+        | ({
+            node: "*",
+            cpu_request: ($node_rows | map(.cpu_request) | add // 0),
+            cpu_limit: ($node_rows | map(.cpu_limit) | add // 0),
+            memory_request: ($node_rows | map(.memory_request) | add // 0),
+            memory_limit: ($node_rows | map(.memory_limit) | add // 0),
+            cpu_allocatable: ($node_rows | map(.cpu_allocatable) | add // 0),
+            memory_allocatable: ($node_rows | map(.memory_allocatable) | add // 0),
+            pods: ($node_rows | map(.pods) | add // 0)
+          } as $cluster
+          | [$cluster] + $node_rows)
+        | .[]
+        | [
+            .node,
+            .cpu_request,
+            .cpu_limit,
+            .memory_request,
+            .memory_limit,
+            .cpu_allocatable,
+            .memory_allocatable,
+            .pods
+          ]
+        | @tsv
+      else
+        .[1] as $resources
+        | reduce (
+            $resources.items[]
+            | select(.kind == "ReplicaSet")
+          ) as $replica_set ({};
+            controller_owner($replica_set) as $owner
+            | if $owner != null and $owner.kind == "Deployment" then
+                .[$replica_set.metadata.name] = $owner.name
+              else .
+              end
+          ) as $replica_sets
+        | reduce (
+            $resources.items[]
+            | select(.kind == "Deployment" or .kind == "StatefulSet" or .kind == "DaemonSet")
+          ) as $workload ({};
+            .["\($workload.kind)/\($workload.metadata.name)"] = (
+              empty_usage + {kind: $workload.kind, name: $workload.metadata.name}
+            )
+          ) as $workloads
+        | reduce (
+            $resources.items[]
+            | select(.kind == "Pod")
+            | select(.status.phase != "Succeeded" and .status.phase != "Failed")
+          ) as $pod ($workloads;
+            workload_key($pod; $replica_sets) as $key
+            | if $key == null or .[$key] == null then .
+              else
+                .[$key].cpu_request += pod_cpu($pod; "requests")
+                | .[$key].cpu_limit += pod_cpu($pod; "limits")
+                | .[$key].memory_request += pod_memory($pod; "requests")
+                | .[$key].memory_limit += pod_memory($pod; "limits")
+                | .[$key].pods += 1
+              end
+          )
+        | to_entries
+        | map(.value)
+        | sort_by(.kind, .name)
+        | .[]
+        | [
+            .kind,
+            .name,
+            .pods,
+            .cpu_request,
+            .cpu_limit,
+            .memory_request,
+            .memory_limit
+          ]
+        | @tsv
+      end
     '
   })" || {
-    printf '%s\n' 'Could not read Kubernetes node and pod resources' >&2
+    printf '%s\n' 'Could not read Kubernetes resources' >&2
     return 1
   }
 
+  if [ "${mode}" = "controllers" ]; then
+    printf 'Namespace: %s\n\n' "${namespace}"
+  fi
+
   {
-    printf 'NODE\tCPU REQUESTS\tCPU LIMITS\tMEMORY REQUESTS\tMEMORY LIMITS\tPODS\n'
-    printf '%s\n' "${rows}" | awk -F '\t' '
+    if [ "${mode}" = "controllers" ]; then
+      printf 'KIND\tNAME\tPODS\tCPU REQUESTS\tCPU LIMITS\tMEMORY REQUESTS\tMEMORY LIMITS\n'
+    else
+      printf 'NODE\tCPU REQUESTS\tCPU LIMITS\tMEMORY REQUESTS\tMEMORY LIMITS\tPODS\n'
+    fi
+    if [ -n "${rows}" ]; then
+      printf '%s\n' "${rows}" | awk -F '\t' -v mode="${mode}" '
       function trim_decimal(value) {
         sub(/[.]00$/, "", value)
         if (value ~ /[.]/) {
@@ -823,14 +928,19 @@ sc_helper_kube_capacity() {
       }
       BEGIN { OFS = "\t" }
       {
-        print $1,
-          cpu($2) " (" percentage($2, $6) ")",
-          cpu($3) " (" percentage($3, $6) ")",
-          memory($4) " (" percentage($4, $7) ")",
-          memory($5) " (" percentage($5, $7) ")",
-          $8
+        if (mode == "controllers") {
+          print $1, $2, $3, cpu($4), cpu($5), memory($6), memory($7)
+        } else {
+          print $1,
+            cpu($2) " (" percentage($2, $6) ")",
+            cpu($3) " (" percentage($3, $6) ")",
+            memory($4) " (" percentage($4, $7) ")",
+            memory($5) " (" percentage($5, $7) ")",
+            $8
+        }
       }
-    '
+      '
+    fi
   } | sc_helper_tsv_table
 }
 
