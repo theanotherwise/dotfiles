@@ -2189,10 +2189,10 @@ sc_helper_atuin_init() {
   sc_helper_bash_hooks_init
   eval "$(atuin init bash)"
 
-  # Keep Up-arrow searches out of the terminal's scrollback. Atuin's inline
-  # viewport can scroll existing output when the prompt is near the bottom;
-  # a height of zero uses the alternate-screen viewport and restores it on exit.
   if declare -F atuin-bind >/dev/null 2>&1; then
+    atuin-bind -m emacs '\C-r' 'atuin-search-emacs --inline-height=0'
+    atuin-bind -m vi-insert '\C-r' 'atuin-search-viins --inline-height=0'
+    atuin-bind -m vi-command '/' 'atuin-search-emacs --inline-height=0'
     atuin-bind -m emacs '\e[A' 'atuin-up-search-emacs --inline-height=0'
     atuin-bind -m emacs '\eOA' 'atuin-up-search-emacs --inline-height=0'
     atuin-bind -m vi-insert '\e[A' 'atuin-up-search-viins --inline-height=0'
