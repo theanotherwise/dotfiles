@@ -12,12 +12,14 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias f="fzf"
 alias a="atuin search -i"
-alias dotfiles='dotfiles.sync && dotfiles.install && dotfiles.reset'
-alias dotfiles.sync='sc_helper_dotfiles_sync'
-alias dotfiles.install='sc_helper_dotfiles_install'
-alias dotfiles.cache='sc_helper_dotcache'
-alias dotfiles.ignores='sc_helper_dotfiles_ignores'
-alias dotfiles.reset='exec bash -l'
+alias dot='dot.sync && dot.install && dot.reset'
+alias dot.sync='sc_helper_dotfiles_sync'
+alias dot.install='sc_helper_dotfiles_install'
+alias dot.setup='sc_helper_dotsetup'
+alias dot.cache='sc_helper_dotcache'
+alias dot.ignores='sc_helper_dotfiles_ignores'
+alias dot.reset='exec bash -l'
+alias dot.versions='sc_helper_dotversions'
 
 #
 #    Claude
@@ -252,9 +254,6 @@ alias curlperf='sc_helper_curl_format_file && curl -w "@.curl-timing-format.txt"
 alias myip='curl -fsS https://ifconfig.me && echo'
 alias ports='lsof -nP -iTCP -sTCP:LISTEN'
 alias tcpcheck='sc_helper_tcp_linux_check'
-alias sc-setup='sc_helper_dotsetup'
-alias sc-cache='sc_helper_dotcache'
-alias sc-versions='sc_helper_dotversions'
 alias z-reinit='sc_helper_zoxide_reinit'
 alias zoxide-reinit='sc_helper_zoxide_reinit'
 alias zseed='sc_helper_zseed'
