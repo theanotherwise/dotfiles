@@ -631,12 +631,12 @@ sc_helper_kube_namespaces() {
     set -o pipefail
     command kubectl get namespaces --no-headers \
       | awk '
-          $1 ~ /-system$/ { print "0\t" $1 "\t" $2 "\t" $3; next }
-          $1 ~ /-operator$/ { print "1\t" $1 "\t" $2 "\t" $3; next }
-          $1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" {
+          $1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system" {
             print "2\t" $1 "\t" $2 "\t" $3
             next
           }
+          $1 ~ /-system$/ { print "0\t" $1 "\t" $2 "\t" $3; next }
+          $1 ~ /-operator$/ { print "1\t" $1 "\t" $2 "\t" $3; next }
           { print "3\t" $1 "\t" $2 "\t" $3 }
         ' \
       | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2
