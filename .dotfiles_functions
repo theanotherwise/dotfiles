@@ -64,7 +64,38 @@ sc_helper_dotfiles_install() {
 }
 
 sc_helper_dotfiles_ignores() {
-  command cat <<'EOF'
+  local output_format="${1:-}"
+  local -a formatter
+
+  if [ "$#" -gt 1 ]; then
+    printf '%s\n' 'Usage: dot.ignores [--json|--yaml]' >&2
+    return 2
+  fi
+
+  [ -n "${output_format}" ] || output_format="--json"
+
+  case "${output_format}" in
+    --json)
+      if ! command -v jq >/dev/null 2>&1; then
+        printf '%s\n' 'jq not found' >&2
+        return 127
+      fi
+      formatter=(jq .)
+      ;;
+    --yaml)
+      if ! command -v yq >/dev/null 2>&1; then
+        printf '%s\n' 'yq not found' >&2
+        return 127
+      fi
+      formatter=(yq -p=json -o=yaml -P)
+      ;;
+    *)
+      printf '%s\n' 'Usage: dot.ignores [--json|--yaml]' >&2
+      return 2
+      ;;
+  esac
+
+  command "${formatter[@]}" <<'EOF'
 {
 	"folders": [
 		{
