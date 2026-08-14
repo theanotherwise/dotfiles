@@ -616,7 +616,7 @@ sc_helper_kubectl() {
 }
 
 sc_helper_kube_namespaces() {
-  local rows
+  local namespaces pod_namespaces rows
 
   if [ "$#" -ne 0 ]; then
     printf '%s\n' 'Usage: knsl' >&2
@@ -627,23 +627,40 @@ sc_helper_kube_namespaces() {
     return 127
   fi
 
-  rows="$({
-    set -o pipefail
-    command kubectl get namespaces --no-headers \
-      | awk '
-          $1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system" {
-            print "2\t0\t" $1 "\t" $2 "\t" $3
-            next
-          }
-          $1 ~ /-system$/ { print "0\t0\t" $1 "\t" $2 "\t" $3; next }
-          $1 ~ /-operator$/ { print "1\t0\t" $1 "\t" $2 "\t" $3; next }
-          { print "2\t1\t" $1 "\t" $2 "\t" $3 }
-        ' \
-      | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3
-  })" || {
+  namespaces="$(command kubectl get namespaces --no-headers)" || {
     printf '%s\n' 'Could not list Kubernetes namespaces' >&2
     return 1
   }
+  pod_namespaces="$(command kubectl get pods --all-namespaces --no-headers -o 'custom-columns=NAMESPACE:.metadata.namespace')" || {
+    printf '%s\n' 'Could not count Kubernetes pods' >&2
+    return 1
+  }
+
+  rows="$({
+    printf '%s\n' "${pod_namespaces}"
+    printf '%s\n' '__DOT_NAMESPACE_ROWS__'
+    printf '%s\n' "${namespaces}"
+  } | awk '
+      $0 == "__DOT_NAMESPACE_ROWS__" { reading_namespaces = 1; next }
+      !reading_namespaces { if (NF) pod_counts[$1]++; next }
+      !NF { next }
+      {
+        if ($1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system") {
+          group = 2
+          order = 0
+        } else if ($1 ~ /-system$/) {
+          group = 0
+          order = 0
+        } else if ($1 ~ /-operator$/) {
+          group = 1
+          order = 0
+        } else {
+          group = 2
+          order = 1
+        }
+        printf "%d\t%d\t%s\t%s\t%s\t%d\n", group, order, $1, $2, $3, pod_counts[$1] + 0
+      }
+    ' | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3)"
 
   [ -n "${rows}" ] || return 0
 
@@ -664,13 +681,14 @@ sc_helper_kube_namespaces() {
         title = "default"
       }
       prefix = "--[ " title " ]"
-      printf "%s%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(prefix)), repeated("-", status_width + 2), repeated("-", age_width + 1)
+      printf "%s%s+%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(prefix)), repeated("-", status_width + 2), repeated("-", age_width + 2), repeated("-", pods_width + 1)
     }
     {
       groups[NR] = $1
       names[NR] = $3
       statuses[NR] = $4
       ages[NR] = $5
+      pod_labels[NR] = $6 ($6 == 1 ? " pod" : " pods")
       if (length($3) > name_width) {
         name_width = length($3)
       }
@@ -680,13 +698,16 @@ sc_helper_kube_namespaces() {
       if (length($5) > age_width) {
         age_width = length($5)
       }
+      if (length(pod_labels[NR]) > pods_width) {
+        pods_width = length(pod_labels[NR])
+      }
     }
     END {
       for (row = 1; row <= NR; row++) {
         if (row == 1 || groups[row] != groups[row - 1]) {
           separator(groups[row])
         }
-        printf "%-*s | %-*s | %-*s\n", name_width, names[row], status_width, statuses[row], age_width, ages[row]
+        printf "%-*s | %-*s | %-*s | %-*s\n", name_width, names[row], status_width, statuses[row], age_width, ages[row], pods_width, pod_labels[row]
       }
     }
   '
