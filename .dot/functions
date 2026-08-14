@@ -685,7 +685,7 @@ sc_helper_kube_namespaces() {
         } else {
           split($1, name_parts, "-")
           group_order = 4
-          group = "other:" name_parts[1]
+          group = "group:" name_parts[1]
         }
         printf "%d\t%s\t%s\t%s\t%s\t%d\t%d\t%.0f\n", group_order, group, $1, $2, $3, pod_counts[$1] + 0, pvc_counts[$1] + 0, pvc_bytes[$1] + 0
       }
