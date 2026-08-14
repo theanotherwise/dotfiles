@@ -2204,23 +2204,17 @@ sc_helper_atuin_init() {
 }
 
 sc_helper_history() {
-  local limit="${1:-}"
-
   if ! command -v atuin >/dev/null 2>&1; then
     printf '%s\n' 'atuin not found' >&2
     return 127
   fi
 
-  if [ "$#" -gt 1 ] || { [ -n "${limit}" ] && [[ "${limit}" == *[!0-9]* ]]; }; then
-    printf '%s\n' 'Usage: history [number]' >&2
-    return 2
+  if [ "$#" -eq 1 ] && [[ "$1" != *[!0-9]* ]]; then
+    command atuin history list --reverse=true --format $'{time}\t{command}' | tail -n "$1"
+    return
   fi
 
-  if [ -n "${limit}" ]; then
-    command atuin history list --reverse=true --format $'{time}\t{command}' | tail -n "${limit}"
-  else
-    command atuin history list --reverse=true --format $'{time}\t{command}'
-  fi
+  command atuin search --interactive --filter-mode=global --inline-height=0 "$@"
 }
 
 sc_helper_zoxide_z_completion() {
