@@ -616,7 +616,7 @@ sc_helper_kubectl() {
 }
 
 sc_helper_kube_namespaces() {
-  local namespaces
+  local rows
 
   if [ "$#" -ne 0 ]; then
     printf '%s\n' 'Usage: knsl' >&2
@@ -627,20 +627,41 @@ sc_helper_kube_namespaces() {
     return 127
   fi
 
-  namespaces="$(command kubectl get namespaces)" || return
-  printf '%s\n' "${namespaces}" \
+  rows="$({
+    set -o pipefail
+    command kubectl get namespaces --no-headers \
+      | awk '
+          $1 == "default" { print "0\t1\t" $1 "\t" $2 "\t" $3; next }
+          $1 ~ /-system$/ { print "0\t0\t" $1 "\t" $2 "\t" $3; next }
+          $1 ~ /-operator$/ { print "1\t0\t" $1 "\t" $2 "\t" $3; next }
+          { print "2\t0\t" $1 "\t" $2 "\t" $3 }
+        ' \
+      | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3
+  })" || {
+    printf '%s\n' 'Could not list Kubernetes namespaces' >&2
+    return 1
+  }
+
+  {
+    printf 'GROUP\tORDER\tNAME\tSTATUS\tAGE\n'
+    [ -z "${rows}" ] || printf '%s\n' "${rows}"
+  } | sc_helper_tsv_table \
     | awk '
         NR == 1 {
-          printf "-1\t\t%s\n", $0
+          sub(/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+/, "")
+          print
           next
         }
-        NF {
-          group = ($1 ~ /-system$/ ? 0 : ($1 ~ /-operator$/ ? 1 : 2))
-          printf "%d\t%s\t%s\n", group, $1, $0
+        {
+          group = $1
+          sub(/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+/, "")
+          if (previous != "" && group != previous) {
+            print ""
+          }
+          print
+          previous = group
         }
-      ' \
-    | LC_ALL=C sort -t $'\t' -k1,1n -k2,2 \
-    | cut -f3-
+      '
 }
 
 sc_helper_kube_capacity() {
