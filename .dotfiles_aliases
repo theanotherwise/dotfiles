@@ -12,8 +12,10 @@ alias mv="mv -iv"
 alias rmdir="rmdir -v"
 alias f="fzf"
 alias a="atuin search -i"
+alias dotfiles='dotfiles.sync && dotfiles.install && dotfiles.reset'
 alias dotfiles.sync='sc_helper_dotfiles_sync'
 alias dotfiles.install='sc_helper_dotfiles_install'
+alias dotfiles.ignores='sc_helper_dotfiles_ignores'
 alias dotfiles.reset='exec bash -l'
 
 #

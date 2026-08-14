@@ -56,10 +56,104 @@ sc_helper_dotfiles_sync() {
   command git -C "${HOME}" submodule sync --recursive -- ".dotfiles.ai-skills" || return 1
   command git -C "${HOME}" submodule update --init --remote --recursive -- ".dotfiles.ai-skills" || return 1
   command git -C "${skills_dir}" status --short --branch
+  sc_helper_dotcache
 }
 
 sc_helper_dotfiles_install() {
   command python3 "${HOME}/.dotfiles.d/dotfiles.py"
+}
+
+sc_helper_dotfiles_ignores() {
+  command cat <<'EOF'
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"window.title": "XXXX",
+		"files.exclude": {
+			// General
+			"**/.DS_Store": true,
+			"**/.idea": true,
+
+			// Node / Frontend
+			"**/node_modules": true,
+			"**/.cache": true,
+			"**/.yarn": true,
+			"**/.nuxt": true,
+			"**/.next": true,
+			"**/.turbo": true,
+			"**/.pnpm-store": true,
+
+			// Terraform
+			"**/.terragrunt-cache": true,
+			"**/.terraform": true,
+			"**/*.tfstate": true,
+			"**/*.tfstate.*": true,
+			"**/.terraform.lock.hcl": true,
+
+			// Python
+			"**/**pycache**": true,
+			"**/.pytest_cache": true,
+			"**/.mypy_cache": true,
+			"**/.ruff_cache": true,
+			"**/.tox": true,
+			"**/.venv": true,
+			"**/venv": true,
+			"**/*.pyc": true,
+			"**/*.pyo": true,
+			"**/*.pyd": true,
+
+			// Build / Test
+			"**/dist": true,
+			"**/build": true,
+			"**/coverage": true,
+			"**/.coverage": true
+		},
+		"search.exclude": {
+			// General
+			"**/.DS_Store": true,
+			"**/.idea": true,
+
+			// Node / Frontend
+			"**/node_modules": true,
+			"**/.cache": true,
+			"**/.yarn": true,
+			"**/.nuxt": true,
+			"**/.next": true,
+			"**/.turbo": true,
+			"**/.pnpm-store": true,
+
+			// Terraform
+			"**/.terragrunt-cache": true,
+			"**/.terraform": true,
+			"**/*.tfstate": true,
+			"**/*.tfstate.*": true,
+			"**/.terraform.lock.hcl": true,
+
+			// Python
+			"**/**pycache**": true,
+			"**/.pytest_cache": true,
+			"**/.mypy_cache": true,
+			"**/.ruff_cache": true,
+			"**/.tox": true,
+			"**/.venv": true,
+			"**/venv": true,
+			"**/*.pyc": true,
+			"**/*.pyo": true,
+			"**/*.pyd": true,
+
+			// Build / Test
+			"**/dist": true,
+			"**/build": true,
+			"**/coverage": true,
+			"**/.coverage": true
+		}
+	}
+}
+EOF
 }
 
 sc_helper_kubeconfig_init() {
@@ -1315,7 +1409,7 @@ sc_helper_dotcache() {
       SC_BASH_COMPLETION_CACHE_DIR="${cache_dir}" \
         SC_BASH_COMPLETION_CACHE_VERBOSE=1 \
         SC_BASH_COMPLETION_CACHE_ASYNC=1 \
-        SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_TIMEOUT_TENTHS:-100}" \
+        SC_BASH_COMPLETION_TIMEOUT_TENTHS="${SC_BASH_COMPLETION_REBUILD_TIMEOUT_TENTHS:-100}" \
         . "${HOME}/.dotfiles_completion"
     ) 2>&1 | command tee "${log_file}"
     status=${PIPESTATUS[0]}
