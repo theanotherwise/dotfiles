@@ -632,34 +632,40 @@ sc_helper_kube_namespaces() {
     command kubectl get namespaces --no-headers \
       | awk '
           $1 == "default" || $1 == "kube-node-lease" || $1 == "kube-public" || $1 == "kube-system" {
-            print "2\t" $1 "\t" $2 "\t" $3
+            print "2\t0\t" $1 "\t" $2 "\t" $3
             next
           }
-          $1 ~ /-system$/ { print "0\t" $1 "\t" $2 "\t" $3; next }
-          $1 ~ /-operator$/ { print "1\t" $1 "\t" $2 "\t" $3; next }
-          { print "3\t" $1 "\t" $2 "\t" $3 }
+          $1 ~ /-system$/ { print "0\t0\t" $1 "\t" $2 "\t" $3; next }
+          $1 ~ /-operator$/ { print "1\t0\t" $1 "\t" $2 "\t" $3; next }
+          { print "2\t1\t" $1 "\t" $2 "\t" $3 }
         ' \
-      | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2
+      | LC_ALL=C sort -t "$(printf '\t')" -k1,1n -k2,2n -k3,3
   })" || {
     printf '%s\n' 'Could not list Kubernetes namespaces' >&2
     return 1
   }
 
   {
-    printf 'GROUP\tNAME\tSTATUS\tAGE\n'
+    printf 'GROUP\tORDER\tNAME\tSTATUS\tAGE\n'
     [ -z "${rows}" ] || printf '%s\n' "${rows}"
   } | sc_helper_tsv_table \
     | awk '
         NR == 1 {
-          sub(/^[^[:space:]]+[[:space:]]+/, "")
+          sub(/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+/, "")
           print
           next
         }
         {
           group = $1
-          sub(/^[^[:space:]]+[[:space:]]+/, "")
-          if (previous != "" && group != previous) {
-            print ""
+          sub(/^[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+/, "")
+          if (previous == "" || group != previous) {
+            if (group == 0) {
+              print "# SYSTEM"
+            } else if (group == 1) {
+              print "# OPERATOR"
+            } else {
+              print "# DEFAULT"
+            }
           }
           print
           previous = group
