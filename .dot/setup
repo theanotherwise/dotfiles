@@ -1,9 +1,43 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DOT_DIR_PATH="$(dirname "$(realpath "$0")")"
-REPO_DIR_PATH="$(dirname "${DOT_DIR_PATH}")"
+set -euo pipefail
 
-git -C "${REPO_DIR_PATH}" submodule sync --recursive -- ".dot/ai-skills" || exit 1
-git -C "${REPO_DIR_PATH}" submodule update --init --remote --recursive -- ".dot/ai-skills" || exit 1
+readonly DOT_DIR_PATH="$(cd "$(dirname "$0")" && pwd -P)"
+readonly REPO_DIR_PATH="$(dirname "${DOT_DIR_PATH}")"
+readonly SUBMODULE_NAME=".dot/ai-skills"
+readonly PARENT_GIT_DIR="$(git -C "${REPO_DIR_PATH}" rev-parse --absolute-git-dir)"
+readonly PARENT_CONFIG_LOCK="${PARENT_GIT_DIR}/config.lock"
+readonly SUBMODULE_CONFIG_LOCK="${PARENT_GIT_DIR}/modules/${SUBMODULE_NAME}/config.lock"
+
+run_git_with_lock_retry() {
+	local attempt output status
+	attempt=1
+
+	while true; do
+		if output="$("$@" 2>&1)"; then
+			[[ -z "${output}" ]] || printf '%s\n' "${output}"
+			return 0
+		else
+			status=$?
+		fi
+
+		if [[ ! -e "${PARENT_CONFIG_LOCK}" && ! -e "${SUBMODULE_CONFIG_LOCK}" ]]; then
+			printf '%s\n' "${output}" >&2
+			return "${status}"
+		fi
+
+		if [[ "${attempt}" -ge 40 ]]; then
+			printf '%s\n' "${output}" >&2
+			printf 'Git config remained locked after 10 seconds.\n' >&2
+			return "${status}"
+		fi
+
+		attempt=$((attempt + 1))
+		sleep 0.25
+	done
+}
+
+run_git_with_lock_retry git -C "${REPO_DIR_PATH}" submodule sync --recursive -- "${SUBMODULE_NAME}"
+run_git_with_lock_retry git -C "${REPO_DIR_PATH}" submodule update --init --remote --recursive -- "${SUBMODULE_NAME}"
 
 python3 "${DOT_DIR_PATH}/installer/dot.py"
