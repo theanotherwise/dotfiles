@@ -15,7 +15,7 @@ alias a="atuin search -i"
 alias dot='sc_helper_dotfiles_sync && exec bash -l'
 alias dot.install='sc_helper_dotfiles_install'
 alias dot.ignores='sc_helper_dotfiles_ignores'
-alias dot.versions='sc_helper_dotversions'
+alias dot.ver='sc_helper_dotversions'
 
 #
 #    Claude
