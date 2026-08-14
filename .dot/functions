@@ -655,8 +655,16 @@ sc_helper_kube_namespaces() {
       }
       return result
     }
-    function separator() {
-      printf "%s+%s+%s\n", repeated("-", name_width + 1), repeated("-", status_width + 2), repeated("-", age_width + 1)
+    function separator(group, title, prefix) {
+      if (group == 0) {
+        title = "system"
+      } else if (group == 1) {
+        title = "operator"
+      } else {
+        title = "default"
+      }
+      prefix = "--[ " title " ]"
+      printf "%s%s+%s+%s\n", prefix, repeated("-", name_width + 1 - length(prefix)), repeated("-", status_width + 2), repeated("-", age_width + 1)
     }
     {
       groups[NR] = $1
@@ -675,8 +683,8 @@ sc_helper_kube_namespaces() {
     }
     END {
       for (row = 1; row <= NR; row++) {
-        if (row > 1 && groups[row] != groups[row - 1]) {
-          separator()
+        if (row == 1 || groups[row] != groups[row - 1]) {
+          separator(groups[row])
         }
         printf "%-*s | %-*s | %-*s\n", name_width, names[row], status_width, statuses[row], age_width, ages[row]
       }
