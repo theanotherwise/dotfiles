@@ -986,23 +986,37 @@ sc_helper_kube_pods() {
     function update_width(value, current) {
       return length(value) > current ? length(value) : current
     }
-    function pod_key(line, fields, count, namespace, name) {
-      count = split(line, fields, /[[:space:]]+/)
-      if (all_namespaces) {
-        namespace = fields[1]
-        name = fields[2]
-      } else {
-        namespace = ""
-        name = fields[1]
+    function truncated(value, limit, available, left, right) {
+      if (length(value) <= limit) {
+        return value
       }
-      sub("^pod/", "", name)
-      return all_namespaces ? namespace "/" name : name
+      available = limit - 3
+      left = int((available + 1) / 2)
+      right = available - left
+      return substr(value, 1, left) "..." substr(value, length(value) - right + 1)
+    }
+    function repeated(character, count, result, position) {
+      result = ""
+      for (position = 0; position < count; position++) {
+        result = result character
+      }
+      return result
+    }
+    function separator(namespace, display, plain_prefix, colored_prefix, column) {
+      display = truncated(namespace, namespace_name_limit)
+      plain_prefix = "--[ " display " ]"
+      colored_prefix = "--[ " blue display reset " ]"
+      printf "%s%s", colored_prefix, repeated("-", widths[1] + 1 - length(plain_prefix))
+      for (column = 2; column <= column_count; column++) {
+        printf "+%s", repeated("-", widths[column] + 2)
+      }
+      printf "\n"
     }
     BEGIN {
-      cpu_request_width = length("CPU_REQ")
-      memory_request_width = length("MEM_REQ")
-      cpu_limit_width = length("CPU_LIM")
-      memory_limit_width = length("MEM_LIM")
+      pod_name_limit = 48
+      namespace_name_limit = 32
+      blue = sprintf("%c[34m", 27)
+      reset = sprintf("%c[0m", 27)
     }
     $0 == "__DOT_KUBE_PODS_TABLE__" {
       reading_table = 1
@@ -1015,38 +1029,79 @@ sc_helper_kube_pods() {
       memory_requests[key] = $4
       cpu_limits[key] = $5
       memory_limits[key] = $6
-      cpu_request_width = update_width($3, cpu_request_width)
-      memory_request_width = update_width($4, memory_request_width)
-      cpu_limit_width = update_width($5, cpu_limit_width)
-      memory_limit_width = update_width($6, memory_limit_width)
+      namespaces[key] = $1
       next
     }
     {
-      table_rows[++table_count] = $0
-      native_width = update_width($0, native_width)
+      if (!header_seen && !no_headers) {
+        header_seen = 1
+        next
+      }
+      header_seen = 1
+
+      native_column_count = split($0, native_cells, /[[:space:]][[:space:]]+/)
+      native_name_column = all_namespaces ? 2 : 1
+      namespace = all_namespaces ? native_cells[1] : ""
+      name = native_cells[native_name_column]
+      sub("^pod/", "", name)
+      key = all_namespaces ? namespace "/" name : name
+      if (key in namespaces) {
+        namespace = namespaces[key]
+      } else if (!all_namespaces) {
+        namespace = "default"
+      }
+
+      row = ++table_count
+      output_column = 0
+      for (native_column = 1; native_column <= native_column_count; native_column++) {
+        if (all_namespaces && native_column == 1) {
+          continue
+        }
+        value = native_cells[native_column]
+        if (native_column == native_name_column) {
+          value = truncated(value, pod_name_limit)
+        }
+        row_values[row, ++output_column] = value
+        widths[output_column] = update_width(value, widths[output_column])
+      }
+
+      if (key in cpu_requests) {
+        cpu_request = cpu_requests[key]
+        memory_request = memory_requests[key]
+        cpu_limit = cpu_limits[key]
+        memory_limit = memory_limits[key]
+      } else {
+        cpu_request = "-"
+        memory_request = "-"
+        cpu_limit = "-"
+        memory_limit = "-"
+      }
+      row_values[row, ++output_column] = cpu_request
+      widths[output_column] = update_width(cpu_request, widths[output_column])
+      row_values[row, ++output_column] = memory_request
+      widths[output_column] = update_width(memory_request, widths[output_column])
+      row_values[row, ++output_column] = cpu_limit
+      widths[output_column] = update_width(cpu_limit, widths[output_column])
+      row_values[row, ++output_column] = memory_limit
+      widths[output_column] = update_width(memory_limit, widths[output_column])
+
+      row_namespaces[row] = namespace
+      column_count = output_column > column_count ? output_column : column_count
+      namespace_width = length(truncated(namespace, namespace_name_limit)) + 5
+      if (namespace_width > widths[1]) {
+        widths[1] = namespace_width
+      }
     }
     END {
       for (row = 1; row <= table_count; row++) {
-        if (row == 1 && !no_headers) {
-          cpu_request = "CPU_REQ"
-          memory_request = "MEM_REQ"
-          cpu_limit = "CPU_LIM"
-          memory_limit = "MEM_LIM"
-        } else {
-          key = pod_key(table_rows[row])
-          if (key in cpu_requests) {
-            cpu_request = cpu_requests[key]
-            memory_request = memory_requests[key]
-            cpu_limit = cpu_limits[key]
-            memory_limit = memory_limits[key]
-          } else {
-            cpu_request = "-"
-            memory_request = "-"
-            cpu_limit = "-"
-            memory_limit = "-"
-          }
+        if (row == 1 || row_namespaces[row] != row_namespaces[row - 1]) {
+          separator(row_namespaces[row])
         }
-        printf "%-*s  %-*s  %-*s  %-*s  %-*s\n", native_width, table_rows[row], cpu_request_width, cpu_request, memory_request_width, memory_request, cpu_limit_width, cpu_limit, memory_limit_width, memory_limit
+        printf "%-*s", widths[1], row_values[row, 1]
+        for (column = 2; column <= column_count; column++) {
+          printf " | %-*s", widths[column], row_values[row, column]
+        }
+        printf "\n"
       }
     }
   '
