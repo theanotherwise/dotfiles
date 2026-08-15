@@ -1259,6 +1259,262 @@ sc_helper_kube_events() {
   '
 }
 
+sc_helper_kube_gateways() {
+  if ! command -v kubectl >/dev/null 2>&1; then
+    printf '%s\n' 'kubectl not found' >&2
+    return 127
+  fi
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '%s\n' 'jq not found' >&2
+    return 127
+  fi
+
+  local requested=0 requested_istio=0 requested_gateway_api=0
+  local available_istio=0 available_gateway_api=0 passthrough=0 show_help=0
+  local api_names resources="" arg istio_json gateway_api_json gateway_rows
+  local index=0
+  local -a original_args native_args json_args
+
+  original_args=("$@")
+  while [ "${index}" -lt "${#original_args[@]}" ]; do
+    arg="${original_args[index]}"
+    case "${arg}" in
+      --istio)
+        requested=1
+        requested_istio=1
+        ;;
+      --gateway-api)
+        requested=1
+        requested_gateway_api=1
+        ;;
+      -h|--help)
+        show_help=1
+        ;;
+      -o|--output)
+        passthrough=1
+        native_args+=("${arg}")
+        if [ $((index + 1)) -lt "${#original_args[@]}" ]; then
+          index=$((index + 1))
+          native_args+=("${original_args[index]}")
+        fi
+        ;;
+      -o=*|--output=*|-o?*|-w|--watch|--watch=true|--watch-only|--watch-only=true)
+        passthrough=1
+        native_args+=("${arg}")
+        ;;
+      *)
+        native_args+=("${arg}")
+        ;;
+    esac
+    index=$((index + 1))
+  done
+
+  if [ "${show_help}" -eq 1 ]; then
+    printf '%s\n' \
+      'Usage: kd-gateways [--istio] [--gateway-api] [-A|-n namespace] [name] [kubectl options]' \
+      '' \
+      'Without an API selector, all available Gateway APIs are shown.' \
+      '--istio       networking.istio.io/Gateway' \
+      '--gateway-api gateway.networking.k8s.io/Gateway'
+    return 0
+  fi
+
+  api_names="$(command kubectl api-resources -o name)" || return
+  if printf '%s\n' "${api_names}" | grep -qx 'gateways.networking.istio.io'; then
+    available_istio=1
+  fi
+  if printf '%s\n' "${api_names}" | grep -qx 'gateways.gateway.networking.k8s.io'; then
+    available_gateway_api=1
+  fi
+
+  if [ "${requested}" -eq 1 ]; then
+    if [ "${requested_istio}" -eq 1 ]; then
+      if [ "${available_istio}" -ne 1 ]; then
+        printf '%s\n' 'Istio Gateway API is not available in the current cluster' >&2
+        return 1
+      fi
+      available_istio=1
+    else
+      available_istio=0
+    fi
+    if [ "${requested_gateway_api}" -eq 1 ]; then
+      if [ "${available_gateway_api}" -ne 1 ]; then
+        printf '%s\n' 'Kubernetes Gateway API is not available in the current cluster' >&2
+        return 1
+      fi
+      available_gateway_api=1
+    else
+      available_gateway_api=0
+    fi
+  fi
+
+  if [ "${available_istio}" -eq 1 ]; then
+    resources='gateways.networking.istio.io'
+  fi
+  if [ "${available_gateway_api}" -eq 1 ]; then
+    if [ -n "${resources}" ]; then
+      resources="${resources},gateways.gateway.networking.k8s.io"
+    else
+      resources='gateways.gateway.networking.k8s.io'
+    fi
+  fi
+  if [ -z "${resources}" ]; then
+    printf '%s\n' 'No Gateway API is available in the current cluster'
+    return 0
+  fi
+
+  if [ "${passthrough}" -eq 1 ]; then
+    command kubectl get "${resources}" "${native_args[@]}"
+    return
+  fi
+
+  index=0
+  while [ "${index}" -lt "${#native_args[@]}" ]; do
+    arg="${native_args[index]}"
+    case "${arg}" in
+      --sort-by|-L|--label-columns)
+        index=$((index + 1))
+        ;;
+      --sort-by=*|-L=*|-L?*|--label-columns=*|--no-headers|--no-headers=*|--show-kind|--show-kind=*|--show-labels|--show-labels=*|--server-print|--server-print=*|--use-openapi-print-columns|--use-openapi-print-columns=*)
+        ;;
+      *)
+        json_args+=("${arg}")
+        ;;
+    esac
+    index=$((index + 1))
+  done
+
+  if [ "${available_istio}" -eq 1 ]; then
+    istio_json="$(command kubectl get gateways.networking.istio.io "${json_args[@]}" -o json)" || return
+  fi
+  if [ "${available_gateway_api}" -eq 1 ]; then
+    gateway_api_json="$(command kubectl get gateways.gateway.networking.k8s.io "${json_args[@]}" -o json)" || return
+  fi
+
+  gateway_rows="$({
+    if [ -n "${istio_json}" ]; then
+      printf '%s' "${istio_json}" | command jq -r '
+        (if has("items") then .items[] else . end) as $gateway
+        | (($gateway.spec.selector // {})
+            | to_entries | sort_by(.key)
+            | map("\(.key)=\(.value)") | join(",")
+            | if . == "" then "-" else . end) as $selector
+        | ($gateway.spec.servers // []) as $servers
+        | if ($servers | length) == 0 then
+            [($gateway.metadata.namespace // "default"), "Istio", $gateway.metadata.name, 0, "*", $selector, "-", "-"] | @tsv
+          else
+            $servers[] as $server
+            | (($server.hosts // []) | if length == 0 then ["*"] else . end)[] as $host
+            | (($server.tls.mode // "-")
+                + (if ($server.tls.credentialName // "") != "" then ":" + $server.tls.credentialName else "" end)) as $tls
+            | [
+                ($gateway.metadata.namespace // "default"),
+                "Istio",
+                $gateway.metadata.name,
+                ($server.port.number // 0),
+                $host,
+                $selector,
+                ((($server.port.number // 0) | tostring) + "/" + ($server.port.protocol // "-")),
+                $tls
+              ] | @tsv
+          end
+      '
+    fi
+    if [ -n "${gateway_api_json}" ]; then
+      printf '%s' "${gateway_api_json}" | command jq -r '
+        (if has("items") then .items[] else . end) as $gateway
+        | ("class=" + ($gateway.spec.gatewayClassName // "-")) as $class
+        | ($gateway.spec.listeners // []) as $listeners
+        | if ($listeners | length) == 0 then
+            [($gateway.metadata.namespace // "default"), "GatewayAPI", $gateway.metadata.name, 0, "*", $class, "-", "-"] | @tsv
+          else
+            $listeners[] as $listener
+            | ([($listener.tls.certificateRefs // [])[]?
+                | ((.kind // "Secret") + "/" + (.name // "-"))] | join(",")) as $credentials
+            | (($listener.tls.mode // "-")
+                + (if $credentials != "" then ":" + $credentials else "" end)) as $tls
+            | [
+                ($gateway.metadata.namespace // "default"),
+                "GatewayAPI",
+                $gateway.metadata.name,
+                ($listener.port // 0),
+                ($listener.hostname // "*"),
+                $class,
+                ((($listener.port // 0) | tostring) + "/" + ($listener.protocol // "-")),
+                $tls
+              ] | @tsv
+          end
+      '
+    fi
+  } | LC_ALL=C sort -t "$(printf '\t')" -k1,1 -k2,2 -k3,3 -k4,4n -k5,5)" || return
+
+  if [ -z "${gateway_rows}" ]; then
+    printf '%s\n' 'No Gateway resources found'
+    return 0
+  fi
+
+  printf '%s\n' "${gateway_rows}" | awk -F '\t' '
+    function update_width(value, current) {
+      return length(value) > current ? length(value) : current
+    }
+    function truncated_middle(value, limit, available, left, right) {
+      if (length(value) <= limit) {
+        return value
+      }
+      available = limit - 3
+      left = int((available + 1) / 2)
+      right = available - left
+      return substr(value, 1, left) "..." substr(value, length(value) - right + 1)
+    }
+    BEGIN {
+      namespace_limit = 32
+      gateway_limit = 36
+      selector_limit = 36
+      host_limit = 56
+      tls_limit = 48
+      column_count = 7
+      blue = sprintf("%c[34m", 27)
+      reset = sprintf("%c[0m", 27)
+    }
+    {
+      row = ++row_count
+      namespace = $1
+      gateway_key = $1 SUBSEP $2 SUBSEP $3
+      namespaces[row] = namespace
+      values[row, 1] = truncated_middle(namespace, namespace_limit)
+      values[row, 2] = gateway_key == previous_gateway_key ? "" : $2
+      values[row, 3] = gateway_key == previous_gateway_key ? "" : truncated_middle($3, gateway_limit)
+      values[row, 4] = gateway_key == previous_gateway_key ? "" : truncated_middle($6, selector_limit)
+      values[row, 5] = $7
+      values[row, 6] = truncated_middle($5, host_limit)
+      values[row, 7] = truncated_middle($8, tls_limit)
+      previous_gateway_key = gateway_key
+
+      for (column = 1; column <= column_count; column++) {
+        if (column == 1) {
+          widths[column] = update_width("[ " values[row, column] " ]", widths[column])
+        } else {
+          widths[column] = update_width(values[row, column], widths[column])
+        }
+      }
+    }
+    END {
+      for (row = 1; row <= row_count; row++) {
+        if (row == 1 || namespaces[row] != namespaces[row - 1]) {
+          namespace = values[row, 1]
+          printf "[ %s%s%s ]%*s", blue, namespace, reset, widths[1] - length(namespace) - 4, ""
+        } else {
+          printf "%-*s", widths[1], ""
+        }
+        for (column = 2; column <= column_count; column++) {
+          printf " | %-*s", widths[column], values[row, column]
+        }
+        printf "\n"
+      }
+    }
+  '
+}
+
 sc_helper_kube_capacity() {
   local rows mode namespace
 
