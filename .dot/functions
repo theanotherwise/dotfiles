@@ -1495,6 +1495,13 @@ sc_helper_kube_gateways() {
     function update_width(value, current) {
       return length(value) > current ? length(value) : current
     }
+    function repeated(character, count, result, position) {
+      result = ""
+      for (position = 0; position < count; position++) {
+        result = result character
+      }
+      return result
+    }
     function truncated_middle(value, limit, available, left, right) {
       if (length(value) <= limit) {
         return value
@@ -1503,6 +1510,16 @@ sc_helper_kube_gateways() {
       left = int((available + 1) / 2)
       right = available - left
       return substr(value, 1, left) "..." substr(value, length(value) - right + 1)
+    }
+    function separator(namespace, display, plain_prefix, colored_prefix, column) {
+      display = truncated_middle(namespace, namespace_limit)
+      plain_prefix = "--[ " display " ]"
+      colored_prefix = "--[ " blue display reset " ]"
+      printf "%s%s", colored_prefix, repeated("-", widths[1] + 1 - length(plain_prefix))
+      for (column = 2; column <= column_count; column++) {
+        printf "+%s", repeated("-", widths[column] + 2)
+      }
+      printf "\n"
     }
     BEGIN {
       namespace_limit = 32
@@ -1530,7 +1547,8 @@ sc_helper_kube_gateways() {
 
       for (column = 1; column <= column_count; column++) {
         if (column == 1) {
-          widths[column] = update_width("[ " values[row, column] " ]", widths[column])
+          namespace_width = length(values[row, column]) + 5
+          widths[column] = namespace_width > widths[column] ? namespace_width : widths[column]
         } else {
           widths[column] = update_width(values[row, column], widths[column])
         }
@@ -1539,11 +1557,9 @@ sc_helper_kube_gateways() {
     END {
       for (row = 1; row <= row_count; row++) {
         if (row == 1 || namespaces[row] != namespaces[row - 1]) {
-          namespace = values[row, 1]
-          printf "[ %s%s%s ]%*s", blue, namespace, reset, widths[1] - length(namespace) - 4, ""
-        } else {
-          printf "%-*s", widths[1], ""
+          separator(namespaces[row])
         }
+        printf "%-*s", widths[1], ""
         for (column = 2; column <= column_count; column++) {
           printf " | %-*s", widths[column], values[row, column]
         }
