@@ -467,17 +467,17 @@ sc_helper_shell_join() {
   printf "%s" "${output}"
 }
 
-sc_helper_ssh_tun_psem_prod_rke2_core() {
+sc_helper_ssh_tun_rke2_ural() {
   printf '%s\n' \
-    'SSH tunnel:' \
+    'RKE2 Ural API tunnel:' \
     '  local:  127.0.0.1:6443' \
-    '  via:    ubuntu@54.38.14.33 (RKE2 mgmt)' \
-    '  remote: 10.100.50.117:6443 (RKE2 core)' \
+    '  via:    ubuntu@141.94.173.26 (rke2-ural-mgmt-0)' \
+    '  remote: 10.100.50.110:6443 (rke2-ural-cl-0)' \
     'Press Ctrl+C to close the tunnel.'
 
   ssh -N -o ExitOnForwardFailure=yes \
-    -L 6443:10.100.50.117:6443 \
-    ubuntu@54.38.14.33
+    -L 6443:10.100.50.110:6443 \
+    ubuntu@141.94.173.26
 }
 
 sc_helper_watch() {
