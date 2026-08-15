@@ -2,6 +2,7 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
   echo "Loading file: $(basename "${BASH_SOURCE[0]}")"
 fi
 
+sc_helper_repair_current_directory "${PWD:-}"
 sc_helper_kubeconfig_init
 sc_helper_zoxide_init
 sc_helper_fzf_init

@@ -59,6 +59,44 @@ sc_helper_dot_sync() {
   sc_helper_dotcache
 }
 
+sc_helper_repair_current_directory() {
+  local previous_directory="${1:-${PWD:-}}"
+  local target_directory
+
+  if builtin pwd -P >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ -n "${previous_directory}" ] && [ -d "${previous_directory}" ]; then
+    target_directory="${previous_directory}"
+  elif [ -n "${HOME:-}" ] && [ -d "${HOME}" ]; then
+    target_directory="${HOME}"
+  else
+    target_directory="/"
+  fi
+
+  if ! builtin cd -- "${target_directory}" 2>/dev/null; then
+    printf 'Cannot recover from the removed current directory.\n' >&2
+    return 1
+  fi
+
+  printf 'Current directory was removed; continuing in %s.\n' "${PWD}" >&2
+}
+
+sc_helper_shell_reload() {
+  local previous_directory="${1:-${PWD:-}}"
+
+  sc_helper_repair_current_directory "${previous_directory}" || return 1
+  exec bash -l
+}
+
+sc_helper_dot() {
+  local previous_directory="${PWD:-}"
+
+  sc_helper_dot_sync || return 1
+  sc_helper_shell_reload "${previous_directory}"
+}
+
 sc_helper_dot_install() {
   command python3 "${HOME}/.dot/installer/dot.py"
 }
