@@ -245,7 +245,7 @@ sc_helper_kubeconfig_init() {
   export KUBECONFIG="${kubeconfig_files}"
 }
 
-sc_helper_kubeconfig_prod_rke2_core() {
+sc_helper_kubeconfig_rke2_ural() {
   local kubeconfig_file="${HOME}/.dot/files/kubeconfig/rke2.yaml"
 
   if [ ! -f "${kubeconfig_file}" ] || [ ! -r "${kubeconfig_file}" ]; then
