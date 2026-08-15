@@ -495,8 +495,8 @@ sc_helper_k_pods_completion() {
 
   COMP_WORDS=(kubectl get pods "${original_words[@]:1}")
   COMP_CWORD=$((original_cword + 2))
-  COMP_LINE="kubectl get pods${original_line#k-pods}"
-  COMP_POINT=$((original_point + 10))
+  COMP_LINE="kubectl get pods${original_line#kd-pods}"
+  COMP_POINT=$((original_point + 9))
 
   if declare -F __start_kubectl >/dev/null 2>&1; then
     __start_kubectl
@@ -963,7 +963,7 @@ sc_helper_gitconfig_completion() {
 }
 
 complete -o nospace -F sc_helper_k_completion k
-complete -o nospace -F sc_helper_k_pods_completion k-pods
+complete -o nospace -F sc_helper_k_pods_completion kd-pods
 if declare -F _atuin >/dev/null 2>&1; then
   if [[ "${BASH_VERSINFO[0]}" -eq 4 && "${BASH_VERSINFO[1]}" -ge 4 || "${BASH_VERSINFO[0]}" -gt 4 ]]; then
     complete -o nosort -o bashdefault -o default -F sc_helper_atuin_a_completion a
