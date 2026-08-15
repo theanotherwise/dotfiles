@@ -467,7 +467,7 @@ sc_helper_shell_join() {
   printf "%s" "${output}"
 }
 
-sc_helper_ssh_tun_ovh_rke2_ural() {
+sc_helper_ssh_tun_ovh_rke2_ural_mgmt() {
   printf '%s\n' \
     'RKE2 Ural API tunnel:' \
     '  local:  127.0.0.1:6443' \

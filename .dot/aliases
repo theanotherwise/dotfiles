@@ -87,7 +87,7 @@ alias ssh-conn-ovh-rke2-ural-cl-1='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.
 alias ssh-conn-ovh-rke2-ural-cl-2='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.50.179'
 alias ssh-conn-ovh-rke2-ural-wl-0='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.50.10'
 alias ssh-conn-ovh-rke2-ural-wl-1='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.50.11'
-alias ssh-tun-ovh-rke2-ural='sc_helper_ssh_tun_ovh_rke2_ural'
+alias ssh-tun-ovh-rke2-ural-mgmt='sc_helper_ssh_tun_ovh_rke2_ural_mgmt'
 alias ssh-compute='ssh taw@10.100.100.8'
 
 #
