@@ -51,8 +51,6 @@ alias kd-events="sc_helper_kube_events"
 alias kc="sc_helper_kube_capacity"
 alias kt="stern"
 alias kl="kube-linter"
-alias kv='kubectl get events --sort-by=".metadata.creationTimestamp"'
-alias kva='kubectl get events --sort-by=".metadata.creationTimestamp" -A'
 alias ksecret='sc_helper_kube_secret'
 alias ksecrets='sc_helper_kube_secret'
 alias kcontainers='sc_helper_kube_containers'

@@ -1235,14 +1235,18 @@ sc_helper_kube_events() {
       values[row, 7] = truncated_end($7, message_limit)
 
       for (column = 1; column <= column_count; column++) {
-        widths[column] = update_width(values[row, column], widths[column])
+        if (column == 1) {
+          widths[column] = update_width("[" values[row, column] "]", widths[column])
+        } else {
+          widths[column] = update_width(values[row, column], widths[column])
+        }
       }
     }
     END {
       for (row = 1; row <= row_count; row++) {
         if (row == 1 || namespaces[row] != namespaces[row - 1]) {
           namespace = values[row, 1]
-          printf "%s%s%s%*s", blue, namespace, reset, widths[1] - length(namespace), ""
+          printf "[%s%s%s]%*s", blue, namespace, reset, widths[1] - length(namespace) - 2, ""
         } else {
           printf "%-*s", widths[1], ""
         }
