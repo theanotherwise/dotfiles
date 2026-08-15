@@ -1174,7 +1174,7 @@ sc_helper_kube_events() {
           end;
 
       (if has("items") then .items else [.] end)
-      | sort_by([(.metadata.namespace // "default"), (.metadata.creationTimestamp // "")])[]
+      | sort_by([(.metadata.creationTimestamp // ""), (.metadata.namespace // "default")])[]
       | . as $event
       | ($event.regarding // $event.involvedObject // {}) as $object
       | [
@@ -1214,56 +1214,38 @@ sc_helper_kube_events() {
       }
       return substr(value, 1, limit - 3) "..."
     }
-    function repeated(character, count, result, position) {
-      result = ""
-      for (position = 0; position < count; position++) {
-        result = result character
-      }
-      return result
-    }
-    function separator(namespace, display, plain_prefix, colored_prefix, column) {
-      display = truncated_middle(namespace, namespace_name_limit)
-      plain_prefix = "--[ " display " ]"
-      colored_prefix = "--[ " blue display reset " ]"
-      printf "%s%s", colored_prefix, repeated("-", widths[1] + 1 - length(plain_prefix))
-      for (column = 2; column <= column_count; column++) {
-        printf "+%s", repeated("-", widths[column] + 2)
-      }
-      printf "\n"
-    }
     BEGIN {
       namespace_name_limit = 32
       reason_limit = 28
       object_limit = 44
       message_limit = 72
-      column_count = 6
+      column_count = 7
       blue = sprintf("%c[34m", 27)
       reset = sprintf("%c[0m", 27)
     }
     {
       row = ++row_count
       namespaces[row] = $1
-      values[row, 1] = $2
-      values[row, 2] = $3
-      values[row, 3] = truncated_end($4, reason_limit)
-      values[row, 4] = truncated_middle($5, object_limit)
-      values[row, 5] = $6 "x"
-      values[row, 6] = truncated_end($7, message_limit)
+      values[row, 1] = truncated_middle($1, namespace_name_limit)
+      values[row, 2] = $2
+      values[row, 3] = $3
+      values[row, 4] = truncated_end($4, reason_limit)
+      values[row, 5] = truncated_middle($5, object_limit)
+      values[row, 6] = $6 "x"
+      values[row, 7] = truncated_end($7, message_limit)
 
       for (column = 1; column <= column_count; column++) {
         widths[column] = update_width(values[row, column], widths[column])
-      }
-      namespace_width = length(truncated_middle($1, namespace_name_limit)) + 5
-      if (namespace_width > widths[1]) {
-        widths[1] = namespace_width
       }
     }
     END {
       for (row = 1; row <= row_count; row++) {
         if (row == 1 || namespaces[row] != namespaces[row - 1]) {
-          separator(namespaces[row])
+          namespace = values[row, 1]
+          printf "%s%s%s%*s", blue, namespace, reset, widths[1] - length(namespace), ""
+        } else {
+          printf "%-*s", widths[1], ""
         }
-        printf "%-*s", widths[1], values[row, 1]
         for (column = 2; column <= column_count; column++) {
           printf " | %-*s", widths[column], values[row, column]
         }
