@@ -1107,6 +1107,172 @@ sc_helper_kube_pods() {
   '
 }
 
+sc_helper_kube_events() {
+  if ! command -v kubectl >/dev/null 2>&1; then
+    printf '%s\n' 'kubectl not found' >&2
+    return 127
+  fi
+  if ! command -v jq >/dev/null 2>&1; then
+    printf '%s\n' 'jq not found' >&2
+    return 127
+  fi
+
+  local passthrough=0 output_value="" arg events_json event_rows
+  local index=0
+  local -a native_args json_args
+
+  native_args=("$@")
+  while [ "${index}" -lt "${#native_args[@]}" ]; do
+    arg="${native_args[index]}"
+    case "${arg}" in
+      -o|--output)
+        passthrough=1
+        index=$((index + 1))
+        ;;
+      -o=*|--output=*)
+        output_value="${arg#*=}"
+        ;;
+      -o?*)
+        output_value="${arg#-o}"
+        ;;
+      -w|--watch|--watch=true|--watch-only|--watch-only=true|-h|--help)
+        passthrough=1
+        ;;
+    esac
+    index=$((index + 1))
+  done
+  [ -z "${output_value}" ] || passthrough=1
+
+  if [ "${passthrough}" -eq 1 ]; then
+    command kubectl get events "${native_args[@]}" --sort-by=.metadata.creationTimestamp
+    return
+  fi
+
+  index=0
+  while [ "${index}" -lt "${#native_args[@]}" ]; do
+    arg="${native_args[index]}"
+    case "${arg}" in
+      --sort-by|-o|--output|-L|--label-columns)
+        index=$((index + 1))
+        ;;
+      --sort-by=*|-o=*|--output=*|-o?*|-L=*|-L?*|--label-columns=*|--no-headers|--no-headers=*|--show-kind|--show-kind=*|--show-labels|--show-labels=*|--server-print|--server-print=*|--use-openapi-print-columns|--use-openapi-print-columns=*)
+        ;;
+      *)
+        json_args+=("${arg}")
+        ;;
+    esac
+    index=$((index + 1))
+  done
+
+  events_json="$(command kubectl get events "${json_args[@]}" -o json)" || return
+  event_rows="$({
+    printf '%s' "${events_json}" | command jq -r '
+      def created:
+        (.metadata.creationTimestamp // "-")
+        | if . == "-" then .
+          else gsub("T"; " ") | sub("\\.[0-9]+Z$"; "Z")
+          end;
+
+      (if has("items") then .items else [.] end)
+      | sort_by([(.metadata.namespace // "default"), (.metadata.creationTimestamp // "")])[]
+      | . as $event
+      | ($event.regarding // $event.involvedObject // {}) as $object
+      | [
+          ($event.metadata.namespace // "default"),
+          ($event | created),
+          ($event.type // "-"),
+          ($event.reason // "-"),
+          (($object.kind // "-") + "/" + ($object.name // "-")),
+          (($event.series.count // $event.count // $event.deprecatedCount // 1) | tostring),
+          ($event.note // $event.message // "-")
+        ]
+      | @tsv
+    '
+  })" || return
+
+  if [ -z "${event_rows}" ]; then
+    printf '%s\n' 'No events found'
+    return 0
+  fi
+
+  printf '%s\n' "${event_rows}" | awk -F '\t' '
+    function update_width(value, current) {
+      return length(value) > current ? length(value) : current
+    }
+    function truncated_middle(value, limit, available, left, right) {
+      if (length(value) <= limit) {
+        return value
+      }
+      available = limit - 3
+      left = int((available + 1) / 2)
+      right = available - left
+      return substr(value, 1, left) "..." substr(value, length(value) - right + 1)
+    }
+    function truncated_end(value, limit) {
+      if (length(value) <= limit) {
+        return value
+      }
+      return substr(value, 1, limit - 3) "..."
+    }
+    function repeated(character, count, result, position) {
+      result = ""
+      for (position = 0; position < count; position++) {
+        result = result character
+      }
+      return result
+    }
+    function separator(namespace, display, plain_prefix, colored_prefix, column) {
+      display = truncated_middle(namespace, namespace_name_limit)
+      plain_prefix = "--[ " display " ]"
+      colored_prefix = "--[ " blue display reset " ]"
+      printf "%s%s", colored_prefix, repeated("-", widths[1] + 1 - length(plain_prefix))
+      for (column = 2; column <= column_count; column++) {
+        printf "+%s", repeated("-", widths[column] + 2)
+      }
+      printf "\n"
+    }
+    BEGIN {
+      namespace_name_limit = 32
+      reason_limit = 28
+      object_limit = 44
+      message_limit = 72
+      column_count = 6
+      blue = sprintf("%c[34m", 27)
+      reset = sprintf("%c[0m", 27)
+    }
+    {
+      row = ++row_count
+      namespaces[row] = $1
+      values[row, 1] = $2
+      values[row, 2] = $3
+      values[row, 3] = truncated_end($4, reason_limit)
+      values[row, 4] = truncated_middle($5, object_limit)
+      values[row, 5] = $6 "x"
+      values[row, 6] = truncated_end($7, message_limit)
+
+      for (column = 1; column <= column_count; column++) {
+        widths[column] = update_width(values[row, column], widths[column])
+      }
+      namespace_width = length(truncated_middle($1, namespace_name_limit)) + 5
+      if (namespace_width > widths[1]) {
+        widths[1] = namespace_width
+      }
+    }
+    END {
+      for (row = 1; row <= row_count; row++) {
+        if (row == 1 || namespaces[row] != namespaces[row - 1]) {
+          separator(namespaces[row])
+        }
+        printf "%-*s", widths[1], values[row, 1]
+        for (column = 2; column <= column_count; column++) {
+          printf " | %-*s", widths[column], values[row, column]
+        }
+        printf "\n"
+      }
+    }
+  '
+}
+
 sc_helper_kube_capacity() {
   local rows mode namespace
 
