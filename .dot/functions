@@ -480,6 +480,61 @@ sc_helper_ssh_tun_ovh_rke2_ural_mgmt() {
     ubuntu@141.94.173.26
 }
 
+sc_helper_auth_google_workspace() {
+  local gcloud_config_dir="${HOME}/.config/gcloud"
+  local oauth_client_file="${gcloud_config_dir}/presemantic-workspace.json"
+  local oauth_client_tmp
+  local oauth_scopes
+
+  for required_command in op jq gcloud; do
+    if ! command -v "${required_command}" >/dev/null 2>&1; then
+      printf 'Required command is unavailable: %s\n' "${required_command}" >&2
+      return 127
+    fi
+  done
+
+  command mkdir -p -- "${gcloud_config_dir}" || return 1
+  oauth_client_tmp="$(command mktemp "${gcloud_config_dir}/.presemantic-workspace.json.XXXXXX")" || return 1
+
+  if ! command op inject \
+    --force \
+    --file-mode 0600 \
+    --out-file "${oauth_client_tmp}" <<'EOF'
+{
+  "installed": {
+    "client_id": "{{ op://COMP › PSEM › Infra — General/Google Workspace/username }}",
+    "project_id": "prod-common-infra",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "{{ op://COMP › PSEM › Infra — General/Google Workspace/password }}",
+    "redirect_uris": ["http://localhost"]
+  }
+}
+EOF
+  then
+    command unlink "${oauth_client_tmp}" 2>/dev/null || true
+    return 1
+  fi
+
+  if ! command jq -e \
+    '.installed.client_id and .installed.client_secret and (.installed.project_id == "prod-common-infra")' \
+    "${oauth_client_tmp}" >/dev/null; then
+    printf '%s\n' 'Generated Google Workspace OAuth client JSON is invalid.' >&2
+    command unlink "${oauth_client_tmp}" 2>/dev/null || true
+    return 1
+  fi
+
+  command mv -- "${oauth_client_tmp}" "${oauth_client_file}" || return 1
+  command chmod 0600 "${oauth_client_file}" || return 1
+
+  oauth_scopes="https://www.googleapis.com/auth/admin.directory.customer,https://www.googleapis.com/auth/admin.directory.domain,https://www.googleapis.com/auth/admin.directory.group,https://www.googleapis.com/auth/admin.directory.orgunit,https://www.googleapis.com/auth/admin.directory.rolemanagement,https://www.googleapis.com/auth/admin.directory.user,https://www.googleapis.com/auth/admin.directory.userschema,https://www.googleapis.com/auth/apps.groups.settings,https://www.googleapis.com/auth/chrome.management.policy,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/gmail.settings.basic,https://www.googleapis.com/auth/gmail.settings.sharing"
+
+  CLOUDSDK_CORE_PROJECT=prod-common-infra command gcloud auth application-default login \
+    --client-id-file="${oauth_client_file}" \
+    --scopes="${oauth_scopes}"
+}
+
 sc_helper_watch() {
   local interval="${1:-}"
   local command_string opt script
