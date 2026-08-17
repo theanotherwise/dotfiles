@@ -485,6 +485,8 @@ sc_helper_auth_google_workspace() {
   local oauth_client_file="${gcloud_config_dir}/google-workspace-presemantic.json"
   local oauth_client_tmp
   local oauth_scopes
+  local op_vault='COMP › PSEM › Infra — General'
+  local op_item='Google Workspace'
 
   for required_command in op jq gcloud; do
     if ! command -v "${required_command}" >/dev/null 2>&1; then
@@ -496,22 +498,27 @@ sc_helper_auth_google_workspace() {
   command mkdir -p -- "${gcloud_config_dir}" || return 1
   oauth_client_tmp="$(command mktemp "${gcloud_config_dir}/.google-workspace-presemantic.json.XXXXXX")" || return 1
 
-  if ! command op inject \
-    --force \
-    --file-mode 0600 \
-    --out-file "${oauth_client_tmp}" <<'EOF'
-{
-  "installed": {
-    "client_id": "{{ op://ptukmd2pkvuzpaiigtemyzx3vy/d43sndistu4dp4lopxms353ty4/username }}",
-    "project_id": "prod-common-infra",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_secret": "{{ op://ptukmd2pkvuzpaiigtemyzx3vy/d43sndistu4dp4lopxms353ty4/password }}",
-    "redirect_uris": ["http://localhost"]
-  }
-}
-EOF
+  if ! command op item get "${op_item}" \
+    --vault "${op_vault}" \
+    --fields label=username,label=password \
+    --format json \
+    --reveal |
+    command jq -e '
+      . as $fields
+      | {
+          installed: {
+            client_id: ($fields | first(.[] | select(.label == "username") | .value)),
+            project_id: "prod-common-infra",
+            auth_uri: "https://accounts.google.com/o/oauth2/auth",
+            token_uri: "https://oauth2.googleapis.com/token",
+            auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+            client_secret: ($fields | first(.[] | select(.label == "password") | .value)),
+            redirect_uris: ["http://localhost"]
+          }
+        }
+      | select((.installed.client_id | type) == "string" and (.installed.client_id | length) > 0)
+      | select((.installed.client_secret | type) == "string" and (.installed.client_secret | length) > 0)
+    ' >"${oauth_client_tmp}"
   then
     command unlink "${oauth_client_tmp}" 2>/dev/null || true
     return 1
