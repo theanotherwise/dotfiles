@@ -502,12 +502,12 @@ sc_helper_auth_google_workspace() {
     --out-file "${oauth_client_tmp}" <<'EOF'
 {
   "installed": {
-    "client_id": "{{ op://COMP › PSEM › Infra — General/Google Workspace/username }}",
+    "client_id": "{{ op://ptukmd2pkvuzpaiigtemyzx3vy/d43sndistu4dp4lopxms353ty4/username }}",
     "project_id": "prod-common-infra",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_secret": "{{ op://COMP › PSEM › Infra — General/Google Workspace/password }}",
+    "client_secret": "{{ op://ptukmd2pkvuzpaiigtemyzx3vy/d43sndistu4dp4lopxms353ty4/password }}",
     "redirect_uris": ["http://localhost"]
   }
 }
