@@ -482,7 +482,7 @@ sc_helper_ssh_tun_ovh_rke2_ural_mgmt() {
 
 sc_helper_auth_google_workspace() {
   local gcloud_config_dir="${HOME}/.config/gcloud"
-  local oauth_client_file="${gcloud_config_dir}/presemantic-workspace.json"
+  local oauth_client_file="${gcloud_config_dir}/workspace-presemantic.json"
   local oauth_client_tmp
   local oauth_scopes
 
@@ -494,7 +494,7 @@ sc_helper_auth_google_workspace() {
   done
 
   command mkdir -p -- "${gcloud_config_dir}" || return 1
-  oauth_client_tmp="$(command mktemp "${gcloud_config_dir}/.presemantic-workspace.json.XXXXXX")" || return 1
+  oauth_client_tmp="$(command mktemp "${gcloud_config_dir}/.workspace-presemantic.json.XXXXXX")" || return 1
 
   if ! command op inject \
     --force \
