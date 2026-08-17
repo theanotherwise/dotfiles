@@ -105,7 +105,7 @@ alias gcloud-projects="gcloud projects list"
 alias gcloud-set-project="gcloud config set project"
 alias dot.auth-gcloud="gcloud auth login --no-launch-browser"
 alias dot.auth-gcloud-app="gcloud auth application-default login --no-launch-browser"
-alias dot.auth-google-workspace='sc_helper_auth_google_workspace'
+alias dot.auth-google-workspace-psem='sc_helper_auth_google_workspace'
 alias gcloud-kube="gcloud container clusters list"
 alias gcloud-kube-creds="gcloud container clusters get-credentials"
 alias gcloud-vm-start-compute="gcloud compute instances start compute --zone=europe-west1-b --project=prod-common-ncc --async"
