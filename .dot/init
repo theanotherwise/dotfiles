@@ -3,6 +3,7 @@ if [[ -n "${SC_BASH_SHOW_LOADING:-}" ]]; then
 fi
 
 sc_helper_repair_current_directory "${PWD:-}"
+sc_helper_rke2_ural_alias_cleanup
 sc_helper_kubeconfig_init
 sc_helper_zoxide_init
 sc_helper_fzf_init

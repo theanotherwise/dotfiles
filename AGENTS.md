@@ -11,7 +11,7 @@ This project contains personal shell and tool configuration intended to be check
 - [`init.sh`](./init.sh) bootstraps or repairs the home-directory checkout from `origin/main`, then runs [`.dot/setup`](./.dot/setup).
 - [`.bashrc`](./.bashrc) loads shell startup files from [`.dot`](./.dot) and sets Bash prompt/history/editor defaults.
 - [`.bash_hooks`](./.bash_hooks) provides Bash-specific runtime hooks such as `preexec`/`precmd` compatibility for tools that need command lifecycle events.
-- [`.dot/init`](./.dot/init) runs repository-owned tool initialization helpers after functions, completions, and aliases are loaded, including automatic `KUBECONFIG` discovery from the default `~/.kube/config` and `~/.dot/files/kubeconfig`.
+- [`.dot/init`](./.dot/init) runs repository-owned tool initialization helpers after functions, completions, and aliases are loaded, including cleanup of retired RKE2 connection aliases and automatic `KUBECONFIG` discovery from the default `~/.kube/config` and `~/.dot/files/kubeconfig`.
 - [`.dot/aliases`](./.dot/aliases) contains aliases only; non-trivial shell logic belongs in [`.dot/functions`](./.dot/functions).
 - [`.dot/functions`](./.dot/functions) contains reusable shell helper functions, including the repository synchronization and completion-cache rebuild logic used by the `dot` sync-and-reset workflow, the separate manual `dot.install` helper, current-shell kubeconfig selectors, helpers that back aliases, and the multi-repository `git-scan` status table. Repository-owned shell function names must use the `sc_helper_` prefix, with public command names exposed through aliases in [`.dot/aliases`](./.dot/aliases).
 - [`.dot/completion`](./.dot/completion) loads Bash completions and completion cache helpers.

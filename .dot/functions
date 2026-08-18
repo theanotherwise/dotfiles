@@ -257,6 +257,15 @@ sc_helper_kubeconfig_rke2_ural() {
   printf "KUBECONFIG=%s\n" "${KUBECONFIG}"
 }
 
+sc_helper_rke2_ural_alias_cleanup() {
+  unalias \
+    ssh-conn-ovh-rke2-ural-cl-0 \
+    ssh-conn-ovh-rke2-ural-cl-1 \
+    ssh-conn-ovh-rke2-ural-cl-2 \
+    ssh-conn-ovh-rke2-ural-wl-1 \
+    2>/dev/null || true
+}
+
 sc_helper_bashrc_git_dir() {
   local dir git_dir line
 
