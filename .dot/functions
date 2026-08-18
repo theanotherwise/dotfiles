@@ -262,7 +262,6 @@ sc_helper_rke2_ural_alias_cleanup() {
     ssh-conn-ovh-rke2-ural-cl-0 \
     ssh-conn-ovh-rke2-ural-cl-1 \
     ssh-conn-ovh-rke2-ural-cl-2 \
-    ssh-conn-ovh-rke2-ural-wl-1 \
     2>/dev/null || true
 }
 
