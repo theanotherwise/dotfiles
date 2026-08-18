@@ -471,13 +471,13 @@ sc_helper_ssh_tun_ovh_rke2_ural_mgmt() {
   printf '%s\n' \
     'RKE2 Ural API tunnel:' \
     '  local:  127.0.0.1:6443' \
-    '  via:    ubuntu@141.94.173.26 (rke2-ural-mgmt-0)' \
-    '  remote: 10.100.50.110:6443 (rke2-ural-cl-0)' \
+    '  via:    ubuntu@51.68.147.92 (rke2-ural-mgmt-0)' \
+    '  remote: 10.100.50.171:6443 (rke2-ural-control-plane LB)' \
     'Press Ctrl+C to close the tunnel.'
 
   ssh -N -o ExitOnForwardFailure=yes \
-    -L 6443:10.100.50.110:6443 \
-    ubuntu@141.94.173.26
+    -L 6443:10.100.50.171:6443 \
+    ubuntu@51.68.147.92
 }
 
 sc_helper_auth_google_workspace() {
