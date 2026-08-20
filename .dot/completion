@@ -1049,4 +1049,3 @@ complete -F sc_helper_kerrors_completion kerrors
 [ -x "${HOME}/binaries/terraform/latest/bin/terraform" ] && complete -o nospace -C "${HOME}/binaries/terraform/latest/bin/terraform" tform
 [ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" terragrunt
 [ -x "${HOME}/binaries/terragrunt/latest/bin/terragrunt" ] && complete -o nospace -C "${HOME}/binaries/terragrunt/latest/bin/terragrunt" tgrunt
-[ -x "${HOME}/binaries/tofu/latest/bin/tofu" ] && complete -o nospace -C "${HOME}/binaries/tofu/latest/bin/tofu" tofu

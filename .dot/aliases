@@ -95,16 +95,16 @@ alias ssh-compute='ssh taw@10.100.100.8'
 #
 alias terragrunt="terragrunt"
 alias terralint="tflint"
-alias export-tofu='export TG_TF_PATH=tofu'
-alias export-terraform='export TG_TF_PATH=terraform'
 
 #
 #    gcloud
 #
 alias gcloud-projects="gcloud projects list"
 alias gcloud-set-project="gcloud config set project"
-alias auth-gcloud="gcloud auth login --no-launch-browser"
-alias auth-gcloud-app="gcloud auth application-default login --no-launch-browser"
+alias auth-login-gcloud="gcloud auth login --no-launch-browser"
+alias auth-login-gcloud-app="gcloud auth application-default login --no-launch-browser"
+alias auth-revoke-gcloud="gcloud auth revoke"
+alias auth-revoke-gcloud-app="gcloud auth application-default revoke"
 alias dot.auth-google-workspace-presemantic='sc_helper_auth_google_workspace'
 alias gcloud-kube="gcloud container clusters list"
 alias gcloud-kube-creds="gcloud container clusters get-credentials"

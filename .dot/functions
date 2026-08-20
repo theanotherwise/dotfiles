@@ -3407,9 +3407,6 @@ sc_helper_dotversions_binary() {
   [ -d "${bin_dir}" ] || return 1
 
   case "${package}" in
-    opentofu|tofu)
-      candidate="tofu"
-      ;;
     ripgrep)
       candidate="rg"
       ;;
@@ -3503,7 +3500,7 @@ sc_helper_dotversions_version() {
   local variants variant output status version
 
   case "${package}" in
-    go|opentofu|terraform|tofu)
+    go|terraform)
       variants="version
 --version"
       ;;
@@ -3631,9 +3628,8 @@ sc_helper_dotversions_description() {
     subfinder) printf "%s\n" "Finds subdomains from OSINT sources" ;;
     syft) printf "%s\n" "Generates SBOMs for images and filesystems" ;;
     terraform) printf "%s\n" "Plans and applies infrastructure changes" ;;
-    terragrunt) printf "%s\n" "DRY wrapper around Terraform/OpenTofu" ;;
+    terragrunt) printf "%s\n" "DRY wrapper around Terraform" ;;
     tflint) printf "%s\n" "Lints Terraform modules and provider usage" ;;
-    tofu|opentofu) printf "%s\n" "OpenTofu infrastructure as code CLI" ;;
     trivy) printf "%s\n" "Scans images, repos, and configs for risk" ;;
     tlsx) printf "%s\n" "Collects TLS certs and fingerprints" ;;
     uv) printf "%s\n" "Fast Python package and environment manager" ;;
@@ -3659,7 +3655,7 @@ sc_helper_dotversions_category() {
     helm|helmfile)
       printf "%s\n" "Helm"
       ;;
-    opentofu|terraform|terragrunt|tflint|tofu)
+    terraform|terragrunt|tflint)
       printf "%s\n" "Infrastructure as Code"
       ;;
     age|cosign|grype|sops|syft|trivy|oras)
@@ -3775,7 +3771,6 @@ sc_helper_dotversions_example() {
     terraform) printf "%s\n" "terraform plan" ;;
     terragrunt) printf "%s\n" "terragrunt run plan" ;;
     tflint) printf "%s\n" "tflint" ;;
-    tofu|opentofu) printf "%s\n" "tofu plan" ;;
     trivy) printf "%s\n" "trivy image nginx:latest" ;;
     tlsx) printf "%s\n" "tlsx -u example.com -san" ;;
     uv) printf "%s\n" "uv run pytest" ;;
