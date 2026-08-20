@@ -104,7 +104,7 @@ alias export-terraform='export TG_TF_PATH=terraform'
 alias gcloud-projects="gcloud projects list"
 alias gcloud-set-project="gcloud config set project"
 alias auth-gcloud="gcloud auth login --no-launch-browser"
-alias gcloud-app="gcloud auth application-default login --no-launch-browser"
+alias auth-gcloud-app="gcloud auth application-default login --no-launch-browser"
 alias dot.auth-google-workspace-presemantic='sc_helper_auth_google_workspace'
 alias gcloud-kube="gcloud container clusters list"
 alias gcloud-kube-creds="gcloud container clusters get-credentials"
