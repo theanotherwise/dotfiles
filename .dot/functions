@@ -2494,6 +2494,22 @@ sc_helper_nuclei() {
   fi
 }
 
+sc_helper_git_back() {
+  local repository_root
+
+  if [ "$#" -ne 0 ]; then
+    printf "Usage: git-back\n" >&2
+    return 2
+  fi
+
+  if ! repository_root="$(command git rev-parse --show-toplevel 2>/dev/null)"; then
+    printf "git-back: not inside a Git repository\n" >&2
+    return 1
+  fi
+
+  builtin cd -- "${repository_root}"
+}
+
 sc_helper_git_scan_table() {
   local color_enabled="${1:-0}"
 

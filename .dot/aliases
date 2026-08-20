@@ -142,6 +142,11 @@ alias git-commitpush-docs='git add . && git commit -am "chore: update and improv
 alias git-commitpush-empty="git commit --allow-empty -m \"Empty Commit\" ; git push"
 
 #
+#    Git Navigation
+#
+alias git-back='sc_helper_git_back'
+
+#
 #    Git Graph
 #
 alias git-graph='git log --graph --no-abbrev-commit --decorate=full \
