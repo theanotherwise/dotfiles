@@ -78,8 +78,10 @@ alias d-context-faszyn-set='docker context use nuc-faszyn'
 #
 #    SSH
 #
-alias ssh-conn-nuc-szew='ssh -A comp@nuc.szew.lan.bajojajo.com'
-alias ssh-conn-nuc-faszyn='ssh -A comp@nuc.faszyn.lan.bajojajo.com'
+alias ssh-conn-szew-nuc='ssh -A comp@nuc.szew.lan.bajojajo.com'
+alias ssh-conn-faszyn-nuc='ssh -A comp@nuc.faszyn.lan.bajojajo.com'
+alias ssh-conn-faszyn-bpi='ssh root@192.168.255.101'
+alias ssh-conn-szew-bpi='ssh root@192.168.254.101'
 alias ssh-conn-ncc-tunnel='ssh taw@35.233.39.98'
 alias ssh-conn-ovh-rke2-ural-mgmt-0='ssh -A ubuntu@141.94.173.26'
 alias ssh-conn-ovh-rke2-ural-cl-0='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.50.110'
@@ -88,7 +90,6 @@ alias ssh-conn-ovh-rke2-ural-cl-2='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.
 alias ssh-conn-ovh-rke2-ural-wl-0='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.50.10'
 alias ssh-conn-ovh-rke2-ural-wl-1='ssh -A -J ubuntu@141.94.173.26 ubuntu@10.100.50.11'
 alias ssh-tun-ovh-rke2-ural-mgmt='sc_helper_ssh_tun_ovh_rke2_ural_mgmt'
-alias ssh-compute='ssh taw@10.100.100.8'
 
 #
 #    Terraform
