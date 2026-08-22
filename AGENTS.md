@@ -11,7 +11,7 @@ This project contains personal shell and tool configuration intended to be check
 - [`init.sh`](./init.sh) bootstraps or repairs the home-directory checkout from `origin/main`, then runs [`.dot/setup`](./.dot/setup).
 - [`.bashrc`](./.bashrc) loads shell startup files from [`.dot`](./.dot) and sets Bash prompt/history/editor defaults.
 - [`.bash_hooks`](./.bash_hooks) provides Bash-specific runtime hooks such as `preexec`/`precmd` compatibility for tools that need command lifecycle events.
-- [`.dot/init`](./.dot/init) runs repository-owned tool initialization helpers after functions, completions, and aliases are loaded, including automatic `KUBECONFIG` discovery from the default `~/.kube/config` and `~/.dot/files/kubeconfig`.
+- [`.dot/init`](./.dot/init) runs repository-owned tool initialization helpers after functions, completions, and aliases are loaded, including cleanup of retired RKE2 connection aliases and automatic `KUBECONFIG` discovery from the default `~/.kube/config` and `~/.dot/files/kubeconfig`.
 - [`.dot/aliases`](./.dot/aliases) contains aliases only; non-trivial shell logic belongs in [`.dot/functions`](./.dot/functions).
 - [`.dot/functions`](./.dot/functions) contains reusable shell helper functions, including the repository synchronization and completion-cache rebuild logic used by the `dot` sync-and-reset workflow, the separate manual `dot.install` helper, current-shell kubeconfig selectors, helpers that back aliases, and the multi-repository `git-scan` status table. Repository-owned shell function names must use the `sc_helper_` prefix, with public command names exposed through aliases in [`.dot/aliases`](./.dot/aliases).
 - [`.dot/completion`](./.dot/completion) loads Bash completions and completion cache helpers.
@@ -19,6 +19,7 @@ This project contains personal shell and tool configuration intended to be check
 - [`.dot/ai-skills`](./.dot/ai-skills) is the public `theanotherwise/ai-skills` Git submodule, fetched anonymously over HTTPS and containing one `<skill-name>/SKILL.md` entry per shared Agent Skill.
 - [`.agents/skills`](./.agents/skills) and [`.claude/skills`](./.claude/skills) are relative symlinks to [`.dot/ai-skills`](./.dot/ai-skills), allowing Codex and Claude Code to discover the same shared skills.
 - [`.dot/files/kubeconfig`](./.dot/files/kubeconfig) is a repository-owned local storage directory retained by a `.keep` file; its user-created contents remain ignored by Git.
+- The `rke2-ural` connection aliases use the Warsaw management Floating IP as the control-plane ProxyJump, connect to both delivered workload servers through their public OVH hostnames, and forward the local Kubernetes API tunnel to the private OVH Load Balancer rather than one control-plane node.
 - [`.dot/setup`](./.dot/setup) synchronizes the configured URL for [`.dot/ai-skills`](./.dot/ai-skills), initializes and updates it from its remote `main` branch on every run, then delegates binary setup to [`.dot/installer/dot.py`](./.dot/installer/dot.py), which prints structured setup logs and installs pending tools concurrently by package while keeping each package's versions sequential.
 - [`pod.yaml`](./pod.yaml) and [`init.yaml`](./init.yaml) are local Kubernetes demo manifests used to exercise Pod/container error inspection helpers.
 

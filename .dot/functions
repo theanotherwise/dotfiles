@@ -257,6 +257,14 @@ sc_helper_kubeconfig_rke2_ural() {
   printf "KUBECONFIG=%s\n" "${KUBECONFIG}"
 }
 
+sc_helper_rke2_ural_alias_cleanup() {
+  unalias \
+    ssh-conn-ovh-rke2-ural-cl-0 \
+    ssh-conn-ovh-rke2-ural-cl-1 \
+    ssh-conn-ovh-rke2-ural-cl-2 \
+    2>/dev/null || true
+}
+
 sc_helper_bashrc_git_dir() {
   local dir git_dir line
 
@@ -471,13 +479,13 @@ sc_helper_ssh_tun_ovh_rke2_ural_mgmt() {
   printf '%s\n' \
     'RKE2 Ural API tunnel:' \
     '  local:  127.0.0.1:6443' \
-    '  via:    ubuntu@141.94.173.26 (rke2-ural-mgmt-0)' \
-    '  remote: 10.100.50.110:6443 (rke2-ural-cl-0)' \
+    '  via:    ubuntu@51.68.147.92 (rke2-ural-mgmt-0)' \
+    '  remote: 10.100.50.171:6443 (rke2-ural-control-plane LB)' \
     'Press Ctrl+C to close the tunnel.'
 
   ssh -N -o ExitOnForwardFailure=yes \
-    -L 6443:10.100.50.110:6443 \
-    ubuntu@141.94.173.26
+    -L 6443:10.100.50.171:6443 \
+    ubuntu@51.68.147.92
 }
 
 sc_helper_auth_google_workspace() {
@@ -2486,6 +2494,22 @@ sc_helper_nuclei() {
   fi
 }
 
+sc_helper_git_back() {
+  local repository_root
+
+  if [ "$#" -ne 0 ]; then
+    printf "Usage: git-back\n" >&2
+    return 2
+  fi
+
+  if ! repository_root="$(command git rev-parse --show-toplevel 2>/dev/null)"; then
+    printf "git-back: not inside a Git repository\n" >&2
+    return 1
+  fi
+
+  builtin cd -- "${repository_root}"
+}
+
 sc_helper_git_scan_table() {
   local color_enabled="${1:-0}"
 
@@ -3383,9 +3407,6 @@ sc_helper_dotversions_binary() {
   [ -d "${bin_dir}" ] || return 1
 
   case "${package}" in
-    opentofu|tofu)
-      candidate="tofu"
-      ;;
     ripgrep)
       candidate="rg"
       ;;
@@ -3479,7 +3500,7 @@ sc_helper_dotversions_version() {
   local variants variant output status version
 
   case "${package}" in
-    go|opentofu|terraform|tofu)
+    go|terraform)
       variants="version
 --version"
       ;;
@@ -3607,9 +3628,8 @@ sc_helper_dotversions_description() {
     subfinder) printf "%s\n" "Finds subdomains from OSINT sources" ;;
     syft) printf "%s\n" "Generates SBOMs for images and filesystems" ;;
     terraform) printf "%s\n" "Plans and applies infrastructure changes" ;;
-    terragrunt) printf "%s\n" "DRY wrapper around Terraform/OpenTofu" ;;
+    terragrunt) printf "%s\n" "DRY wrapper around Terraform" ;;
     tflint) printf "%s\n" "Lints Terraform modules and provider usage" ;;
-    tofu|opentofu) printf "%s\n" "OpenTofu infrastructure as code CLI" ;;
     trivy) printf "%s\n" "Scans images, repos, and configs for risk" ;;
     tlsx) printf "%s\n" "Collects TLS certs and fingerprints" ;;
     uv) printf "%s\n" "Fast Python package and environment manager" ;;
@@ -3635,7 +3655,7 @@ sc_helper_dotversions_category() {
     helm|helmfile)
       printf "%s\n" "Helm"
       ;;
-    opentofu|terraform|terragrunt|tflint|tofu)
+    terraform|terragrunt|tflint)
       printf "%s\n" "Infrastructure as Code"
       ;;
     age|cosign|grype|sops|syft|trivy|oras)
@@ -3751,7 +3771,6 @@ sc_helper_dotversions_example() {
     terraform) printf "%s\n" "terraform plan" ;;
     terragrunt) printf "%s\n" "terragrunt run plan" ;;
     tflint) printf "%s\n" "tflint" ;;
-    tofu|opentofu) printf "%s\n" "tofu plan" ;;
     trivy) printf "%s\n" "trivy image nginx:latest" ;;
     tlsx) printf "%s\n" "tlsx -u example.com -san" ;;
     uv) printf "%s\n" "uv run pytest" ;;

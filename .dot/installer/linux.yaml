@@ -312,15 +312,6 @@ binaries:
     latest: 1.1.3
     versions:
       - version: 1.1.3
-  - name: tofu
-    url: https://github.com/opentofu/opentofu/releases/download/v{version}/tofu_{version}_linux_amd64.tar.gz
-    type: tar.gz
-    override: False
-    strip: False
-    inBin: False
-    latest: 1.12.5
-    versions:
-      - version: 1.12.5
   - name: tflint
     url: https://github.com/terraform-linters/tflint/releases/download/v{version}/tflint_linux_amd64.zip
     type: zip

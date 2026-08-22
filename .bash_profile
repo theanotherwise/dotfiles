@@ -5,7 +5,7 @@ fi
 for tool in go groovy node pnpm mvn yq jq ripgrep uv \
             subfinder httpx dnsx naabu katana gau asnmap mapcidr tlsx nuclei amass ffuf \
             kube-linter k3d k9s oc kubectl argocd kubectx kubens kustomize kubeconform stern \
-            tofu terraform terragrunt tflint helm helmfile rtfmt upx oras k6 \
+            terraform terragrunt tflint helm helmfile rtfmt upx oras k6 \
             github-mcp-server shellcheck shfmt trivy gh actionlint fzf atuin fd bat delta \
             zoxide sops age syft grype \
             cosign; do
